@@ -1,0 +1,7 @@
+Se hizo la primera versión del parser-lexer.
+
+Se hizo bajo una versión aún no concreta del lenguaje ya que no teníamos 
+asegurado si la propuesta iba a ser aceptada. 
+
+Se encontraron algunos errores con la lógica de nuestra sintax por lo que 
+no se pudo correr el programa de prueba diseñado.

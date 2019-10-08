@@ -1,0 +1,16 @@
+program
+
+vardef int a, b, c = 3;
+vardef float wan = 98.2;
+
+funcdef int nothing(){
+    vardec char z = 'a';
+}
+
+funcdef main () { 
+    a = a + 1;
+    forward(1, 10);
+    out<<(a);
+}
+
+fin;
