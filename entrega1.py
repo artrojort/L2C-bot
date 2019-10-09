@@ -16,13 +16,14 @@ compileFlag = True
 
 reserved = {
     'program'   : 'PROGRAM',
+    'main'      : 'MAIN',
     'vardef'    : 'VARDEF',
     'funcdef'   : 'FUNCDEF', 
     'call'      : 'CALL',
     'if'        : 'IF',
     'else'      : 'ELSE',
-    'in>>'      : 'IN>>',
-    'out'       : 'OUT<<',
+    'cin'       : 'CIN',
+    'cout'      : 'COUT',
     'delay'     : 'DELAY',
     'forward'   : 'FORWARD',
     'backward'  : 'BACKWARD',
@@ -32,10 +33,12 @@ reserved = {
     'lights'    : 'LIGHTS',
     'display'   : 'DISPLAY',
     'distance'  : 'DISTANCE',
+    'stop'      : 'STOP',
+    'return'    : 'RETURN',
     'fin'       : 'FIN'
 }
 
-tokens = ['ASSIGN', 'PLUS', 'MINUS', 'MULTI' 'DIVI' 'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY', 'EQUALS', 'LESSTHAN', 'GREATERTHAN', 'NOTEQUALS', 'SEMICOLON', 'COMMA', 'AMPER', 'LINE', 'CTE_INT', 'CTE_FLOAT', 'CTE_CHAR', 'ID']  + list(reserved.values())
+tokens = ['ASSIGN', 'PLUS', 'MINUS', 'MULTI', 'DIVI', 'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY', 'EQUALS', 'LESSTHAN', 'GREATERTHAN', 'NOTEQUAL', 'SEMICOLON', 'COMMA', 'AND', 'OR', 'CTE_INT', 'CTE_FLOAT', 'CTE_CHAR', 'ID']  + list(reserved.values())
 t_ASSIGN    = r'='
 t_PLUS      = r'\+'
 t_MINUS     = r'-'
@@ -50,11 +53,11 @@ t_RCURLY    = r'\}'
 t_EQUALS    = r'=='
 t_LESSTHAN  = r'<'
 t_GREATERTHAN = r'>'
-t_NOTEQUALS = r'<>'
+t_NOTEQUAL  = r'<>'
 t_SEMICOLON = r';'
 t_COMMA     = r','
-t_AMPERSON  = r'&&'
-t_LINE      = r'\|\|'
+t_AND       = r'\&\&'
+t_OR        = r'\|\|'
 t_CTE_CHAR  = r'\'[a-zA-Z0-9 ]\''
 
 def t_CTE_INT(t):
@@ -94,68 +97,81 @@ def p_program(p):
     'program : PROGRAM program1 program2 main FIN SEMICOLON'
 
 def p_program1(p):
-    'program1 : vars | empty'
+    '''program1 : varsblock 
+                | empty'''
 
 def p_program2(p):
-    'program2 : funcs | empty'
+    '''program2 : funcsblock 
+                | empty'''
 
 def p_main(p):
     'main : FUNCDEF MAIN LPAREN RPAREN LCURLY main1 main2 RCURLY'
 
 def p_main1(p):
-    'main1 : varsblock | empty'
+    '''main1 : varsblock 
+             | empty'''
 
 def p_main2(p):
-    'main2 : block | empty'
+    '''main2 : block 
+             | empty'''
 
 def p_varsblock(p):
-    'varsblock : vars varsblock | empty'
+    '''varsblock : vars varsblock 
+                 | empty'''
 
 def p_vars(p):
     'vars : VARDEF type vars1 SEMICOLON'
 
 def p_vars1(p):
-    'vars1 : vars2 | vars3'
+    '''vars1 : vars2 
+             | vars3'''
 
 def p_vars2(p):
-    'vars2 : LBRACKET CTE_INT RBRACKET id ASSIGN arr vars4'
+    'vars2 : LBRACKET CTE_INT RBRACKET ID ASSIGN ARR vars4'
 
 def p_vars3(p):
-    'vars3 : id ASSIGN const vars5'
+    'vars3 : ID ASSIGN CTE_VAR vars5'
 
 def p_vars4(p):
-    'vars4 : arr COMMA vars4 | empty'
+    '''vars4 : ARR COMMA vars4 
+             | empty'''
 
 def p_vars5(p):
-    'vars5 : const COMMA vars5 | empty'
+    '''vars5 : CTE_VAR COMMA vars5 
+             | empty'''
 
 def p_funcsblock(p):
-    'funcsblock : funcs funcsblock | empty'
+    '''funcsblock : funcs funcsblock 
+                  | empty'''
 
 def p_funcs(p):
-    'funcs : FUNCDEF type id LPAREN funcs1 RPAREN LCURLY funcs2 funcs3 RCURLY SEMICOLON'
+    'funcs : FUNCDEF type ID LPAREN funcs1 RPAREN LCURLY funcs2 funcs3 RCURLY SEMICOLON'
 
 def p_funcs1(p):
-    'funcs1 : params | empty'
+    '''funcs1 : params 
+              | empty'''
 
 def p_funcs2(p):
-    'funcs2 : varsblock | empty'
+    '''funcs2 : varsblock 
+              | empty'''
 
 def p_funcs3(p):
-    'funcs3 : statute | empty'
+    '''funcs3 : statute 
+              | empty'''
 
 def p_params(p):
-    'params : type id params1'
+    'params : type ID params1'
 
 def p_params1(p): 
-    'params1 : COMMA params | empty'
+    '''params1 : COMMA params 
+               | empty'''
 
 def p_statute(p):
-    '''estatue : cond
+    '''statute : cond
                | assign
                | call 
-               | in
-               | out
+               | cin
+               | cout
                | delay
                | forward
                | backward
@@ -172,43 +188,49 @@ def p_cond(p):
     'cond : IF LPAREN express RPAREN block else SEMICOLON'
 
 def p_else(p):
-    'else : ELSE block | empty'
+    '''else : ELSE block 
+            | empty'''
 
 def p_assign(p):
     'assign :  ID assign1 ASSIGN express SEMICOLON'
 
 def p_assign1(p):
-    'assign1 : LBRACKET express RBRACKET | empty'
+    '''assign1 : LBRACKET express RBRACKET 
+               | empty'''
 
 def p_call(p):
-    'call : ID LPAREN call1 RPAREN SEMICOLON'
+    'call : CALL ID LPAREN call1 RPAREN SEMICOLON'
     
 def p_call1(p):
-    'call1 : express call2 | empty'
+    '''call1 : express call2 
+             | empty'''
 
 def p_call2(p):
-    'call2 : COMMA call1 | empty'
+    '''call2 : COMMA call1 
+             | empty'''
 
-def p_in(p):
-    'in : IN in1 SEMICOLON'
+def p_cin(p):
+    'cin : CIN cin1 SEMICOLON'
 
-def p_in1(p):
-    'in1 : in2 | in3'
+def p_cin1(p):
+    '''cin1 : cin2 
+            | cin3'''
 
-def p_in2(p):
-    'in2 : LPAREN ID RPAREN'
+def p_cin2(p):
+    'cin2 : LPAREN ID RPAREN'
 
-def p_in3(p):
-    'in3 : LBRACKET CTE_INT RBRACKET LPAREN in4 RPAREN'
+def p_cin3(p):
+    'cin3 : LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN'
 
-def p_in4(p):
-    'in4 : COMMA ID in4 | empty'
+def p_cin4(p):
+    '''cin4 : COMMA ID cin4 
+           | empty'''
 
-def p_out(p):
-    'out : OUT LPAREN express RPAREN SEMICOLON'
+def p_cout(p):
+    'cout : COUT LPAREN express RPAREN SEMICOLON'
 
 def p_delay(p):
-    'delay : LPAREN CTE_INT RPAREN SEMICOLON'
+    'delay : DELAY LPAREN CTE_INT RPAREN SEMICOLON'
 
 def p_forward(p):
     'forward : FORWARD LPAREN express COMMA express RPAREN SEMICOLON'
@@ -235,13 +257,14 @@ def p_p_distance(p):
     'distance : DISTANCE LPAREN RPAREN SEMICOLON'
 
 def p_stop(p):
-    'stop :  STOP LPAREN RPAREN SEMICOLON'
+    'stop : STOP LPAREN RPAREN SEMICOLON'
 
 def p_return(p):
     'return : RETURN express SEMICOLON'
 
-def block(p):
-    'block : statute block | empty'
+def p_block(p):
+    '''block : statute block 
+             | empty'''
 
 def p_type(p):
     '''type : INT
@@ -256,12 +279,24 @@ def p_CTE_VAR(p):
                | CTE_STRING
                | CTE_BOOL'''
 
+def p_condition(p):
+    'condition : express condition1'
+
+def p_condition1(p):
+    '''condition1 : andor express 
+                  | empty'''
+
+def p_andor(p):
+    '''andor : AND
+             | OR'''
+
 def p_express(p):
     'express : exp express1'
 
 def p_express1(p):
     '''express1 : LESSTHAN exp
                 | GREATERTHAN exp
+                | EQUALS exp
                 | NOTEQUAL exp
                 | empty'''
 
@@ -269,30 +304,39 @@ def p_exp(p):
     'exp : term exp1'
 
 def p_exp1(p):
-    'exp1 : exp2 term | empty'
+    '''exp1 : exp2 term 
+            | empty'''
 
 def p_exp2(p):
-    'exp2 : PLUS | MINUS'
+    '''exp2 : PLUS 
+            | MINUS'''
 
 def p_term(p):
     'term :  factor term1'
 
 def p_term1(p):
-    'term1 :  term2 term | empty'
+    '''term1 : term2 term 
+             | empty'''
 
 def p_term2(p):
-    'term2 :  MULTI | DIVI'
+    '''term2 : MULTI 
+             | DIVI'''
 
 def p_factor(p): 
-    'factor : express | factor1'
+    '''factor : express 
+              | factor1'''
 
 def p_factor1(p):
     'factor1 : factor2 CTE_VAR'
 
 def p_factor2(p):
-    'factor2 : PLUS | MINUS | empty'
+    '''factor2 : PLUS 
+               | MINUS 
+               | empty'''
 
-
+def p_empty(p):
+    'empty :'
+    pass
 
 parser = yacc.yacc()
 
@@ -303,7 +347,6 @@ fp.close()
 lexer.input(nextline)
 
 parser.parse(nextline)
-
 
 while True:
     tok = lexer.token()

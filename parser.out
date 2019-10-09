@@ -1,0 +1,245 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> program
+Rule 1     program -> PROGRAM program1 program2 main FIN SEMICOLON
+Rule 2     program1 -> varsblock
+Rule 3     program1 -> empty
+Rule 4     program2 -> funcsblock
+Rule 5     program2 -> empty
+Rule 6     main -> FUNCDEF MAIN LPAREN RPAREN LCURLY main1 main2 RCURLY
+Rule 7     main1 -> varsblock
+Rule 8     main1 -> empty
+Rule 9     main2 -> block
+Rule 10    main2 -> empty
+Rule 11    varsblock -> vars varsblock
+Rule 12    varsblock -> empty
+Rule 13    vars -> VARDEF type vars1 SEMICOLON
+Rule 14    vars1 -> vars2
+Rule 15    vars1 -> vars3
+Rule 16    vars2 -> LBRACKET CTE_INT RBRACKET ID ASSIGN ARR vars4
+Rule 17    vars3 -> ID ASSIGN CTE_VAR vars5
+Rule 18    vars4 -> ARR COMMA vars4
+Rule 19    vars4 -> empty
+Rule 20    vars5 -> CTE_VAR COMMA vars5
+Rule 21    vars5 -> empty
+Rule 22    funcsblock -> funcs funcsblock
+Rule 23    funcsblock -> empty
+Rule 24    funcs -> FUNCDEF type ID LPAREN funcs1 RPAREN LCURLY funcs2 funcs3 RCURLY SEMICOLON
+Rule 25    funcs1 -> params
+Rule 26    funcs1 -> empty
+Rule 27    funcs2 -> varsblock
+Rule 28    funcs2 -> empty
+Rule 29    funcs3 -> statute
+Rule 30    funcs3 -> empty
+Rule 31    params -> type ID params1
+Rule 32    params1 -> COMMA params
+Rule 33    params1 -> empty
+Rule 34    statute -> cond
+Rule 35    statute -> assign
+Rule 36    statute -> call
+Rule 37    statute -> cin
+Rule 38    statute -> cout
+Rule 39    statute -> delay
+Rule 40    statute -> forward
+Rule 41    statute -> backward
+Rule 42    statute -> turnleft
+Rule 43    statute -> turnright
+Rule 44    statute -> servo
+Rule 45    statute -> lights
+Rule 46    statute -> display
+Rule 47    statute -> distance
+Rule 48    statute -> stop
+Rule 49    statute -> return
+Rule 50    cond -> IF LPAREN express RPAREN block else SEMICOLON
+Rule 51    else -> ELSE block
+Rule 52    else -> empty
+Rule 53    assign -> ID assign1 ASSIGN express SEMICOLON
+Rule 54    assign1 -> LBRACKET express RBRACKET
+Rule 55    assign1 -> empty
+Rule 56    call -> CALL ID LPAREN call1 RPAREN SEMICOLON
+Rule 57    call1 -> express call2
+Rule 58    call1 -> empty
+Rule 59    call2 -> COMMA call1
+Rule 60    call2 -> empty
+Rule 61    cin -> CIN cin1 SEMICOLON
+Rule 62    cin1 -> cin2
+Rule 63    cin1 -> cin3
+Rule 64    cin2 -> LPAREN ID RPAREN
+Rule 65    cin3 -> LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN
+Rule 66    cin4 -> COMMA ID cin4
+Rule 67    cin4 -> empty
+Rule 68    cout -> COUT LPAREN express RPAREN SEMICOLON
+Rule 69    delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON
+Rule 70    forward -> FORWARD LPAREN express COMMA express RPAREN SEMICOLON
+Rule 71    backward -> BACKWARD LPAREN express COMMA express RPAREN SEMICOLON
+Rule 72    turnleft -> TURNLEFT LPAREN express COMMA express RPAREN SEMICOLON
+Rule 73    turnright -> TURNRIGHT LPAREN express COMMA express RPAREN SEMICOLON
+Rule 74    servo -> SERVO LPAREN express RPAREN SEMICOLON
+Rule 75    lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON
+Rule 76    display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON
+Rule 77    distance -> DISTANCE LPAREN RPAREN SEMICOLON
+Rule 78    stop -> STOP LPAREN RPAREN SEMICOLON
+Rule 79    return -> RETURN express SEMICOLON
+Rule 80    block -> statute block
+Rule 81    block -> empty
+Rule 82    type -> INT
+Rule 83    type -> FLOAT
+Rule 84    type -> BOOL
+Rule 85    type -> CHAR
+Rule 86    CTE_VAR -> ID
+Rule 87    CTE_VAR -> CTE_INT
+Rule 88    CTE_VAR -> CTE_FLOAT
+Rule 89    CTE_VAR -> CTE_STRING
+Rule 90    CTE_VAR -> CTE_BOOL
+Rule 91    condition -> express condition1
+Rule 92    condition1 -> andor express
+Rule 93    condition1 -> empty
+Rule 94    andor -> AND
+Rule 95    andor -> OR
+Rule 96    express -> exp express1
+Rule 97    express1 -> LESSTHAN exp
+Rule 98    express1 -> GREATERTHAN exp
+Rule 99    express1 -> EQUALS exp
+Rule 100   express1 -> NOTEQUAL exp
+Rule 101   express1 -> empty
+Rule 102   exp -> term exp1
+Rule 103   exp1 -> exp2 term
+Rule 104   exp1 -> empty
+Rule 105   exp2 -> PLUS
+Rule 106   exp2 -> MINUS
+Rule 107   term -> factor term1
+Rule 108   term1 -> term2 term
+Rule 109   term1 -> empty
+Rule 110   term2 -> MULTI
+Rule 111   term2 -> DIVI
+Rule 112   factor -> express
+Rule 113   factor -> factor1
+Rule 114   factor1 -> factor2 CTE_VAR
+Rule 115   factor2 -> PLUS
+Rule 116   factor2 -> MINUS
+Rule 117   factor2 -> empty
+Rule 118   empty -> <empty>
+
+Terminals, with rules where they appear
+
+AND                  : 94
+ASSIGN               : 16 17 53
+BACKWARD             : 71
+CALL                 : 56
+CIN                  : 61
+COMMA                : 18 20 32 59 66 70 71 72 73 75
+COUT                 : 68
+CTE_CHAR             : 76
+CTE_FLOAT            : 88
+CTE_INT              : 16 65 69 75 75 87
+DELAY                : 69
+DISPLAY              : 76
+DISTANCE             : 77
+DIVI                 : 111
+ELSE                 : 51
+EQUALS               : 99
+FIN                  : 1
+FORWARD              : 70
+FUNCDEF              : 6 24
+GREATERTHAN          : 98
+ID                   : 16 17 24 31 53 56 64 66 86
+IF                   : 50
+LBRACKET             : 16 54 65
+LCURLY               : 6 24
+LESSTHAN             : 97
+LIGHTS               : 75
+LPAREN               : 6 24 50 56 64 65 68 69 70 71 72 73 74 75 76 77 78
+MAIN                 : 6
+MINUS                : 106 116
+MULTI                : 110
+NOTEQUAL             : 100
+OR                   : 95
+PLUS                 : 105 115
+PROGRAM              : 1
+RBRACKET             : 16 54 65
+RCURLY               : 6 24
+RETURN               : 79
+RPAREN               : 6 24 50 56 64 65 68 69 70 71 72 73 74 75 76 77 78
+SEMICOLON            : 1 13 24 50 53 56 61 68 69 70 71 72 73 74 75 76 77 78 79
+SERVO                : 74
+STOP                 : 78
+TURNLEFT             : 72
+TURNRIGHT            : 73
+VARDEF               : 13
+error                : 
+
+Nonterminals, with rules where they appear
+
+ARR                  : 16 18
+BOOL                 : 84
+CHAR                 : 85
+CTE_BOOL             : 90
+CTE_STRING           : 89
+CTE_VAR              : 17 20 114
+FLOAT                : 83
+INT                  : 82
+andor                : 92
+assign               : 35
+assign1              : 53
+backward             : 41
+block                : 9 50 51 80
+call                 : 36
+call1                : 56 59
+call2                : 57
+cin                  : 37
+cin1                 : 61
+cin2                 : 62
+cin3                 : 63
+cin4                 : 65 66
+cond                 : 34
+condition            : 
+condition1           : 91
+cout                 : 38
+delay                : 39
+display              : 46
+distance             : 47
+else                 : 50
+empty                : 3 5 8 10 12 19 21 23 26 28 30 33 52 55 58 60 67 81 93 101 104 109 117
+exp                  : 96 97 98 99 100
+exp1                 : 102
+exp2                 : 103
+express              : 50 53 54 57 68 70 70 71 71 72 72 73 73 74 79 91 92 112
+express1             : 96
+factor               : 107
+factor1              : 113
+factor2              : 114
+forward              : 40
+funcs                : 22
+funcs1               : 24
+funcs2               : 24
+funcs3               : 24
+funcsblock           : 4 22
+lights               : 45
+main                 : 1
+main1                : 6
+main2                : 6
+params               : 25 32
+params1              : 31
+program              : 0
+program1             : 1
+program2             : 1
+return               : 49
+servo                : 44
+statute              : 29 80
+stop                 : 48
+term                 : 102 103 108
+term1                : 107
+term2                : 108
+turnleft             : 42
+turnright            : 43
+type                 : 13 24 31
+vars                 : 11
+vars1                : 13
+vars2                : 14
+vars3                : 15
+vars4                : 16 18
+vars5                : 17 20
+varsblock            : 2 7 11 27
+
