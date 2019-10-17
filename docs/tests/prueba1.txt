@@ -1,16 +1,21 @@
 program
 
-vardef int a, b, c = 3;
-vardef float wan = 98.2;
+vardef int ac = 3;
+vardef float wan = 982;
 
 funcdef int nothing(){
-    vardec char z = 'a';
-}
+    vardef int k = 1;}
 
-funcdef main () { 
+funcdef void nepe() { 
     a = a + 1;
     forward(1, 10);
-    out<<(a);
+}
+
+main(){
+	vardef int hola = 1;
+	vardef char jol = 'a';
+	vardef string  kek = "lol";
+distance();
 }
 
 fin;
