@@ -13,6 +13,66 @@ import sys
 
 compileFlag = True
 
+curScope = 'global'
+funcTable = {}
+tempVars = {}
+tempVars = {'sub' : {}} 
+tempType = ''
+cont = 0
+
+sem_cube = {'int' : 	{ 'int' : { '+': 'int',
+                                    '-': 'int',
+                                    '/': 'float',
+                                    '*': 'int',
+                                    '%': 'int',
+                                    '<': 'bool',
+                                    '>': 'bool',
+                                    '<=': 'bool',
+                                    '>=': 'bool',
+                                    '!=': 'bool',
+                                    '==': 'bool',
+                                    '=': 'int'},
+                          'float': {'+': 'float',
+                                    '-': 'float',
+                                    '/': 'float',
+                                    '*': 'float',
+                                    '%': 'float',
+                                    '<': 'bool',
+                                    '>': 'bool',
+                                    '<=': 'bool',
+                                    '>=': 'bool',
+                                    '!=': 'bool',
+                                    '==': 'bool',
+                                    '=': 'int'}},
+                 'float' : {'int' : {'+': 'float',
+                                    '-': 'float',
+                                    '/': 'float',
+                                    '*': 'float',
+                                    '%': 'float',
+                                    '<': 'bool',
+                                    '>': 'bool',
+                                    '<=': 'bool',
+                                    '>=': 'bool',
+                                    '!=': 'bool',
+                                    '==': 'bool',
+                                     '=': 'float'},
+                          'float': {'+': 'float',
+                                    '-': 'float',
+                                    '/': 'float',
+                                    '*': 'float',
+                                    '%': 'float',
+                                    '<': 'bool',
+                                    '>': 'bool',
+                                    '<=': 'bool',
+                                    '>=': 'bool',
+                                    '!=': 'bool',
+                                    '==': 'bool',
+                                    '=': 'float'}},
+                 'bool' : {'bool' : {'and' : 'bool',
+                                     'or' : 'bool',
+                                     '=' : 'bool'}}}
+
+
 
 reserved = {
     'program'   : 'PROGRAM',
@@ -39,7 +99,7 @@ reserved = {
     'int'       : 'INT',
     'float'     : 'FLOAT',
     'char'      : 'CHAR',
-    'bool'      : 'BOOL',
+    'bool'      : 'bool',
     'void'      : 'VOID',
     'string'    : 'STRING'
 }
@@ -73,8 +133,6 @@ def t_error(t):
     global compileFlag
     compileFlag = False
     print("Caracter ilegal '%s'" % t.value[0])
-    ex = t.lexer.lexstate()
-    print(ex)
     t.lexer.skip(1)
 
 def t_CTE_ARR(t):
@@ -98,47 +156,64 @@ def t_newline(t):
 
 lexer = lex.lex()
 
-
-
 def p_program(p):
-    'program : PROGRAM varsblock funcsblock main FIN SEMICOLON'
+    'program : PROGRAM globalvarsblock funcsblock main FIN SEMICOLON'
 
 def p_main(p):
-    'main : MAIN LPAREN RPAREN LCURLY varsblock block RCURLY'
-    print("notagain")
+    'main : MAIN LPAREN RPAREN LCURLY main2'
+    global curScope
+    global tempVars
+    curScope = 'main'
+    print(curScope, "in main")
+    funcTable[curScope] = {'type' : 'void', 'sub' : {}}
+    funcTable[curScope]['sub']= tempVars
+    tempVars = {'sub' : {}} 
+    
+
+def p_main2(p):
+    'main2 : varsblock block RCURLY'
+    print(curScope, "in main")
+    
+
+def p_funcsblock(p):
+    '''funcsblock : funcs funcsblock 
+                  | empty'''
+    
+
+def p_funcs(p):
+    'funcs : FUNCDEF choosetype ID LPAREN params RPAREN LCURLY varsblock block RCURLY'''
+    global curScope
+    global tempVars
+    curScope = p[3]
+    funcTable[curScope] = {'type' : 'void', 'sub' : {}}
+    funcTable[curScope]['sub']= tempVars
+    tempVars = {'sub' : {}} 
+
+def p_globalvarsblock(p):
+    '''globalvarsblock : vars varsblock 
+                 | empty'''
+    global curScope
+    global tempVars
+    funcTable[curScope] = {'type' : 'void', 'sub' : {}}
+    funcTable[curScope]['sub']= tempVars
+    tempVars = {'sub' : {}} 
 
 def p_varsblock(p):
     '''varsblock : vars varsblock 
                  | empty'''
 
 def p_vars(p):
-    'vars : VARDEF type vars1 SEMICOLON'
+    'vars : VARDEF type ID vars1 SEMICOLON'
+    global tempVars
+    global cont
+    cont = cont +1
+    print("im in var", cont)
+    tempVars['sub'][p[3]] = {'type' : tempType}
+    print(tempVars)
 
 def p_vars1(p):
-    '''vars1 : vars2 
-             | vars3'''
-
-def p_vars2(p):
-    'vars2 : LBRACKET CTE_INT RBRACKET ID ASSIGN CTE_ARR vars4'
-
-def p_vars3(p):
-    'vars3 : ID ASSIGN constant vars5'
-
-def p_vars4(p):
-    '''vars4 : CTE_ARR COMMA vars4 
+    '''vars1 : LBRACKET CTE_INT RBRACKET 
              | empty'''
-
-def p_vars5(p):
-    '''vars5 : constant COMMA vars5 
-             | empty'''
-
-def p_funcsblock(p):
-    '''funcsblock : funcs funcsblock 
-                  | empty'''
-    print("imfall2")
-
-def p_funcs(p):
-    'funcs : FUNCDEF choosetype ID LPAREN params RPAREN LCURLY varsblock block RCURLY'''
 
 def p_choosetype(p):
     '''choosetype : type
@@ -255,16 +330,18 @@ def p_return(p):
 def p_type(p):
     '''type : INT
             | FLOAT
-            | BOOL
+            | bool
             | CHAR
             | STRING'''
+    global tempType
+    tempType = p[1]
         
 def p_constant(p):
     '''constant : ID
-               | CTE_INT
-               | CTE_FLOAT
-               | CTE_STRING
-               | CTE_CHAR'''
+                | CTE_INT
+                | CTE_FLOAT
+                | CTE_STRING
+                | CTE_CHAR'''
 
 def p_express(p):
     'express : compare express1'
@@ -341,6 +418,8 @@ parser.parse(nextline)
 
 if compileFlag == True:
     print("Compila!!!")
+    for x in funcTable.items():
+        print(x)
 
 else:
     print("No compila")

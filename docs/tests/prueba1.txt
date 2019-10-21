@@ -1,20 +1,33 @@
 program
 
-vardef int ac = 3;
-vardef float wan = 982;
+vardef bool globalA;
+vardef bool globalB;
 
-funcdef int nothing(){
-    vardef int k = 1;}
+funcdef int funcA(){
+    vardef int tempA;
+    vardef int tempA1;
+}
 
-funcdef void nepe() { 
+funcdef float funcB() { 
+    vardef float tempB;
+    vardef float tempB2;
+    tempA = 2 + 1;
+    tempB = 4 / 2;
+    cout(tempA);
+    forward(1, 10);
+}
+
+funcdef float funcC() { 
+    vardef float tempC;
+    vardef float tempC2;
     a = a + 1;
     forward(1, 10);
 }
 
 main(){
-	vardef int hola = 1;
-	vardef char jol = 'a';
-	vardef string  kek = "lol";
+	vardef int hola;
+	vardef char jol;
+	vardef string  kek;
 distance();
 }
 
