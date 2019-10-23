@@ -70,6 +70,7 @@ semCube = {'int' : {   'int' :     {'+': 'int',
                                     '||' : 'bool',
                                     '=' : 'bool'}}}
 
+print("result", semCube['int']['float']['+'])
 def newQuad(ope, a, b, res):
     global contQuads
     quads.append([ope, a, b, res])
@@ -105,7 +106,7 @@ reserved = {
     'string'    : 'STRING'
 }
 
-tokens = ['ASSIGN', 'PLUS', 'MINUS', 'MULTI', 'DIVI', 'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY', 'EQUALS', 'NOTEQUALS', 'LESSTHAN', 'GREATERTHAN', 'NOTEQUAL', 'SEMICOLON', 'COMMA', 'AND', 'OR', 'CTE_STRING', 'CTE_INT', 'CTE_FLOAT', 'CTE_CHAR', 'CTE_ARR', 'ID']  + list(reserved.values())
+tokens = ['ASSIGN', 'PLUS', 'MINUS', 'MULTI', 'DIVI', 'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY', 'EQUALS', 'LESSTHAN', 'GREATERTHAN', 'NOTEQUALS', 'SEMICOLON', 'COMMA', 'AND', 'OR', 'NOT', 'CTE_STRING', 'CTE_INT', 'CTE_FLOAT', 'CTE_CHAR', 'CTE_ARR', 'ID']  + list(reserved.values())
 t_ASSIGN    = r'='
 t_PLUS      = r'\+'
 t_MINUS     = r'-'
@@ -118,14 +119,14 @@ t_RBRACKET  = r'\]'
 t_LCURLY    = r'\{'
 t_RCURLY    = r'\}'
 t_EQUALS    = r'=='
-t_NOTEQUALS = r'!='
+t_NOTEQUALS = r'<>'
 t_LESSTHAN  = r'<'
 t_GREATERTHAN = r'>'
-t_NOTEQUAL  = r'<>'
 t_SEMICOLON = r';'
 t_COMMA     = r','
 t_AND       = r'\&\&'
 t_OR        = r'\|\|'
+t_NOT       = r'!='
 t_CTE_INT   = r'[0-9]+'
 t_CTE_CHAR  = r'\'[a-zA-Z0-9]\''
 t_CTE_STRING = r'\"[a-zA-Z0-9]+\"'
@@ -166,7 +167,6 @@ def p_main(p):
     global curScope
     global tempVars
     curScope = 'main'
-    print(curScope, "in main")
     funcTable[curScope] = {'type' : 'void', 'varsTable' : {}}
     funcTable[curScope]['varsTable']= tempVars['varsTable']
     tempVars = {} 
@@ -174,7 +174,6 @@ def p_main(p):
 
 def p_main2(p):
     'main2 : varsblock block RCURLY'
-    print(curScope, "in main")
     
 
 def p_funcsblock(p):
@@ -209,9 +208,7 @@ def p_vars(p):
     global tempVars
     global cont
     cont = cont +1
-    print("im in var", cont)
     tempVars['varsTable'][p[3]] = {'type' : tempType}
-    print(tempVars)
 
 def p_vars1(p):
     '''vars1 : LBRACKET CTE_INT RBRACKET 
@@ -261,7 +258,6 @@ def p_cond(p):
 def p_assign(p):
     '''assign :  ID assign1 ASSIGN express SEMICOLON'''
     newQuad('=', p[4], '', p[1])
-    print("P3 =================", p[4])
 
 def p_assign1(p):
     '''assign1 : LBRACKET express RBRACKET 
@@ -349,7 +345,7 @@ def p_constant(p):
 
 def p_express(p):
     'express : express1 relational express2'
-
+    
 def p_express1(p):
     '''express1 : NOTEQUALS
                 | empty'''
@@ -361,10 +357,11 @@ def p_express2(p):
 def p_andor(p):
     '''andor : AND
              | OR'''
+    
 
 def p_relational(p):
     '''relational : exp relational1
-                  | NOTEQUALS'''
+                  | NOT'''
 
 def p_relational1(p):
     '''relational1 : compare exp
@@ -374,7 +371,9 @@ def p_compare(p):
     '''compare  : LESSTHAN
                 | GREATERTHAN
                 | EQUALS
-                | NOTEQUAL'''
+                | NOTEQUALS'''
+    for x in p:
+        print("HERE =====",x)
 
 def p_exp(p):
     'exp : term exp1'
@@ -408,11 +407,9 @@ def p_empty(p):
     pass
 
 def p_error(p):
-    print ("Illegal tokennn", p)
+    print ("Illegal token", p)
     global compileFlag 
     compileFlag = False
-    ex = p.lexer.lexstateinfo
-    print(ex)
 
 parser = yacc.yacc()
 

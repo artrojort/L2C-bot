@@ -91,13 +91,13 @@ Rule 80    express2 -> empty
 Rule 81    andor -> AND
 Rule 82    andor -> OR
 Rule 83    relational -> exp relational1
-Rule 84    relational -> NOTEQUALS
+Rule 84    relational -> NOT
 Rule 85    relational1 -> compare exp
 Rule 86    relational1 -> empty
 Rule 87    compare -> LESSTHAN
 Rule 88    compare -> GREATERTHAN
 Rule 89    compare -> EQUALS
-Rule 90    compare -> NOTEQUAL
+Rule 90    compare -> NOTEQUALS
 Rule 91    exp -> term exp1
 Rule 92    exp1 -> plusminus exp
 Rule 93    exp1 -> empty
@@ -149,8 +149,8 @@ LPAREN               : 2 6 38 42 50 51 54 55 56 57 58 59 60 61 62 63 64 101
 MAIN                 : 2
 MINUS                : 95
 MULTI                : 99
-NOTEQUAL             : 90
-NOTEQUALS            : 77 84
+NOT                  : 84
+NOTEQUALS            : 77 90
 OR                   : 82
 PLUS                 : 94
 PROGRAM              : 1
@@ -1418,16 +1418,14 @@ state 82
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 110
     express1                       shift and go to state 111
@@ -1517,16 +1515,14 @@ state 89
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 116
     express1                       shift and go to state 111
@@ -1547,16 +1543,14 @@ state 91
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 118
     express1                       shift and go to state 111
@@ -1619,16 +1613,14 @@ state 99
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 123
     express1                       shift and go to state 111
@@ -1649,16 +1641,14 @@ state 101
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 125
     express1                       shift and go to state 111
@@ -1672,16 +1662,14 @@ state 102
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 126
     express1                       shift and go to state 111
@@ -1695,16 +1683,14 @@ state 103
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 127
     express1                       shift and go to state 111
@@ -1718,16 +1704,14 @@ state 104
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 128
     express1                       shift and go to state 111
@@ -1741,16 +1725,14 @@ state 105
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 129
     express1                       shift and go to state 111
@@ -1795,7 +1777,7 @@ state 111
 
     (76) express -> express1 . relational express2
     (83) relational -> . exp relational1
-    (84) relational -> . NOTEQUALS
+    (84) relational -> . NOT
     (91) exp -> . term exp1
     (96) term -> . factor term1
     (101) factor -> . LPAREN express RPAREN
@@ -1806,7 +1788,7 @@ state 111
     (74) constant -> . CTE_STRING
     (75) constant -> . CTE_CHAR
 
-    NOTEQUALS       shift and go to state 137
+    NOT             shift and go to state 137
     LPAREN          shift and go to state 140
     ID              shift and go to state 142
     CTE_INT         shift and go to state 143
@@ -1824,7 +1806,7 @@ state 112
 
     (77) express1 -> NOTEQUALS .
 
-    NOTEQUALS       reduce using rule 77 (express1 -> NOTEQUALS .)
+    NOT             reduce using rule 77 (express1 -> NOTEQUALS .)
     LPAREN          reduce using rule 77 (express1 -> NOTEQUALS .)
     ID              reduce using rule 77 (express1 -> NOTEQUALS .)
     CTE_INT         reduce using rule 77 (express1 -> NOTEQUALS .)
@@ -1837,7 +1819,7 @@ state 113
 
     (78) express1 -> empty .
 
-    NOTEQUALS       reduce using rule 78 (express1 -> empty .)
+    NOT             reduce using rule 78 (express1 -> empty .)
     LPAREN          reduce using rule 78 (express1 -> empty .)
     ID              reduce using rule 78 (express1 -> empty .)
     CTE_INT         reduce using rule 78 (express1 -> empty .)
@@ -1945,16 +1927,14 @@ state 117
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 150
     express1                       shift and go to state 111
@@ -1977,8 +1957,8 @@ state 119
     (77) express1 -> . NOTEQUALS
     (78) express1 -> . empty
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     RPAREN          reduce using rule 103 (empty -> .)
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
@@ -1986,8 +1966,6 @@ state 119
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
     NOTEQUALS       shift and go to state 112
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     call1                          shift and go to state 152
     express                        shift and go to state 153
@@ -2159,13 +2137,13 @@ state 136
     (87) compare -> . LESSTHAN
     (88) compare -> . GREATERTHAN
     (89) compare -> . EQUALS
-    (90) compare -> . NOTEQUAL
+    (90) compare -> . NOTEQUALS
     (103) empty -> .
 
     LESSTHAN        shift and go to state 176
     GREATERTHAN     shift and go to state 177
     EQUALS          shift and go to state 178
-    NOTEQUAL        shift and go to state 179
+    NOTEQUALS       shift and go to state 179
     AND             reduce using rule 103 (empty -> .)
     OR              reduce using rule 103 (empty -> .)
     SEMICOLON       reduce using rule 103 (empty -> .)
@@ -2179,14 +2157,14 @@ state 136
 
 state 137
 
-    (84) relational -> NOTEQUALS .
+    (84) relational -> NOT .
 
-    AND             reduce using rule 84 (relational -> NOTEQUALS .)
-    OR              reduce using rule 84 (relational -> NOTEQUALS .)
-    SEMICOLON       reduce using rule 84 (relational -> NOTEQUALS .)
-    RPAREN          reduce using rule 84 (relational -> NOTEQUALS .)
-    RBRACKET        reduce using rule 84 (relational -> NOTEQUALS .)
-    COMMA           reduce using rule 84 (relational -> NOTEQUALS .)
+    AND             reduce using rule 84 (relational -> NOT .)
+    OR              reduce using rule 84 (relational -> NOT .)
+    SEMICOLON       reduce using rule 84 (relational -> NOT .)
+    RPAREN          reduce using rule 84 (relational -> NOT .)
+    RBRACKET        reduce using rule 84 (relational -> NOT .)
+    COMMA           reduce using rule 84 (relational -> NOT .)
 
 
 state 138
@@ -2203,7 +2181,7 @@ state 138
     LESSTHAN        reduce using rule 103 (empty -> .)
     GREATERTHAN     reduce using rule 103 (empty -> .)
     EQUALS          reduce using rule 103 (empty -> .)
-    NOTEQUAL        reduce using rule 103 (empty -> .)
+    NOTEQUALS       reduce using rule 103 (empty -> .)
     AND             reduce using rule 103 (empty -> .)
     OR              reduce using rule 103 (empty -> .)
     SEMICOLON       reduce using rule 103 (empty -> .)
@@ -2231,7 +2209,7 @@ state 139
     LESSTHAN        reduce using rule 103 (empty -> .)
     GREATERTHAN     reduce using rule 103 (empty -> .)
     EQUALS          reduce using rule 103 (empty -> .)
-    NOTEQUAL        reduce using rule 103 (empty -> .)
+    NOTEQUALS       reduce using rule 103 (empty -> .)
     AND             reduce using rule 103 (empty -> .)
     OR              reduce using rule 103 (empty -> .)
     SEMICOLON       reduce using rule 103 (empty -> .)
@@ -2251,16 +2229,14 @@ state 140
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 190
     express1                       shift and go to state 111
@@ -2277,7 +2253,7 @@ state 141
     LESSTHAN        reduce using rule 102 (factor -> constant .)
     GREATERTHAN     reduce using rule 102 (factor -> constant .)
     EQUALS          reduce using rule 102 (factor -> constant .)
-    NOTEQUAL        reduce using rule 102 (factor -> constant .)
+    NOTEQUALS       reduce using rule 102 (factor -> constant .)
     AND             reduce using rule 102 (factor -> constant .)
     OR              reduce using rule 102 (factor -> constant .)
     SEMICOLON       reduce using rule 102 (factor -> constant .)
@@ -2297,7 +2273,7 @@ state 142
     LESSTHAN        reduce using rule 71 (constant -> ID .)
     GREATERTHAN     reduce using rule 71 (constant -> ID .)
     EQUALS          reduce using rule 71 (constant -> ID .)
-    NOTEQUAL        reduce using rule 71 (constant -> ID .)
+    NOTEQUALS       reduce using rule 71 (constant -> ID .)
     AND             reduce using rule 71 (constant -> ID .)
     OR              reduce using rule 71 (constant -> ID .)
     SEMICOLON       reduce using rule 71 (constant -> ID .)
@@ -2317,7 +2293,7 @@ state 143
     LESSTHAN        reduce using rule 72 (constant -> CTE_INT .)
     GREATERTHAN     reduce using rule 72 (constant -> CTE_INT .)
     EQUALS          reduce using rule 72 (constant -> CTE_INT .)
-    NOTEQUAL        reduce using rule 72 (constant -> CTE_INT .)
+    NOTEQUALS       reduce using rule 72 (constant -> CTE_INT .)
     AND             reduce using rule 72 (constant -> CTE_INT .)
     OR              reduce using rule 72 (constant -> CTE_INT .)
     SEMICOLON       reduce using rule 72 (constant -> CTE_INT .)
@@ -2337,7 +2313,7 @@ state 144
     LESSTHAN        reduce using rule 73 (constant -> CTE_FLOAT .)
     GREATERTHAN     reduce using rule 73 (constant -> CTE_FLOAT .)
     EQUALS          reduce using rule 73 (constant -> CTE_FLOAT .)
-    NOTEQUAL        reduce using rule 73 (constant -> CTE_FLOAT .)
+    NOTEQUALS       reduce using rule 73 (constant -> CTE_FLOAT .)
     AND             reduce using rule 73 (constant -> CTE_FLOAT .)
     OR              reduce using rule 73 (constant -> CTE_FLOAT .)
     SEMICOLON       reduce using rule 73 (constant -> CTE_FLOAT .)
@@ -2357,7 +2333,7 @@ state 145
     LESSTHAN        reduce using rule 74 (constant -> CTE_STRING .)
     GREATERTHAN     reduce using rule 74 (constant -> CTE_STRING .)
     EQUALS          reduce using rule 74 (constant -> CTE_STRING .)
-    NOTEQUAL        reduce using rule 74 (constant -> CTE_STRING .)
+    NOTEQUALS       reduce using rule 74 (constant -> CTE_STRING .)
     AND             reduce using rule 74 (constant -> CTE_STRING .)
     OR              reduce using rule 74 (constant -> CTE_STRING .)
     SEMICOLON       reduce using rule 74 (constant -> CTE_STRING .)
@@ -2377,7 +2353,7 @@ state 146
     LESSTHAN        reduce using rule 75 (constant -> CTE_CHAR .)
     GREATERTHAN     reduce using rule 75 (constant -> CTE_CHAR .)
     EQUALS          reduce using rule 75 (constant -> CTE_CHAR .)
-    NOTEQUAL        reduce using rule 75 (constant -> CTE_CHAR .)
+    NOTEQUALS       reduce using rule 75 (constant -> CTE_CHAR .)
     AND             reduce using rule 75 (constant -> CTE_CHAR .)
     OR              reduce using rule 75 (constant -> CTE_CHAR .)
     SEMICOLON       reduce using rule 75 (constant -> CTE_CHAR .)
@@ -2453,7 +2429,7 @@ state 154
     (78) express1 -> empty .
 
     RPAREN          reduce using rule 44 (call1 -> empty .)
-    NOTEQUALS       reduce using rule 78 (express1 -> empty .)
+    NOT             reduce using rule 78 (express1 -> empty .)
     LPAREN          reduce using rule 78 (express1 -> empty .)
     ID              reduce using rule 78 (express1 -> empty .)
     CTE_INT         reduce using rule 78 (express1 -> empty .)
@@ -2498,16 +2474,14 @@ state 159
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 202
     express1                       shift and go to state 111
@@ -2521,16 +2495,14 @@ state 160
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 203
     express1                       shift and go to state 111
@@ -2544,16 +2516,14 @@ state 161
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 204
     express1                       shift and go to state 111
@@ -2567,16 +2537,14 @@ state 162
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 205
     express1                       shift and go to state 111
@@ -2667,16 +2635,14 @@ state 169
     (78) express1 -> . empty
     (103) empty -> .
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     NOTEQUALS       shift and go to state 112
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
     CTE_FLOAT       reduce using rule 103 (empty -> .)
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     express                        shift and go to state 209
     express1                       shift and go to state 111
@@ -2697,6 +2663,7 @@ state 171
     (81) andor -> AND .
 
     NOTEQUALS       reduce using rule 81 (andor -> AND .)
+    NOT             reduce using rule 81 (andor -> AND .)
     LPAREN          reduce using rule 81 (andor -> AND .)
     ID              reduce using rule 81 (andor -> AND .)
     CTE_INT         reduce using rule 81 (andor -> AND .)
@@ -2710,6 +2677,7 @@ state 172
     (82) andor -> OR .
 
     NOTEQUALS       reduce using rule 82 (andor -> OR .)
+    NOT             reduce using rule 82 (andor -> OR .)
     LPAREN          reduce using rule 82 (andor -> OR .)
     ID              reduce using rule 82 (andor -> OR .)
     CTE_INT         reduce using rule 82 (andor -> OR .)
@@ -2805,14 +2773,14 @@ state 178
 
 state 179
 
-    (90) compare -> NOTEQUAL .
+    (90) compare -> NOTEQUALS .
 
-    LPAREN          reduce using rule 90 (compare -> NOTEQUAL .)
-    ID              reduce using rule 90 (compare -> NOTEQUAL .)
-    CTE_INT         reduce using rule 90 (compare -> NOTEQUAL .)
-    CTE_FLOAT       reduce using rule 90 (compare -> NOTEQUAL .)
-    CTE_STRING      reduce using rule 90 (compare -> NOTEQUAL .)
-    CTE_CHAR        reduce using rule 90 (compare -> NOTEQUAL .)
+    LPAREN          reduce using rule 90 (compare -> NOTEQUALS .)
+    ID              reduce using rule 90 (compare -> NOTEQUALS .)
+    CTE_INT         reduce using rule 90 (compare -> NOTEQUALS .)
+    CTE_FLOAT       reduce using rule 90 (compare -> NOTEQUALS .)
+    CTE_STRING      reduce using rule 90 (compare -> NOTEQUALS .)
+    CTE_CHAR        reduce using rule 90 (compare -> NOTEQUALS .)
 
 
 state 180
@@ -2822,7 +2790,7 @@ state 180
     LESSTHAN        reduce using rule 91 (exp -> term exp1 .)
     GREATERTHAN     reduce using rule 91 (exp -> term exp1 .)
     EQUALS          reduce using rule 91 (exp -> term exp1 .)
-    NOTEQUAL        reduce using rule 91 (exp -> term exp1 .)
+    NOTEQUALS       reduce using rule 91 (exp -> term exp1 .)
     AND             reduce using rule 91 (exp -> term exp1 .)
     OR              reduce using rule 91 (exp -> term exp1 .)
     SEMICOLON       reduce using rule 91 (exp -> term exp1 .)
@@ -2863,7 +2831,7 @@ state 182
     LESSTHAN        reduce using rule 93 (exp1 -> empty .)
     GREATERTHAN     reduce using rule 93 (exp1 -> empty .)
     EQUALS          reduce using rule 93 (exp1 -> empty .)
-    NOTEQUAL        reduce using rule 93 (exp1 -> empty .)
+    NOTEQUALS       reduce using rule 93 (exp1 -> empty .)
     AND             reduce using rule 93 (exp1 -> empty .)
     OR              reduce using rule 93 (exp1 -> empty .)
     SEMICOLON       reduce using rule 93 (exp1 -> empty .)
@@ -2905,7 +2873,7 @@ state 185
     LESSTHAN        reduce using rule 96 (term -> factor term1 .)
     GREATERTHAN     reduce using rule 96 (term -> factor term1 .)
     EQUALS          reduce using rule 96 (term -> factor term1 .)
-    NOTEQUAL        reduce using rule 96 (term -> factor term1 .)
+    NOTEQUALS       reduce using rule 96 (term -> factor term1 .)
     AND             reduce using rule 96 (term -> factor term1 .)
     OR              reduce using rule 96 (term -> factor term1 .)
     SEMICOLON       reduce using rule 96 (term -> factor term1 .)
@@ -2946,7 +2914,7 @@ state 187
     LESSTHAN        reduce using rule 98 (term1 -> empty .)
     GREATERTHAN     reduce using rule 98 (term1 -> empty .)
     EQUALS          reduce using rule 98 (term1 -> empty .)
-    NOTEQUAL        reduce using rule 98 (term1 -> empty .)
+    NOTEQUALS       reduce using rule 98 (term1 -> empty .)
     AND             reduce using rule 98 (term1 -> empty .)
     OR              reduce using rule 98 (term1 -> empty .)
     SEMICOLON       reduce using rule 98 (term1 -> empty .)
@@ -3125,8 +3093,8 @@ state 197
     (77) express1 -> . NOTEQUALS
     (78) express1 -> . empty
 
-  ! shift/reduce conflict for NOTEQUALS resolved as shift
     RPAREN          reduce using rule 103 (empty -> .)
+    NOT             reduce using rule 103 (empty -> .)
     LPAREN          reduce using rule 103 (empty -> .)
     ID              reduce using rule 103 (empty -> .)
     CTE_INT         reduce using rule 103 (empty -> .)
@@ -3134,8 +3102,6 @@ state 197
     CTE_STRING      reduce using rule 103 (empty -> .)
     CTE_CHAR        reduce using rule 103 (empty -> .)
     NOTEQUALS       shift and go to state 112
-
-  ! NOTEQUALS       [ reduce using rule 103 (empty -> .) ]
 
     call1                          shift and go to state 216
     express                        shift and go to state 153
@@ -3318,7 +3284,7 @@ state 211
     LESSTHAN        reduce using rule 92 (exp1 -> plusminus exp .)
     GREATERTHAN     reduce using rule 92 (exp1 -> plusminus exp .)
     EQUALS          reduce using rule 92 (exp1 -> plusminus exp .)
-    NOTEQUAL        reduce using rule 92 (exp1 -> plusminus exp .)
+    NOTEQUALS       reduce using rule 92 (exp1 -> plusminus exp .)
     AND             reduce using rule 92 (exp1 -> plusminus exp .)
     OR              reduce using rule 92 (exp1 -> plusminus exp .)
     SEMICOLON       reduce using rule 92 (exp1 -> plusminus exp .)
@@ -3336,7 +3302,7 @@ state 212
     LESSTHAN        reduce using rule 97 (term1 -> multidivi term .)
     GREATERTHAN     reduce using rule 97 (term1 -> multidivi term .)
     EQUALS          reduce using rule 97 (term1 -> multidivi term .)
-    NOTEQUAL        reduce using rule 97 (term1 -> multidivi term .)
+    NOTEQUALS       reduce using rule 97 (term1 -> multidivi term .)
     AND             reduce using rule 97 (term1 -> multidivi term .)
     OR              reduce using rule 97 (term1 -> multidivi term .)
     SEMICOLON       reduce using rule 97 (term1 -> multidivi term .)
@@ -3356,7 +3322,7 @@ state 213
     LESSTHAN        reduce using rule 101 (factor -> LPAREN express RPAREN .)
     GREATERTHAN     reduce using rule 101 (factor -> LPAREN express RPAREN .)
     EQUALS          reduce using rule 101 (factor -> LPAREN express RPAREN .)
-    NOTEQUAL        reduce using rule 101 (factor -> LPAREN express RPAREN .)
+    NOTEQUALS       reduce using rule 101 (factor -> LPAREN express RPAREN .)
     AND             reduce using rule 101 (factor -> LPAREN express RPAREN .)
     OR              reduce using rule 101 (factor -> LPAREN express RPAREN .)
     SEMICOLON       reduce using rule 101 (factor -> LPAREN express RPAREN .)
@@ -3629,24 +3595,3 @@ state 234
 
     RPAREN          reduce using rule 52 (cin4 -> COMMA ID cin4 .)
 
-WARNING: 
-WARNING: Conflicts:
-WARNING: 
-WARNING: shift/reduce conflict for NOTEQUALS in state 82 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 89 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 91 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 99 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 101 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 102 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 103 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 104 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 105 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 117 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 119 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 140 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 159 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 160 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 161 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 162 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 169 resolved as shift
-WARNING: shift/reduce conflict for NOTEQUALS in state 197 resolved as shift
