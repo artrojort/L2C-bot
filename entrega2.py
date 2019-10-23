@@ -68,9 +68,25 @@ sem_cube = {'int' : 	{ 'int' : { '+': 'int',
                                     '!=': 'bool',
                                     '==': 'bool',
                                     '=': 'float'}},
-                 'bool' : {'bool' : {'and' : 'bool',
-                                     'or' : 'bool',
-                                     '=' : 'bool'}}}
+                 'bool' : {'bool' : {'and': 'bool',
+                                     'or': 'bool',
+                                     '=' : 'bool'}},
+                'string' : {'string': {'+': 'string',
+                                       '=': 'string',
+                                       '==': 'bool',
+                                       '!=': 'bool'},
+                            'char':{'+': 'string',
+                                    '=': 'string',
+                                    '==': 'bool',
+                                    '!=': 'bool'}},
+                'char' : {'char' : {'+':'stirng',
+                                    '=': 'char',
+                                    '==': 'bool',
+                                    '!=': 'bool'},
+                            'string':{'+': 'string',
+                                      '=':'string',
+                                      '==': 'bool',
+                                      '!=': 'bool'}}}
 
 
 
