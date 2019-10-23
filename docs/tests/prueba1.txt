@@ -11,24 +11,28 @@ funcdef int funcA(){
 funcdef float funcB() { 
     vardef float tempB;
     vardef float tempB2;
-    tempA = 2 + 1;
-    tempB = 4 / 2;
-    cout(tempA);
+    tempA = 2;
+    tempB = 4;
+	tempA = 0;
+    if (tempA + 1 < 2 - tempB){
+        tempA = 1;
+    };
     forward(1, 10);
 }
 
 funcdef float funcC() { 
     vardef float tempC;
     vardef float tempC2;
-    a = a + 1;
+    a = 1;
     forward(1, 10);
 }
+
 
 main(){
 	vardef int hola;
 	vardef char jol;
 	vardef string  kek;
-distance();
+    distance();
 }
 
 fin;

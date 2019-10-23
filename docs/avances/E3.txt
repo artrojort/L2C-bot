@@ -1,0 +1,12 @@
+Lex/Parser funciona ya implementado con nuestro lenguaje propuesto.
+
+Se hizo la tabla de funciones y variables haciendo uso de diccionarios. 
+
+Implementación de cubo semántico. No se incluyeron chars ni strings aún estamos 
+probando como deben quedar implementados. 
+
+Se hicieron algunas modificaciones a la gramática para poder permitir un mejor
+parseo de los elementos:
+Main ya no se declara con un funcdef al inicio.
+Las variables ahora se deben declarar sin valor asignado y después se les puede hacer 
+una asignación. 
