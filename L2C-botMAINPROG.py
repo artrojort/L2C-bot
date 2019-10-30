@@ -12,11 +12,22 @@ import sys
 
 compileFlag = True
 
+#operadores
+popers = []
+#variables
+pconsts = []
+#tipo
+ptypes = []
+#cuadruplos
 quads = []
+#temporales
+tempindex = 0
+
 contQuads = 0
-curScope = 'global'
+scope = 'global'
 funcTable = {}
 tempVars = {'varsTable' : {}} 
+tempParams = {'params' : {}}
 tempType = ''
 cont = 0
 opeIdx = {
@@ -33,6 +44,21 @@ opeIdx = {
     '/'         : 10,
     'cout'      : 11
 }
+
+def isfloat(value):
+  try:
+    float(value)
+    return True
+  except ValueError:
+    return False
+
+def newTemp(varType):
+    global tempindex
+    x = "~t" + str(tempindex)
+    tempindex = tempindex + 1
+    pconsts.append(x)
+    ptypes.append(varType)
+    return x
 
 semCube = {'int' : {   'int' :     {'+': 'int',
                                     '-': 'int',
@@ -70,7 +96,21 @@ semCube = {'int' : {   'int' :     {'+': 'int',
                                     '||' : 'bool',
                                     '=' : 'bool'}}}
 
-print("result", semCube['int']['float']['+'])
+'''
+IGNORE
+'''
+def validateSemCube(a, b, ope):
+    try:
+        x = semCube[a][b][ope]
+        print(x)
+    except KeyError:
+        # Key is not present
+        print("operacion no valida")
+        pass
+
+#EJEMPLO
+validateSemCube('int', 'string', '+')
+
 def newQuad(ope, a, b, res):
     global contQuads
     quads.append([ope, a, b, res])
@@ -157,6 +197,7 @@ def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
 
+
 lexer = lex.lex()
 
 def p_program(p):
@@ -164,11 +205,12 @@ def p_program(p):
 
 def p_main(p):
     'main : MAIN LPAREN RPAREN LCURLY main2'
-    global curScope
+    global scope
     global tempVars
-    curScope = 'main'
-    funcTable[curScope] = {'type' : 'void', 'varsTable' : {}}
-    funcTable[curScope]['varsTable']= tempVars['varsTable']
+    scope = 'main'
+    funcTable[scope] = {'type' : 'void', 'params' : {}, 'varsTable' : {}}
+    funcTable[scope]['varsTable']= tempVars['varsTable']
+    funcTable[scope]['params']= tempParams['params']
     tempVars = {} 
     
 
@@ -182,22 +224,28 @@ def p_funcsblock(p):
     
 
 def p_funcs(p):
-    'funcs : FUNCDEF choosetype ID LPAREN params RPAREN LCURLY varsblock block RCURLY'''
-    global curScope
+    'funcs : FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock block RCURLY'''
+    global scope
     global tempVars
-    curScope = p[3]
-    funcTable[curScope] = {'type' : 'void', 'varsTable' : {}}
-    funcTable[curScope]['varsTable']= tempVars['varsTable']
+    global tempParams
+    scope = p[3]
+    funcTable[scope] = {'type' : tempType, 'params' : {}, 'varsTable' : {}}
+    funcTable[scope]['varsTable'] = tempVars['varsTable']
+    funcTable[scope]['params'] = tempParams['params']
     tempVars = {'varsTable' : {}} 
+    tempParams = {'params' : {}}
 
 def p_globalvarsblock(p):
     '''globalvarsblock : vars varsblock 
-                 | empty'''
-    global curScope
+                       | empty'''
+    global scope
     global tempVars
-    funcTable[curScope] = {'type' : 'void', 'varsTable' : {}}
-    funcTable[curScope]['varsTable']= tempVars['varsTable']
+    global tempParams
+    funcTable[scope] = {'type' : 'void', 'params' : {}, 'varsTable' : {}}
+    funcTable[scope]['varsTable'] = tempVars['varsTable']
+    funcTable[scope]['params'] = tempParams['params']
     tempVars = {'varsTable' : {}} 
+    tempParams = {'params' : {}} 
 
 def p_varsblock(p):
     '''varsblock : vars varsblock 
@@ -206,9 +254,8 @@ def p_varsblock(p):
 def p_vars(p):
     'vars : VARDEF type ID vars1 SEMICOLON'
     global tempVars
-    global cont
-    cont = cont +1
     tempVars['varsTable'][p[3]] = {'type' : tempType}
+    print (tempVars)
 
 def p_vars1(p):
     '''vars1 : LBRACKET CTE_INT RBRACKET 
@@ -218,13 +265,19 @@ def p_choosetype(p):
     '''choosetype : type
                   | VOID'''
 
-def p_params(p):
-    '''params : type ID params1
-              | empty'''
+def p_paramsblock(p):
+    '''paramsblock : params paramsblock
+                   | COMMA params paramsblock
+                   | empty'''
 
-def p_params1(p): 
-    '''params1 : COMMA type ID params1 
-               | empty'''
+def p_params(p):
+    '''params : type ID
+              | empty'''
+    global tempType
+    if len(p) > 2 : 
+        tempParams['params'][p[2]] = {'type' : tempType}
+    print(tempParams)
+
 
 def p_block(p):
     '''block : statute block
@@ -251,13 +304,18 @@ def p_statute(p):
 def p_cond(p):
     'cond : IF LPAREN express RPAREN LCURLY block RCURLY SEMICOLON'
 
-#def p_else(p):
-#    '''else : RCURLY ELSE LBRACKET block
-#            | empty'''
+def p_else(p):
+    '''else : RCURLY ELSE LBRACKET block
+            | empty'''
 
 def p_assign(p):
     '''assign :  ID assign1 ASSIGN express SEMICOLON'''
-    newQuad('=', p[4], '', p[1])
+    x = p[1]
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    print (rop, rtyp)
+    quads.append(['=', '', rop, x])
+
 
 def p_assign1(p):
     '''assign1 : LBRACKET express RBRACKET 
@@ -299,6 +357,12 @@ def p_delay(p):
 
 def p_forward(p):
     'forward : FORWARD LPAREN express COMMA express RPAREN SEMICOLON'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    lop = pconsts.pop()
+    ltyp = ptypes.pop()
+    print (rop, rtyp)
+    quads.append(['fwd', lop, rop, ''])
 
 def p_backward(p):
     'backward : BACKWARD LPAREN express COMMA express RPAREN SEMICOLON'
@@ -325,7 +389,11 @@ def p_stop(p):
     'stop : STOP LPAREN RPAREN SEMICOLON'
 
 def p_return(p):
-    'return : RETURN express SEMICOLON'
+    'return : RETURN LPAREN express RPAREN SEMICOLON'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    print (rop, rtyp)
+    quads.append(['ret', rop , '', ''])
 
 def p_type(p):
     '''type : INT
@@ -342,6 +410,26 @@ def p_constant(p):
                 | CTE_FLOAT
                 | CTE_STRING
                 | CTE_CHAR'''
+    
+    global scope
+    global pconsts
+    global ptypes
+    print(scope)
+    print(p[1])
+    pconsts.append(p[1])
+    if p[1] in tempVars['varsTable'].keys() :
+        ptypes.append(tempVars['varsTable'][p[1]]['type'])
+    elif p[1] == 'true' or p[1] == 'false' :
+        ptypes.append('bool')
+    elif p[1].isalpha() : 
+        ptypes.append('char')
+    elif p[1].isnumeric() :
+        ptypes.append('int')
+    elif isfloat(p[1]) :
+        ptypes.append('float')
+    else : 
+        sys.exit(p[1], ": variable not declared or of not supported type.")
+
 
 def p_express(p):
     'express : express1 relational express2'
@@ -357,7 +445,19 @@ def p_express2(p):
 def p_andor(p):
     '''andor : AND
              | OR'''
+    if len(popers) > 0 :
+        x = popers[-1]
+    else :
+        x = 'NULL'
     
+    if x == 'AND' or x == 'OR' :
+        rop = pconsts.pop()
+        rtyp = ptypes.pop()
+        lop = pconsts.pop()
+        ltyp = ptypes.pop()
+        ope = popers.pop()
+        temp = newTemp('int')
+        quads.append([ope, lop, rop, temp])
 
 def p_relational(p):
     '''relational : exp relational1
@@ -366,17 +466,42 @@ def p_relational(p):
 def p_relational1(p):
     '''relational1 : compare exp
                    | empty'''
+    if len(popers) > 0 :
+        x = popers[-1]
+    else :
+        x = 'NULL'
+
+    if x == '>' or x == '<' or x == '==' or x == '!=' :
+        rop = pconsts.pop()
+        rtyp = ptypes.pop()
+        lop = pconsts.pop()
+        ltyp = ptypes.pop()
+        ope = popers.pop()
+        temp = newTemp('int')
+        quads.append([ope, lop, rop, temp])
 
 def p_compare(p):
     '''compare  : LESSTHAN
                 | GREATERTHAN
                 | EQUALS
                 | NOTEQUALS'''
-    for x in p:
-        print("HERE =====",x)
+    popers.append(p[1])
 
 def p_exp(p):
     'exp : term exp1'
+    if len(popers) > 0 :
+        x = popers[-1]
+    else :
+        x = 'NULL'
+
+    if x == '+' or x == '-' :
+        rop = pconsts.pop()
+        rtyp = ptypes.pop()
+        lop = pconsts.pop()
+        ltyp = ptypes.pop()
+        ope = popers.pop()
+        temp = newTemp('int')
+        quads.append([ope, lop, rop, temp])
 
 def p_exp1(p):
     '''exp1 : plusminus exp 
@@ -385,9 +510,23 @@ def p_exp1(p):
 def p_plusminus(p):
     '''plusminus : PLUS 
                  | MINUS'''
+    popers.append(p[1])
 
 def p_term(p):
     'term :  factor term1'
+    if len(popers) > 0 :
+        x = popers[-1]
+    else :
+        x = 'NULL'
+    
+    if x == '*' or x == '/' :
+        rop = pconsts.pop()
+        rtyp = ptypes.pop()
+        lop = pconsts.pop()
+        ltyp = ptypes.pop()
+        ope = popers.pop()
+        temp = newTemp('int')
+        quads.append([ope, lop, rop, temp])
 
 def p_term1(p):
     '''term1 : multidivi term 
@@ -396,11 +535,11 @@ def p_term1(p):
 def p_multidivi(p):
     '''multidivi : MULTI 
                  | DIVI'''
+    popers.append(p[1])
 
 def p_factor(p): 
     '''factor : LPAREN express RPAREN
               | constant'''
-            
 
 def p_empty(p):
     'empty :'
@@ -420,13 +559,13 @@ fp.close()
 lexer.input(nextline)
 parser.parse(nextline)
 
-
-
 if compileFlag == True:
     print("Compila!!!")
     for x in funcTable.items():
         print(x)
-    print(quads)    
+    print(quads)
+    print(popers)
+    print(pconsts)
 
 else:
     print("No compila")
