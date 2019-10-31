@@ -12,9 +12,9 @@ funcdef int funcA(){
 }
 
 funcdef float funcB(float a, bool b) { 
-    vardef float a2;
+    vardef int a2;
     vardef float b2;
-    vardef float c2;
+    vardef char c2;
     b2 = 2;
     c2 = 4.2;
 	car = 0.0;
@@ -26,9 +26,9 @@ funcdef float funcB(float a, bool b) {
 }
 
 funcdef float funcC(char x, int z) { 
-    vardef float e;
-    vardef float f;
-    e = 1 * f;
+    vardef bool e;
+    vardef int f;
+    e = 1.02;
     forward(1, 10);
     return(3);
 }
@@ -37,7 +37,7 @@ funcdef float funcC(char x, int z) {
 main(){
 	vardef int hola;
 	vardef char jol;
-	vardef string  kek;
+	vardef bool  kek;
     hola = 1-1;
     distance();
 }

@@ -60,56 +60,76 @@ def newTemp(varType):
     ptypes.append(varType)
     return x
 
-semCube = {'int' : {   'int' :     {'+': 'int',
-                                    '-': 'int',
-                                    '/': 'float',
-                                    '*': 'int',
-                                    '<': 'bool',
-                                    '>': 'bool',
-                                    '==': 'bool',
-                                    '=': 'int'},
-                        'float':    {'+': 'float',
-                                    '-': 'float',
-                                    '/': 'float',
-                                    '*': 'float',
-                                    '<': 'bool',
-                                    '>': 'bool',
-                                    '==': 'bool',
-                                    '=': 'int'}},
-            'float' : { 'int' :     {'+': 'float',
-                                    '-': 'float',
-                                    '/': 'float',
-                                    '*': 'float',
-                                    '<': 'bool',
-                                    '>': 'bool',
-                                    '==': 'bool',
-                                     '=': 'float'},
-                        'float':    {'+': 'float',
-                                    '-': 'float',
-                                    '/': 'float',
-                                    '*': 'float',
-                                    '<': 'bool',
-                                    '>': 'bool',
-                                    '==': 'bool',
-                                    '=': 'float'}},
-            'bool' :   {'bool' : {  '&&' : 'bool',
-                                    '||' : 'bool',
-                                    '=' : 'bool'}}}
+semCube = {'int' : { 'int' : {  '+' : 'int',
+                                '-' : 'int',
+                                '/' : 'float',
+                                '*' : 'int',
+                                '<' : 'bool',
+                                '>' : 'bool',
+                                '==': 'bool',
+                                '!=': 'bool',
+                                '=' : 'int'
+                            },
+                    'float' : { '+' : 'float',
+                                '-' : 'float',
+                                '/' : 'float',
+                                '*' : 'float',
+                                '<' : 'bool',
+                                '>' : 'bool',
+                                '==': 'bool',
+                                '!=': 'bool',
+                                '=' : 'int'
+                            }
+                    },
+            'float' :{ 'int' : {'+' : 'float',
+                                '-' : 'float',
+                                '/' : 'float',
+                                '*' : 'float',
+                                '<' : 'bool',
+                                '>' : 'bool',
+                                '==': 'bool',
+                                '!=': 'bool',
+                                '=' : 'float'
+                                },
+                       'float':{'+': 'float',
+                                '-': 'float',
+                                '/': 'float',
+                                '*': 'float',
+                                '<': 'bool',
+                                '>': 'bool',
+                                '==': 'bool',
+                                '!=': 'bool',
+                                '=': 'float'
+                                }
+                    },
+            'bool' : {'bool' : {'&&': 'bool',
+                                '||': 'bool',
+                                '=' : 'bool',
+                                '==': 'bool',
+                                '!=': 'bool'
+                                }
+                    },
+            'char' : {'char' : { '==' : 'bool',
+                                 '!=' : 'bool'
+                                 }
+                    }
+        }
 
-'''
-IGNORE
-'''
-def validateSemCube(a, b, ope):
+
+def typeCheck(ope, a, b):
     try:
         x = semCube[a][b][ope]
-        print(x)
+        return x
     except KeyError:
         # Key is not present
-        print("operacion no valida")
-        pass
+        errormsg = "ERROR: " + a + ope +  b + " is not a valid operation."
+        print(errormsg)
+        #SYS EXIT DISABLED DURING DEBUGGING
+        #sys.exit(errormsg)
+        return False
 
 #EJEMPLO
-validateSemCube('int', 'string', '+')
+print(typeCheck('+', 'int', 'char'))
 
 def newQuad(ope, a, b, res):
     global contQuads
@@ -255,7 +275,6 @@ def p_vars(p):
     'vars : VARDEF type ID vars1 SEMICOLON'
     global tempVars
     tempVars['varsTable'][p[3]] = {'type' : tempType}
-    print (tempVars)
 
 def p_vars1(p):
     '''vars1 : LBRACKET CTE_INT RBRACKET 
@@ -276,7 +295,6 @@ def p_params(p):
     global tempType
     if len(p) > 2 : 
         tempParams['params'][p[2]] = {'type' : tempType}
-    print(tempParams)
 
 
 def p_block(p):
@@ -310,11 +328,15 @@ def p_else(p):
 
 def p_assign(p):
     '''assign :  ID assign1 ASSIGN express SEMICOLON'''
+    global tempVars
     x = p[1]
     rop = pconsts.pop()
     rtyp = ptypes.pop()
-    print (rop, rtyp)
-    quads.append(['=', '', rop, x])
+    if x in tempVars['varsTable'].keys() : 
+        idtyp = tempVars['varsTable'][x]['type']
+        restyp = typeCheck('=', idtyp, rtyp)
+        if restyp != False : 
+            quads.append(['=', '', rop, x])
 
 
 def p_assign1(p):
@@ -361,7 +383,6 @@ def p_forward(p):
     rtyp = ptypes.pop()
     lop = pconsts.pop()
     ltyp = ptypes.pop()
-    print (rop, rtyp)
     quads.append(['fwd', lop, rop, ''])
 
 def p_backward(p):
@@ -392,7 +413,6 @@ def p_return(p):
     'return : RETURN LPAREN express RPAREN SEMICOLON'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
-    print (rop, rtyp)
     quads.append(['ret', rop , '', ''])
 
 def p_type(p):
@@ -414,8 +434,6 @@ def p_constant(p):
     global scope
     global pconsts
     global ptypes
-    print(scope)
-    print(p[1])
     pconsts.append(p[1])
     if p[1] in tempVars['varsTable'].keys() :
         ptypes.append(tempVars['varsTable'][p[1]]['type'])
@@ -560,15 +578,15 @@ lexer.input(nextline)
 parser.parse(nextline)
 
 if compileFlag == True:
-    print("Compila!!!")
+    print("Compiled succesfully")
     for x in funcTable.items():
         print(x)
-    print(quads)
+    print(*quads, sep = "\n") 
     print(popers)
     print(pconsts)
 
 else:
-    print("No compila")
+    print("ERROR: Could not compile")
 
 
     
