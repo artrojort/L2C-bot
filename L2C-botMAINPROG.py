@@ -133,7 +133,7 @@ print(typeCheck('+', 'int', 'char'))
 
 def newQuad(ope, a, b, res):
     global contQuads
-    quads.append([ope, a, b, res])
+    quads.append({contQuads:[ope, a, b, res]})
     contQuads = contQuads + 1
 
 reserved = {
@@ -320,11 +320,23 @@ def p_statute(p):
                | return'''
 
 def p_cond(p):
-    'cond : IF LPAREN express RPAREN LCURLY block RCURLY SEMICOLON'
+    'cond : IF LPAREN express RPAREN LCURLY gotoif block RCURLY else'
+    
+
+def p_gotoif(p):
+    'gotoif : empty'
+    if ptypes[-1] == 'bool' : 
+        x = pconsts.pop()
+        xtyp = ptypes.pop()
+        newQuad('GOTOF', x, '', '')
 
 def p_else(p):
-    '''else : RCURLY ELSE LBRACKET block
-            | empty'''
+    '''else : ELSE LCURLY  gotoelse block RCURLY else
+            | SEMICOLON'''
+
+def p_gotoelse(p):
+    'gotoelse : empty'
+    newQuad('GOTO', '', '', '')
 
 def p_assign(p):
     '''assign :  ID assign1 ASSIGN express SEMICOLON'''
@@ -336,7 +348,7 @@ def p_assign(p):
         idtyp = tempVars['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
-            quads.append(['=', '', rop, x])
+            newQuad('=', '', rop, x)
 
 
 def p_assign1(p):
@@ -383,7 +395,7 @@ def p_forward(p):
     rtyp = ptypes.pop()
     lop = pconsts.pop()
     ltyp = ptypes.pop()
-    quads.append(['fwd', lop, rop, ''])
+    newQuad('fwd', lop, rop, '')
 
 def p_backward(p):
     'backward : BACKWARD LPAREN express COMMA express RPAREN SEMICOLON'
@@ -413,7 +425,7 @@ def p_return(p):
     'return : RETURN LPAREN express RPAREN SEMICOLON'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
-    quads.append(['ret', rop , '', ''])
+    newQuad('ret', rop , '', '')
 
 def p_type(p):
     '''type : INT
@@ -430,7 +442,6 @@ def p_constant(p):
                 | CTE_FLOAT
                 | CTE_STRING
                 | CTE_CHAR'''
-    
     global scope
     global pconsts
     global ptypes
@@ -474,8 +485,10 @@ def p_andor(p):
         lop = pconsts.pop()
         ltyp = ptypes.pop()
         ope = popers.pop()
-        temp = newTemp('int')
-        quads.append([ope, lop, rop, temp])
+        restyp = typeCheck(ope, ltyp, rtyp)
+        if restyp != False :
+            temp = newTemp(restyp)
+            newQuad(ope, lop, rop, temp)
 
 def p_relational(p):
     '''relational : exp relational1
@@ -495,8 +508,10 @@ def p_relational1(p):
         lop = pconsts.pop()
         ltyp = ptypes.pop()
         ope = popers.pop()
-        temp = newTemp('int')
-        quads.append([ope, lop, rop, temp])
+        restyp = typeCheck(ope, ltyp, rtyp)
+        if restyp != False :
+            temp = newTemp(restyp)
+            newQuad(ope, lop, rop, temp)
 
 def p_compare(p):
     '''compare  : LESSTHAN
@@ -518,8 +533,10 @@ def p_exp(p):
         lop = pconsts.pop()
         ltyp = ptypes.pop()
         ope = popers.pop()
-        temp = newTemp('int')
-        quads.append([ope, lop, rop, temp])
+        restyp = typeCheck(ope, ltyp, rtyp)
+        if restyp != False :
+            temp = newTemp(restyp)
+            newQuad(ope, lop, rop, temp)
 
 def p_exp1(p):
     '''exp1 : plusminus exp 
@@ -543,8 +560,10 @@ def p_term(p):
         lop = pconsts.pop()
         ltyp = ptypes.pop()
         ope = popers.pop()
-        temp = newTemp('int')
-        quads.append([ope, lop, rop, temp])
+        restyp = typeCheck(ope, ltyp, rtyp)
+        if restyp != False :
+            temp = newTemp(restyp)
+            newQuad(ope, lop, rop, temp)
 
 def p_term1(p):
     '''term1 : multidivi term 
@@ -578,12 +597,13 @@ lexer.input(nextline)
 parser.parse(nextline)
 
 if compileFlag == True:
-    print("Compiled succesfully")
+    print("Compiled succesfull")
     for x in funcTable.items():
         print(x)
     print(*quads, sep = "\n") 
     print(popers)
-    print(pconsts)
+    print("consts", pconsts)
+    print("tips", ptypes)
 
 else:
     print("ERROR: Could not compile")

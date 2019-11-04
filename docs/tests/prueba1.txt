@@ -4,7 +4,7 @@ vardef bool ga;
 vardef bool gb;
 
 funcdef int funcA(){
-    vardef int a1;
+    vardef float a1;
     vardef int b1;
     vardef int c1;
     c1 = 1+c1;
@@ -13,20 +13,22 @@ funcdef int funcA(){
 
 funcdef float funcB(float a, bool b) { 
     vardef int a2;
-    vardef float b2;
-    vardef char c2;
+    vardef int b2;
+    vardef int c2;
     b2 = 2;
     c2 = 4.2;
-	car = 0.0;
     if (c2 + 1 < 2 - b2){
         a2 = 1;
+        forward(1+2, 10-b2);
+    }
+    else { 
+        a2 = 3;
     };
-    forward(1+2, 10-b2);
     return(2);
 }
 
 funcdef float funcC(char x, int z) { 
-    vardef bool e;
+    vardef int e;
     vardef int f;
     e = 1.02;
     forward(1, 10);
@@ -36,8 +38,8 @@ funcdef float funcC(char x, int z) {
 
 main(){
 	vardef int hola;
-	vardef char jol;
-	vardef bool  kek;
+	vardef int jol;
+	vardef int  kek;
     hola = 1-1;
     distance();
 }
