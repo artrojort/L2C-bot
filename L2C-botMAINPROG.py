@@ -18,19 +18,23 @@ popers = []
 pconsts = []
 #tipo
 ptypes = []
+#saltos para GOTOS
+pjumps = []
 #cuadruplos
 quads = []
+
 #temporales
 tempindex = 0
 
-contQuads = 0
+iQuads = 0
 scope = 'global'
 funcTable = {}
 tempVars = {'varsTable' : {}} 
 tempParams = {'params' : {}}
 tempType = ''
 cont = 0
-opeIdx = {
+
+opeCode = {
 	'GOTO'      : 0,
     'GOTOF'     : 1,
     'GOTOV'     : 2,
@@ -132,9 +136,9 @@ def typeCheck(ope, a, b):
 print(typeCheck('+', 'int', 'char'))
 
 def newQuad(ope, a, b, res):
-    global contQuads
-    quads.append({contQuads:[ope, a, b, res]})
-    contQuads = contQuads + 1
+    global iQuads
+    quads.append([ope, a, b, res])
+    iQuads = iQuads + 1
 
 reserved = {
     'program'   : 'PROGRAM',
@@ -156,17 +160,17 @@ reserved = {
     'display'   : 'DISPLAY',
     'distance'  : 'DISTANCE',
     'stop'      : 'STOP',
+    'while'     : 'WHILE',
     'return'    : 'RETURN',
     'fin'       : 'FIN',
     'int'       : 'INT',
     'float'     : 'FLOAT',
     'char'      : 'CHAR',
-    'bool'      : 'bool',
-    'void'      : 'VOID',
-    'string'    : 'STRING'
+    'bool'      : 'BOOL',
+    'void'      : 'VOID'
 }
 
-tokens = ['ASSIGN', 'PLUS', 'MINUS', 'MULTI', 'DIVI', 'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY', 'EQUALS', 'LESSTHAN', 'GREATERTHAN', 'NOTEQUALS', 'SEMICOLON', 'COMMA', 'AND', 'OR', 'NOT', 'CTE_STRING', 'CTE_INT', 'CTE_FLOAT', 'CTE_CHAR', 'CTE_ARR', 'ID']  + list(reserved.values())
+tokens = ['ASSIGN', 'PLUS', 'MINUS', 'MULTI', 'DIVI', 'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY', 'EQUALS', 'LESSTHAN', 'GREATERTHAN', 'NOTEQUALS', 'SEMICOLON', 'COMMA', 'AND', 'OR', 'NOT', 'CTE_BOOL', 'CTE_INT', 'CTE_FLOAT', 'CTE_CHAR', 'CTE_ARR', 'ID']  + list(reserved.values())
 t_ASSIGN    = r'='
 t_PLUS      = r'\+'
 t_MINUS     = r'-'
@@ -189,8 +193,8 @@ t_OR        = r'\|\|'
 t_NOT       = r'!='
 t_CTE_INT   = r'[0-9]+'
 t_CTE_CHAR  = r'\'[a-zA-Z0-9]\''
-t_CTE_STRING = r'\"[a-zA-Z0-9]+\"'
 t_CTE_FLOAT = r'[0-9]+\.[0-9]+'
+t_CTE_BOOL  = r'[true|false]'
 
 def t_error(t):
     global compileFlag
@@ -317,6 +321,7 @@ def p_statute(p):
                | display
                | distance
                | stop
+               | while
                | return'''
 
 def p_cond(p):
@@ -349,6 +354,8 @@ def p_assign(p):
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
             newQuad('=', '', rop, x)
+    else: 
+        sys.exit(p[1], ": variable not declared or not of a supported type.")
 
 
 def p_assign1(p):
@@ -421,6 +428,23 @@ def p_distance(p):
 def p_stop(p):
     'stop : STOP LPAREN RPAREN SEMICOLON'
 
+def p_while(p):
+    '''while : WHILE LPAREN express RPAREN while1 LCURLY block RCURLY SEMICOLON'''
+    global iQuads 
+    jump = pjumps.pop()
+    newQuad('GOTO', '', '', jump)
+    quads[jump][3] = str(iQuads)
+
+def p_while1(p):
+    '''while1 : empty'''
+    
+    global iQuads 
+    xtype = ptypes.pop()
+    if xtype == 'bool' : 
+        pjumps.append(iQuads-1)
+        x = pconsts.pop()
+        newQuad('GOTOF', x, '', '')
+
 def p_return(p):
     'return : RETURN LPAREN express RPAREN SEMICOLON'
     rop = pconsts.pop()
@@ -430,9 +454,8 @@ def p_return(p):
 def p_type(p):
     '''type : INT
             | FLOAT
-            | bool
-            | CHAR
-            | STRING'''
+            | BOOL
+            | CHAR'''
     global tempType
     tempType = p[1]
         
@@ -440,17 +463,18 @@ def p_constant(p):
     '''constant : ID
                 | CTE_INT
                 | CTE_FLOAT
-                | CTE_STRING
-                | CTE_CHAR'''
+                | CTE_CHAR
+                | CTE_BOOL'''
     global scope
     global pconsts
     global ptypes
     pconsts.append(p[1])
+    print("appending", p[1])
     if p[1] in tempVars['varsTable'].keys() :
         ptypes.append(tempVars['varsTable'][p[1]]['type'])
     elif p[1] == 'true' or p[1] == 'false' :
         ptypes.append('bool')
-    elif p[1].isalpha() : 
+    elif p[1].isalpha() and len(p[1] == 1): 
         ptypes.append('char')
     elif p[1].isnumeric() :
         ptypes.append('int')
@@ -600,11 +624,14 @@ if compileFlag == True:
     print("Compiled succesfull")
     for x in funcTable.items():
         print(x)
-    print(*quads, sep = "\n") 
-    print(popers)
+    i = 0
+    for x in quads :
+        print (i, x)
+        i = i + 1
+    print("opers", popers)
     print("consts", pconsts)
     print("tips", ptypes)
-
+    print("jumps", pjumps)
 else:
     print("ERROR: Could not compile")
 

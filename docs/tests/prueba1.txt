@@ -30,8 +30,19 @@ funcdef float funcB(float a, bool b) {
 funcdef float funcC(char x, int z) { 
     vardef int e;
     vardef int f;
+    vardef int iterator1;
+    vardef int iterator2;
     e = 1.02;
     forward(1, 10);
+    while (2 < 2) {
+        e = e + 1;
+        f = f + 1;
+        iterator1 = iterator1 + 1;
+        while (444 < 333) {
+            e = e + 1000;
+            iterator2 = iterator2 + 1;
+        };
+    };
     return(3);
 }
 
