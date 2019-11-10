@@ -3,7 +3,7 @@ program
 vardef bool ga;
 vardef bool gb;
 
-funcdef int funcA(){
+funcdef int funcA(int prueba1, float prueba2, bool prueba3){
     vardef float a1;
     vardef int b1;
     vardef int c1;
@@ -17,23 +17,27 @@ funcdef float funcB(float a, bool b) {
     vardef int c2;
     b2 = 2;
     c2 = 4.2;
+    funcA(1, 4.35, true);
     if (c2 + 1 < 2 - b2){
         a2 = 1;
         forward(1+2, 10-b2);
     }
     else { 
         a2 = 3;
+        c2 = 4;
     };
     return(2);
 }
 
-funcdef float funcC(char x, int z) { 
+funcdef float funcC(char x, int z, int roar, int boom) { 
     vardef int e;
     vardef int f;
     vardef int iterator1;
     vardef int iterator2;
     e = 1.02;
+    funcA (4, 1.25 ,true);
     forward(1, 10);
+
     while (2 < 2) {
         e = e + 1;
         f = f + 1;

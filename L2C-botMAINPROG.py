@@ -27,12 +27,36 @@ quads = []
 tempindex = 0
 
 iQuads = 0
+iParams = 0
+iCalledParams = 0
 scope = 'global'
-funcTable = {}
+funcTable = {'global' : {'type' : '', 'params' : '', 'varsTable' : {}, 'start' : ''}}
 tempVars = {'varsTable' : {}} 
-tempParams = {'params' : {}}
+tempParams = {'paramsTable' : {}}
+paramCall  = {}
 tempType = ''
+calledFunc = ''
 cont = 0
+
+def isfloat(value):
+  try:
+    float(value)
+    return True
+  except ValueError:
+    return False
+
+def newQuad(ope, a, b, res):
+    global iQuads
+    quads.append([ope, a, b, res])
+    iQuads = iQuads + 1
+
+def newTemp(varType):
+    global tempindex
+    x = "~t" + str(tempindex)
+    tempindex = tempindex + 1
+    pconsts.append(x)
+    ptypes.append(varType)
+    return x
 
 opeCode = {
 	'GOTO'      : 0,
@@ -48,21 +72,6 @@ opeCode = {
     '/'         : 10,
     'cout'      : 11
 }
-
-def isfloat(value):
-  try:
-    float(value)
-    return True
-  except ValueError:
-    return False
-
-def newTemp(varType):
-    global tempindex
-    x = "~t" + str(tempindex)
-    tempindex = tempindex + 1
-    pconsts.append(x)
-    ptypes.append(varType)
-    return x
 
 semCube = {'int' : { 'int' : {  '+' : 'int',
                                 '-' : 'int',
@@ -119,7 +128,6 @@ semCube = {'int' : { 'int' : {  '+' : 'int',
                     }
         }
 
-
 def typeCheck(ope, a, b):
     try:
         x = semCube[a][b][ope]
@@ -131,14 +139,6 @@ def typeCheck(ope, a, b):
         #SYS EXIT DISABLED DURING DEBUGGING
         #sys.exit(errormsg)
         return False
-
-#EJEMPLO
-print(typeCheck('+', 'int', 'char'))
-
-def newQuad(ope, a, b, res):
-    global iQuads
-    quads.append([ope, a, b, res])
-    iQuads = iQuads + 1
 
 reserved = {
     'program'   : 'PROGRAM',
@@ -225,21 +225,29 @@ def t_newline(t):
 lexer = lex.lex()
 
 def p_program(p):
-    'program : PROGRAM globalvarsblock funcsblock main FIN SEMICOLON'
+    'program : PROGRAM gotomain globalvarsblock globalstartingquad funcsblock main FIN SEMICOLON'
+
+def p_gotomain(p):
+    'gotomain : empty'
+    newQuad('GOTO', '', '', '')
 
 def p_main(p):
     'main : MAIN LPAREN RPAREN LCURLY main2'
+
     global scope
     global tempVars
+    global iParams
+    start = pjumps.pop()
     scope = 'main'
-    funcTable[scope] = {'type' : 'void', 'params' : {}, 'varsTable' : {}}
+    funcTable[scope] = {'type' : 'void', 'params' : iParams, 'varsTable' : {}, 'start' : start}
     funcTable[scope]['varsTable']= tempVars['varsTable']
-    funcTable[scope]['params']= tempParams['params']
     tempVars = {} 
+    iParams = 0
+    quads[0][3] = start
     
 
 def p_main2(p):
-    'main2 : varsblock block RCURLY'
+    'main2 : varsblock startingquad block RCURLY'
     
 
 def p_funcsblock(p):
@@ -248,38 +256,60 @@ def p_funcsblock(p):
     
 
 def p_funcs(p):
-    'funcs : FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock block RCURLY'''
+    'funcs : FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY'''
     global scope
     global tempVars
     global tempParams
+    global iParams
+
     scope = p[3]
-    funcTable[scope] = {'type' : tempType, 'params' : {}, 'varsTable' : {}}
+    start = pjumps.pop()
+    funcTable[scope] = {'type' : tempType, 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}, 'start' : start}
+    funcTable[scope]['paramsTable'] = tempParams['paramsTable']
     funcTable[scope]['varsTable'] = tempVars['varsTable']
-    funcTable[scope]['params'] = tempParams['params']
     tempVars = {'varsTable' : {}} 
-    tempParams = {'params' : {}}
+    tempParams = {'paramsTable' : {}}
+    iParams = 0
 
 def p_globalvarsblock(p):
     '''globalvarsblock : vars varsblock 
                        | empty'''
     global scope
     global tempVars
-    global tempParams
-    funcTable[scope] = {'type' : 'void', 'params' : {}, 'varsTable' : {}}
+    global tempParams   
+    global iQuads
+    global iParams
+    funcTable[scope] = {'type' : 'void', 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}}
+    funcTable[scope]['paramsTable'] = tempParams['paramsTable']
     funcTable[scope]['varsTable'] = tempVars['varsTable']
-    funcTable[scope]['params'] = tempParams['params']
     tempVars = {'varsTable' : {}} 
-    tempParams = {'params' : {}} 
+    tempParams = {'paramsTable' : {}}
+    iParams = 0
 
 def p_varsblock(p):
     '''varsblock : vars varsblock 
                  | empty'''
+    
+def p_globalstartingquad(p):
+    '''globalstartingquad : empty'''
+    global iQuads 
+    pjumps.append(iQuads)
+
+def p_startingquad(p):
+    '''startingquad : empty'''
+    global iQuads 
+    pjumps.append(iQuads)
 
 def p_vars(p):
     'vars : VARDEF type ID vars1 SEMICOLON'
     global tempVars
-    tempVars['varsTable'][p[3]] = {'type' : tempType}
-
+    x = p[3]
+    if x not in tempVars['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
+        tempVars['varsTable'][x] = {'type' : tempType, 'param' : 'NO'}
+    else : 
+        errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
+        sys.exit(errorMsg)
+    
 def p_vars1(p):
     '''vars1 : LBRACKET CTE_INT RBRACKET 
              | empty'''
@@ -297,9 +327,17 @@ def p_params(p):
     '''params : type ID
               | empty'''
     global tempType
+    global tempParams
+    global iParams
+    x = p[2]
     if len(p) > 2 : 
-        tempParams['params'][p[2]] = {'type' : tempType}
-
+        if x not in tempVars['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
+            tempVars['varsTable'][x] = {'type' : tempType, 'param': iParams+1}
+            tempParams['paramsTable'][iParams+1] = {'ID' : x, 'type' : tempType}
+            iParams = iParams + 1
+        else : 
+            errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
+            sys.exit(errorMsg)
 
 def p_block(p):
     '''block : statute block
@@ -326,13 +364,17 @@ def p_statute(p):
 
 def p_cond(p):
     'cond : IF LPAREN express RPAREN LCURLY gotoif block RCURLY else'
-    
+    global iQuads
+    jump = pjumps.pop()
+    quads[jump][3] = iQuads
 
 def p_gotoif(p):
     'gotoif : empty'
+    global iQuads
     if ptypes[-1] == 'bool' : 
         x = pconsts.pop()
-        xtyp = ptypes.pop()
+        ptypes.pop()
+        pjumps.append(iQuads)
         newQuad('GOTOF', x, '', '')
 
 def p_else(p):
@@ -341,7 +383,12 @@ def p_else(p):
 
 def p_gotoelse(p):
     'gotoelse : empty'
+    global iQuads
+    jump = pjumps.pop()
+    pjumps.append(iQuads)
     newQuad('GOTO', '', '', '')
+    quads[jump][3] = iQuads
+
 
 def p_assign(p):
     '''assign :  ID assign1 ASSIGN express SEMICOLON'''
@@ -357,21 +404,61 @@ def p_assign(p):
     else: 
         sys.exit(p[1], ": variable not declared or not of a supported type.")
 
-
 def p_assign1(p):
     '''assign1 : LBRACKET express RBRACKET 
                | empty'''
 
 def p_call(p):
-    'call : CALL ID LPAREN call1 RPAREN SEMICOLON'
+    'call : era LPAREN paramcall RPAREN SEMICOLON'
     
-def p_call1(p):
-    '''call1 : express call2 
-             | empty'''
+    global paramCall
+    global calledFunc
+    print (paramCall)
+    print (paramCall.values())
+    if len(paramCall.keys()) != funcTable[calledFunc]['params'] : 
+        errorMsg = ("ERROR: Number of parameters don't match.")
+        sys.exit(errorMsg)
+    
+    i = 1
+    while i <= funcTable[calledFunc]['params'] :
+        if paramCall[i]['type'] == funcTable[calledFunc]['paramsTable'][i]['type'] : 
+            newQuad('PARAM', paramCall[i]['val'], '', ('~param' + str(i)))
+        else:
+            errorMsg = ("ERROR: Types of parameters don't match.")
+            sys.exit(errorMsg)
 
-def p_call2(p):
-    '''call2 : COMMA call1 
-             | empty'''
+        i = i + 1
+    
+    paramCall = {}
+
+def p_era(p):
+    '''era : ID'''
+    global iCalledParams
+    global calledFunc
+    calledFunc = p[1]
+    iCalledParams = funcTable[calledFunc]['params']
+    
+    if calledFunc in funcTable.keys() : 
+        newQuad('ERA', '', '', calledFunc)
+    else : 
+        errorMsg = "ERROR: function " + calledFunc + " hasn't been declared"
+        sys.exit(errorMsg)
+
+def p_paramcall(p):
+    '''paramcall : express paramcall1'''
+    
+    global iCalledParams
+    global paramCall
+    global iParams
+    param = pconsts.pop()
+    paramtype = ptypes.pop()
+    paramCall[iCalledParams] = {'type' : paramtype, 'val' : param}
+    iCalledParams = iCalledParams - 1
+
+def p_call1(p):
+    '''paramcall1 : COMMA paramcall 
+                  | empty'''
+    global iCalledParams
 
 def p_cin(p):
     'cin : CIN cin1 SEMICOLON'
@@ -433,11 +520,10 @@ def p_while(p):
     global iQuads 
     jump = pjumps.pop()
     newQuad('GOTO', '', '', jump)
-    quads[jump][3] = str(iQuads)
+    quads[jump+1][3] = str(iQuads)
 
 def p_while1(p):
     '''while1 : empty'''
-    
     global iQuads 
     xtype = ptypes.pop()
     if xtype == 'bool' : 
@@ -469,7 +555,6 @@ def p_constant(p):
     global pconsts
     global ptypes
     pconsts.append(p[1])
-    print("appending", p[1])
     if p[1] in tempVars['varsTable'].keys() :
         ptypes.append(tempVars['varsTable'][p[1]]['type'])
     elif p[1] == 'true' or p[1] == 'false' :
@@ -482,7 +567,6 @@ def p_constant(p):
         ptypes.append('float')
     else : 
         sys.exit(p[1], ": variable not declared or of not supported type.")
-
 
 def p_express(p):
     'express : express1 relational express2'
@@ -620,12 +704,16 @@ fp.close()
 lexer.input(nextline)
 parser.parse(nextline)
 
+midcode = open("midcode.txt", "w")
 if compileFlag == True:
     print("Compiled succesfull")
     for x in funcTable.items():
+        midcode.write(str(x)+"\n")
         print(x)
     i = 0
+    midcode.write("$QUADS$")
     for x in quads :
+        midcode.write(str(i) + str(x)+"\n")
         print (i, x)
         i = i + 1
     print("opers", popers)
@@ -634,6 +722,8 @@ if compileFlag == True:
     print("jumps", pjumps)
 else:
     print("ERROR: Could not compile")
+
+midcode.close()
 
 
     
