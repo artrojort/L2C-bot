@@ -10,16 +10,16 @@ Grammar
 Rule 0     S' -> program
 Rule 1     program -> PROGRAM gotomain globalvarsblock globalstartingquad funcsblock main FIN SEMICOLON
 Rule 2     gotomain -> empty
-Rule 3     main -> MAIN LPAREN RPAREN LCURLY main2
-Rule 4     main2 -> varsblock startingquad block RCURLY
-Rule 5     funcsblock -> funcs funcsblock
-Rule 6     funcsblock -> empty
-Rule 7     funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
-Rule 8     globalvarsblock -> vars varsblock
-Rule 9     globalvarsblock -> empty
-Rule 10    varsblock -> vars varsblock
-Rule 11    varsblock -> empty
-Rule 12    globalstartingquad -> empty
+Rule 3     globalstartingquad -> empty
+Rule 4     main -> MAIN LPAREN RPAREN LCURLY main2
+Rule 5     main2 -> varsblock startingquad block RCURLY
+Rule 6     funcsblock -> funcs funcsblock
+Rule 7     funcsblock -> empty
+Rule 8     funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
+Rule 9     globalvarsblock -> vars varsblock
+Rule 10    globalvarsblock -> empty
+Rule 11    varsblock -> vars varsblock
+Rule 12    varsblock -> empty
 Rule 13    startingquad -> empty
 Rule 14    vars -> VARDEF type ID vars1 SEMICOLON
 Rule 15    vars1 -> LBRACKET CTE_INT RBRACKET
@@ -147,17 +147,17 @@ EQUALS               : 99
 FIN                  : 1
 FLOAT                : 78
 FORWARD              : 65
-FUNCDEF              : 7
+FUNCDEF              : 8
 GREATERTHAN          : 98
-ID                   : 7 14 22 48 52 59 61 81
+ID                   : 8 14 22 48 52 59 61 81
 IF                   : 43
 INT                  : 77
 LBRACKET             : 15 49 60
-LCURLY               : 3 7 43 45 74
+LCURLY               : 4 8 43 45 74
 LESSTHAN             : 97
 LIGHTS               : 70
-LPAREN               : 3 7 43 51 59 60 63 64 65 66 67 68 69 70 71 72 73 74 76 111
-MAIN                 : 3
+LPAREN               : 4 8 43 51 59 60 63 64 65 66 67 68 69 70 71 72 73 74 76 111
+MAIN                 : 4
 MINUS                : 105
 MULTI                : 109
 NOT                  : 94
@@ -166,9 +166,9 @@ OR                   : 92
 PLUS                 : 104
 PROGRAM              : 1
 RBRACKET             : 15 49 60
-RCURLY               : 4 7 43 45 74
+RCURLY               : 5 8 43 45 74
 RETURN               : 76
-RPAREN               : 3 7 43 51 59 60 63 64 65 66 67 68 69 70 71 72 73 74 76 111
+RPAREN               : 4 8 43 51 59 60 63 64 65 66 67 68 69 70 71 72 73 74 76 111
 SEMICOLON            : 1 14 46 48 51 56 63 64 65 66 67 68 69 70 71 72 73 74 76
 SERVO                : 69
 STOP                 : 73
@@ -185,9 +185,9 @@ andor                : 89
 assign               : 27
 assign1              : 48
 backward             : 33
-block                : 4 7 24 43 45 74
+block                : 5 8 24 43 45 74
 call                 : 28
-choosetype           : 7
+choosetype           : 8
 cin                  : 29
 cin1                 : 56
 cin2                 : 57
@@ -201,7 +201,7 @@ delay                : 31
 display              : 38
 distance             : 39
 else                 : 43 45
-empty                : 2 6 9 11 12 13 16 21 23 25 44 47 50 55 62 75 88 90 96 103 108
+empty                : 2 3 7 10 12 13 16 21 23 25 44 47 50 55 62 75 88 90 96 103 108
 era                  : 51
 exp                  : 93 95 102
 exp1                 : 101
@@ -210,8 +210,8 @@ express1             : 86
 express2             : 86
 factor               : 106
 forward              : 32
-funcs                : 5
-funcsblock           : 1 5
+funcs                : 6
+funcsblock           : 1 6
 globalstartingquad   : 1
 globalvarsblock      : 1
 gotoelse             : 45
@@ -219,19 +219,19 @@ gotoif               : 43
 gotomain             : 1
 lights               : 37
 main                 : 1
-main2                : 3
+main2                : 4
 multidivi            : 107
 paramcall            : 51 54
 paramcall1           : 53
 params               : 19 20
-paramsblock          : 7 19 20
+paramsblock          : 8 19 20
 plusminus            : 102
 program              : 0
 relational           : 86
 relational1          : 93
 return               : 42
 servo                : 36
-startingquad         : 4 7
+startingquad         : 5 8
 statute              : 24
 stop                 : 40
 term                 : 101 107
@@ -239,9 +239,9 @@ term1                : 106
 turnleft             : 34
 turnright            : 35
 type                 : 14 17 22
-vars                 : 8 10
+vars                 : 9 11
 vars1                : 14
-varsblock            : 4 7 8 10
+varsblock            : 5 8 9 11
 while                : 41
 while1               : 74
 
@@ -278,8 +278,8 @@ state 2
 state 3
 
     (1) program -> PROGRAM gotomain . globalvarsblock globalstartingquad funcsblock main FIN SEMICOLON
-    (8) globalvarsblock -> . vars varsblock
-    (9) globalvarsblock -> . empty
+    (9) globalvarsblock -> . vars varsblock
+    (10) globalvarsblock -> . empty
     (14) vars -> . VARDEF type ID vars1 SEMICOLON
     (113) empty -> .
 
@@ -303,7 +303,7 @@ state 4
 state 5
 
     (1) program -> PROGRAM gotomain globalvarsblock . globalstartingquad funcsblock main FIN SEMICOLON
-    (12) globalstartingquad -> . empty
+    (3) globalstartingquad -> . empty
     (113) empty -> .
 
     FUNCDEF         reduce using rule 113 (empty -> .)
@@ -314,9 +314,9 @@ state 5
 
 state 6
 
-    (8) globalvarsblock -> vars . varsblock
-    (10) varsblock -> . vars varsblock
-    (11) varsblock -> . empty
+    (9) globalvarsblock -> vars . varsblock
+    (11) varsblock -> . vars varsblock
+    (12) varsblock -> . empty
     (14) vars -> . VARDEF type ID vars1 SEMICOLON
     (113) empty -> .
 
@@ -330,10 +330,10 @@ state 6
 
 state 7
 
-    (9) globalvarsblock -> empty .
+    (10) globalvarsblock -> empty .
 
-    FUNCDEF         reduce using rule 9 (globalvarsblock -> empty .)
-    MAIN            reduce using rule 9 (globalvarsblock -> empty .)
+    FUNCDEF         reduce using rule 10 (globalvarsblock -> empty .)
+    MAIN            reduce using rule 10 (globalvarsblock -> empty .)
 
 
 state 8
@@ -354,9 +354,9 @@ state 8
 state 9
 
     (1) program -> PROGRAM gotomain globalvarsblock globalstartingquad . funcsblock main FIN SEMICOLON
-    (5) funcsblock -> . funcs funcsblock
-    (6) funcsblock -> . empty
-    (7) funcs -> . FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
+    (6) funcsblock -> . funcs funcsblock
+    (7) funcsblock -> . empty
+    (8) funcs -> . FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
     (113) empty -> .
 
     FUNCDEF         shift and go to state 22
@@ -368,17 +368,17 @@ state 9
 
 state 10
 
-    (12) globalstartingquad -> empty .
+    (3) globalstartingquad -> empty .
 
-    FUNCDEF         reduce using rule 12 (globalstartingquad -> empty .)
-    MAIN            reduce using rule 12 (globalstartingquad -> empty .)
+    FUNCDEF         reduce using rule 3 (globalstartingquad -> empty .)
+    MAIN            reduce using rule 3 (globalstartingquad -> empty .)
 
 
 state 11
 
-    (10) varsblock -> vars . varsblock
-    (10) varsblock -> . vars varsblock
-    (11) varsblock -> . empty
+    (11) varsblock -> vars . varsblock
+    (11) varsblock -> . vars varsblock
+    (12) varsblock -> . empty
     (14) vars -> . VARDEF type ID vars1 SEMICOLON
     (113) empty -> .
 
@@ -409,35 +409,35 @@ state 11
 
 state 12
 
-    (8) globalvarsblock -> vars varsblock .
+    (9) globalvarsblock -> vars varsblock .
 
-    FUNCDEF         reduce using rule 8 (globalvarsblock -> vars varsblock .)
-    MAIN            reduce using rule 8 (globalvarsblock -> vars varsblock .)
+    FUNCDEF         reduce using rule 9 (globalvarsblock -> vars varsblock .)
+    MAIN            reduce using rule 9 (globalvarsblock -> vars varsblock .)
 
 
 state 13
 
-    (11) varsblock -> empty .
+    (12) varsblock -> empty .
 
-    FUNCDEF         reduce using rule 11 (varsblock -> empty .)
-    MAIN            reduce using rule 11 (varsblock -> empty .)
-    IF              reduce using rule 11 (varsblock -> empty .)
-    ID              reduce using rule 11 (varsblock -> empty .)
-    CIN             reduce using rule 11 (varsblock -> empty .)
-    COUT            reduce using rule 11 (varsblock -> empty .)
-    DELAY           reduce using rule 11 (varsblock -> empty .)
-    FORWARD         reduce using rule 11 (varsblock -> empty .)
-    BACKWARD        reduce using rule 11 (varsblock -> empty .)
-    TURNLEFT        reduce using rule 11 (varsblock -> empty .)
-    TURNRIGHT       reduce using rule 11 (varsblock -> empty .)
-    SERVO           reduce using rule 11 (varsblock -> empty .)
-    LIGHTS          reduce using rule 11 (varsblock -> empty .)
-    DISPLAY         reduce using rule 11 (varsblock -> empty .)
-    DISTANCE        reduce using rule 11 (varsblock -> empty .)
-    STOP            reduce using rule 11 (varsblock -> empty .)
-    WHILE           reduce using rule 11 (varsblock -> empty .)
-    RETURN          reduce using rule 11 (varsblock -> empty .)
-    RCURLY          reduce using rule 11 (varsblock -> empty .)
+    FUNCDEF         reduce using rule 12 (varsblock -> empty .)
+    MAIN            reduce using rule 12 (varsblock -> empty .)
+    IF              reduce using rule 12 (varsblock -> empty .)
+    ID              reduce using rule 12 (varsblock -> empty .)
+    CIN             reduce using rule 12 (varsblock -> empty .)
+    COUT            reduce using rule 12 (varsblock -> empty .)
+    DELAY           reduce using rule 12 (varsblock -> empty .)
+    FORWARD         reduce using rule 12 (varsblock -> empty .)
+    BACKWARD        reduce using rule 12 (varsblock -> empty .)
+    TURNLEFT        reduce using rule 12 (varsblock -> empty .)
+    TURNRIGHT       reduce using rule 12 (varsblock -> empty .)
+    SERVO           reduce using rule 12 (varsblock -> empty .)
+    LIGHTS          reduce using rule 12 (varsblock -> empty .)
+    DISPLAY         reduce using rule 12 (varsblock -> empty .)
+    DISTANCE        reduce using rule 12 (varsblock -> empty .)
+    STOP            reduce using rule 12 (varsblock -> empty .)
+    WHILE           reduce using rule 12 (varsblock -> empty .)
+    RETURN          reduce using rule 12 (varsblock -> empty .)
+    RCURLY          reduce using rule 12 (varsblock -> empty .)
 
 
 state 14
@@ -478,7 +478,7 @@ state 18
 state 19
 
     (1) program -> PROGRAM gotomain globalvarsblock globalstartingquad funcsblock . main FIN SEMICOLON
-    (3) main -> . MAIN LPAREN RPAREN LCURLY main2
+    (4) main -> . MAIN LPAREN RPAREN LCURLY main2
 
     MAIN            shift and go to state 26
 
@@ -486,10 +486,10 @@ state 19
 
 state 20
 
-    (5) funcsblock -> funcs . funcsblock
-    (5) funcsblock -> . funcs funcsblock
-    (6) funcsblock -> . empty
-    (7) funcs -> . FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
+    (6) funcsblock -> funcs . funcsblock
+    (6) funcsblock -> . funcs funcsblock
+    (7) funcsblock -> . empty
+    (8) funcs -> . FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
     (113) empty -> .
 
     FUNCDEF         shift and go to state 22
@@ -501,14 +501,14 @@ state 20
 
 state 21
 
-    (6) funcsblock -> empty .
+    (7) funcsblock -> empty .
 
-    MAIN            reduce using rule 6 (funcsblock -> empty .)
+    MAIN            reduce using rule 7 (funcsblock -> empty .)
 
 
 state 22
 
-    (7) funcs -> FUNCDEF . choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
+    (8) funcs -> FUNCDEF . choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
     (17) choosetype -> . type
     (18) choosetype -> . VOID
     (77) type -> . INT
@@ -527,27 +527,27 @@ state 22
 
 state 23
 
-    (10) varsblock -> vars varsblock .
+    (11) varsblock -> vars varsblock .
 
-    FUNCDEF         reduce using rule 10 (varsblock -> vars varsblock .)
-    MAIN            reduce using rule 10 (varsblock -> vars varsblock .)
-    IF              reduce using rule 10 (varsblock -> vars varsblock .)
-    ID              reduce using rule 10 (varsblock -> vars varsblock .)
-    CIN             reduce using rule 10 (varsblock -> vars varsblock .)
-    COUT            reduce using rule 10 (varsblock -> vars varsblock .)
-    DELAY           reduce using rule 10 (varsblock -> vars varsblock .)
-    FORWARD         reduce using rule 10 (varsblock -> vars varsblock .)
-    BACKWARD        reduce using rule 10 (varsblock -> vars varsblock .)
-    TURNLEFT        reduce using rule 10 (varsblock -> vars varsblock .)
-    TURNRIGHT       reduce using rule 10 (varsblock -> vars varsblock .)
-    SERVO           reduce using rule 10 (varsblock -> vars varsblock .)
-    LIGHTS          reduce using rule 10 (varsblock -> vars varsblock .)
-    DISPLAY         reduce using rule 10 (varsblock -> vars varsblock .)
-    DISTANCE        reduce using rule 10 (varsblock -> vars varsblock .)
-    STOP            reduce using rule 10 (varsblock -> vars varsblock .)
-    WHILE           reduce using rule 10 (varsblock -> vars varsblock .)
-    RETURN          reduce using rule 10 (varsblock -> vars varsblock .)
-    RCURLY          reduce using rule 10 (varsblock -> vars varsblock .)
+    FUNCDEF         reduce using rule 11 (varsblock -> vars varsblock .)
+    MAIN            reduce using rule 11 (varsblock -> vars varsblock .)
+    IF              reduce using rule 11 (varsblock -> vars varsblock .)
+    ID              reduce using rule 11 (varsblock -> vars varsblock .)
+    CIN             reduce using rule 11 (varsblock -> vars varsblock .)
+    COUT            reduce using rule 11 (varsblock -> vars varsblock .)
+    DELAY           reduce using rule 11 (varsblock -> vars varsblock .)
+    FORWARD         reduce using rule 11 (varsblock -> vars varsblock .)
+    BACKWARD        reduce using rule 11 (varsblock -> vars varsblock .)
+    TURNLEFT        reduce using rule 11 (varsblock -> vars varsblock .)
+    TURNRIGHT       reduce using rule 11 (varsblock -> vars varsblock .)
+    SERVO           reduce using rule 11 (varsblock -> vars varsblock .)
+    LIGHTS          reduce using rule 11 (varsblock -> vars varsblock .)
+    DISPLAY         reduce using rule 11 (varsblock -> vars varsblock .)
+    DISTANCE        reduce using rule 11 (varsblock -> vars varsblock .)
+    STOP            reduce using rule 11 (varsblock -> vars varsblock .)
+    WHILE           reduce using rule 11 (varsblock -> vars varsblock .)
+    RETURN          reduce using rule 11 (varsblock -> vars varsblock .)
+    RCURLY          reduce using rule 11 (varsblock -> vars varsblock .)
 
 
 state 24
@@ -572,21 +572,21 @@ state 25
 
 state 26
 
-    (3) main -> MAIN . LPAREN RPAREN LCURLY main2
+    (4) main -> MAIN . LPAREN RPAREN LCURLY main2
 
     LPAREN          shift and go to state 35
 
 
 state 27
 
-    (5) funcsblock -> funcs funcsblock .
+    (6) funcsblock -> funcs funcsblock .
 
-    MAIN            reduce using rule 5 (funcsblock -> funcs funcsblock .)
+    MAIN            reduce using rule 6 (funcsblock -> funcs funcsblock .)
 
 
 state 28
 
-    (7) funcs -> FUNCDEF choosetype . ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
+    (8) funcs -> FUNCDEF choosetype . ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
 
     ID              shift and go to state 36
 
@@ -635,14 +635,14 @@ state 34
 
 state 35
 
-    (3) main -> MAIN LPAREN . RPAREN LCURLY main2
+    (4) main -> MAIN LPAREN . RPAREN LCURLY main2
 
     RPAREN          shift and go to state 40
 
 
 state 36
 
-    (7) funcs -> FUNCDEF choosetype ID . LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
+    (8) funcs -> FUNCDEF choosetype ID . LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
 
     LPAREN          shift and go to state 41
 
@@ -689,14 +689,14 @@ state 39
 
 state 40
 
-    (3) main -> MAIN LPAREN RPAREN . LCURLY main2
+    (4) main -> MAIN LPAREN RPAREN . LCURLY main2
 
     LCURLY          shift and go to state 43
 
 
 state 41
 
-    (7) funcs -> FUNCDEF choosetype ID LPAREN . paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
+    (8) funcs -> FUNCDEF choosetype ID LPAREN . paramsblock RPAREN LCURLY varsblock startingquad block RCURLY
     (19) paramsblock -> . params paramsblock
     (20) paramsblock -> . COMMA params paramsblock
     (21) paramsblock -> . empty
@@ -740,10 +740,10 @@ state 42
 
 state 43
 
-    (3) main -> MAIN LPAREN RPAREN LCURLY . main2
-    (4) main2 -> . varsblock startingquad block RCURLY
-    (10) varsblock -> . vars varsblock
-    (11) varsblock -> . empty
+    (4) main -> MAIN LPAREN RPAREN LCURLY . main2
+    (5) main2 -> . varsblock startingquad block RCURLY
+    (11) varsblock -> . vars varsblock
+    (12) varsblock -> . empty
     (14) vars -> . VARDEF type ID vars1 SEMICOLON
     (113) empty -> .
 
@@ -773,7 +773,7 @@ state 43
 
 state 44
 
-    (7) funcs -> FUNCDEF choosetype ID LPAREN paramsblock . RPAREN LCURLY varsblock startingquad block RCURLY
+    (8) funcs -> FUNCDEF choosetype ID LPAREN paramsblock . RPAREN LCURLY varsblock startingquad block RCURLY
 
     RPAREN          shift and go to state 51
 
@@ -871,14 +871,14 @@ state 48
 
 state 49
 
-    (3) main -> MAIN LPAREN RPAREN LCURLY main2 .
+    (4) main -> MAIN LPAREN RPAREN LCURLY main2 .
 
-    FIN             reduce using rule 3 (main -> MAIN LPAREN RPAREN LCURLY main2 .)
+    FIN             reduce using rule 4 (main -> MAIN LPAREN RPAREN LCURLY main2 .)
 
 
 state 50
 
-    (4) main2 -> varsblock . startingquad block RCURLY
+    (5) main2 -> varsblock . startingquad block RCURLY
     (13) startingquad -> . empty
     (113) empty -> .
 
@@ -905,7 +905,7 @@ state 50
 
 state 51
 
-    (7) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN . LCURLY varsblock startingquad block RCURLY
+    (8) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN . LCURLY varsblock startingquad block RCURLY
 
     LCURLY          shift and go to state 58
 
@@ -980,7 +980,7 @@ state 55
 
 state 56
 
-    (4) main2 -> varsblock startingquad . block RCURLY
+    (5) main2 -> varsblock startingquad . block RCURLY
     (24) block -> . statute block
     (25) block -> . empty
     (26) statute -> . cond
@@ -1085,9 +1085,9 @@ state 57
 
 state 58
 
-    (7) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY . varsblock startingquad block RCURLY
-    (10) varsblock -> . vars varsblock
-    (11) varsblock -> . empty
+    (8) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY . varsblock startingquad block RCURLY
+    (11) varsblock -> . vars varsblock
+    (12) varsblock -> . empty
     (14) vars -> . VARDEF type ID vars1 SEMICOLON
     (113) empty -> .
 
@@ -1123,7 +1123,7 @@ state 59
 
 state 60
 
-    (4) main2 -> varsblock startingquad block . RCURLY
+    (5) main2 -> varsblock startingquad block . RCURLY
 
     RCURLY          shift and go to state 98
 
@@ -1745,7 +1745,7 @@ state 96
 
 state 97
 
-    (7) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock . startingquad block RCURLY
+    (8) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock . startingquad block RCURLY
     (13) startingquad -> . empty
     (113) empty -> .
 
@@ -1772,9 +1772,9 @@ state 97
 
 state 98
 
-    (4) main2 -> varsblock startingquad block RCURLY .
+    (5) main2 -> varsblock startingquad block RCURLY .
 
-    FIN             reduce using rule 4 (main2 -> varsblock startingquad block RCURLY .)
+    FIN             reduce using rule 5 (main2 -> varsblock startingquad block RCURLY .)
 
 
 state 99
@@ -2103,7 +2103,7 @@ state 122
 
 state 123
 
-    (7) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad . block RCURLY
+    (8) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad . block RCURLY
     (24) block -> . statute block
     (25) block -> . empty
     (26) statute -> . cond
@@ -2423,7 +2423,7 @@ state 147
 
 state 148
 
-    (7) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block . RCURLY
+    (8) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block . RCURLY
 
     RCURLY          shift and go to state 183
 
@@ -2945,10 +2945,10 @@ state 182
 
 state 183
 
-    (7) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY .
+    (8) funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY .
 
-    FUNCDEF         reduce using rule 7 (funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY .)
-    MAIN            reduce using rule 7 (funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY .)
+    FUNCDEF         reduce using rule 8 (funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY .)
+    MAIN            reduce using rule 8 (funcs -> FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY .)
 
 
 state 184

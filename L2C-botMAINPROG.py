@@ -10,8 +10,6 @@ import codecs
 import os
 import sys
 
-compileFlag = True
-
 #operadores
 popers = []
 #variables
@@ -26,6 +24,9 @@ quads = []
 #temporales
 tempindex = 0
 
+
+compileFlag = True
+globFlag = True
 iQuads = 0
 iParams = 0
 iCalledParams = 0
@@ -37,6 +38,55 @@ paramCall  = {}
 tempType = ''
 calledFunc = ''
 cont = 0
+
+era =  {'int' : 0,
+        'float' : 0,
+        'char' : 0,
+        'bool' : 0}
+
+dirMem = {'global' : {'int'   : 11000,
+                    'float' : 12000,
+                    'bool'  : 13000,
+                    'char'  : 14000
+                    },
+        'local'  : {'int'   : 21000,
+                    'float' : 22000,
+                    'bool'  : 23000,
+                    'char'  : 24000
+                    },
+        'temp'   : {'int'   : 31000,
+                    'float' : 32000,
+                    'bool'  : 33000,
+                    'char'  : 34000
+                    },
+        'const'  : {'int'   : 41000,
+                    'float' : 42000,
+                    'bool'  : 43000,
+                    'char'  : 44000
+                    }
+        }
+
+virMem = {'global': {'int'  : [],
+                    'float' : [],
+                    'bool'  : [],
+                    'char'  : []
+                    },
+        'local'  : {'int'   : [],
+                    'float' : [],
+                    'bool'  : [],
+                    'char'  : []
+                    },
+        'temp'   : {'int'   : [],
+                    'float' : [],
+                    'bool'  : [],
+                    'char'  : []
+                    },
+        'const'  : {'int'   : [],
+                    'float' : [],
+                    'bool'  : [],
+                    'char'  : []
+                    }
+        }
 
 def isfloat(value):
   try:
@@ -50,13 +100,39 @@ def newQuad(ope, a, b, res):
     quads.append([ope, a, b, res])
     iQuads = iQuads + 1
 
-def newTemp(varType):
-    global tempindex
-    x = "~t" + str(tempindex)
-    tempindex = tempindex + 1
-    pconsts.append(x)
+def newAdd(varType):
+    global dirMem
+    address = dirMem['temp'][varType]
+    dirMem['temp'][varType] = address + 1
+    pconsts.append(address)
     ptypes.append(varType)
-    return x
+    return address
+
+def tempDump():
+    global dirMem
+    global tempVars
+    global tempParams
+    global iParams
+    global era
+    
+    iParams = 0
+
+    tempVars = {'varsTable' : {}} 
+    tempParams = {'paramsTable' : {}}
+
+    era =  {'int' : 0,
+        'float' : 0,
+        'char' : 0,
+        'bool' : 0}
+
+    dirMem['local']['int'] = 20000
+    dirMem['local']['float'] = 21000
+    dirMem['local']['bool'] = 22000
+    dirMem['local']['char'] = 23000
+    dirMem['temp']['int'] = 30000
+    dirMem['temp']['float'] = 31000
+    dirMem['temp']['bool'] = 32000
+    dirMem['temp']['char'] = 33000
 
 opeCode = {
 	'GOTO'      : 0,
@@ -123,7 +199,8 @@ semCube = {'int' : { 'int' : {  '+' : 'int',
                                 }
                     },
             'char' : {'char' : { '==' : 'bool',
-                                 '!=' : 'bool'
+                                 '!=' : 'bool',
+                                 '='  : 'char'
                                  }
                     }
         }
@@ -192,7 +269,7 @@ t_AND       = r'\&\&'
 t_OR        = r'\|\|'
 t_NOT       = r'!='
 t_CTE_INT   = r'[0-9]+'
-t_CTE_CHAR  = r'\'[a-zA-Z0-9]\''
+t_CTE_CHAR  = r'\'[a-zA-Z_]\''
 t_CTE_FLOAT = r'[0-9]+\.[0-9]+'
 t_CTE_BOOL  = r'[true|false]'
 
@@ -231,18 +308,28 @@ def p_gotomain(p):
     'gotomain : empty'
     newQuad('GOTO', '', '', '')
 
+def p_globalstartingquad(p):
+    '''globalstartingquad : empty'''
+    global iQuads 
+    global globFlag
+    globFlag = False
+    pjumps.append(iQuads)
+    
+
 def p_main(p):
     'main : MAIN LPAREN RPAREN LCURLY main2'
 
     global scope
     global tempVars
     global iParams
+    global dirMem
     start = pjumps.pop()
     scope = 'main'
-    funcTable[scope] = {'type' : 'void', 'params' : iParams, 'varsTable' : {}, 'start' : start}
+    funcTable[scope] = {'type' : 'void', 'era' : era, 'params' : iParams, 'varsTable' : {}, 'start' : start}
     funcTable[scope]['varsTable']= tempVars['varsTable']
-    tempVars = {} 
-    iParams = 0
+
+    tempDump()
+
     quads[0][3] = start
     
 
@@ -264,12 +351,11 @@ def p_funcs(p):
 
     scope = p[3]
     start = pjumps.pop()
-    funcTable[scope] = {'type' : tempType, 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}, 'start' : start}
+    funcTable[scope] = {'type' : tempType, 'era' : era, 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}, 'start' : start}
     funcTable[scope]['paramsTable'] = tempParams['paramsTable']
     funcTable[scope]['varsTable'] = tempVars['varsTable']
-    tempVars = {'varsTable' : {}} 
-    tempParams = {'paramsTable' : {}}
-    iParams = 0
+
+    tempDump()
 
 def p_globalvarsblock(p):
     '''globalvarsblock : vars varsblock 
@@ -279,21 +365,16 @@ def p_globalvarsblock(p):
     global tempParams   
     global iQuads
     global iParams
-    funcTable[scope] = {'type' : 'void', 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}}
+    funcTable[scope] = {'type' : 'void', 'era' : era, 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}}
     funcTable[scope]['paramsTable'] = tempParams['paramsTable']
     funcTable[scope]['varsTable'] = tempVars['varsTable']
-    tempVars = {'varsTable' : {}} 
-    tempParams = {'paramsTable' : {}}
-    iParams = 0
+
+    tempDump()
 
 def p_varsblock(p):
     '''varsblock : vars varsblock 
                  | empty'''
     
-def p_globalstartingquad(p):
-    '''globalstartingquad : empty'''
-    global iQuads 
-    pjumps.append(iQuads)
 
 def p_startingquad(p):
     '''startingquad : empty'''
@@ -302,10 +383,27 @@ def p_startingquad(p):
 
 def p_vars(p):
     'vars : VARDEF type ID vars1 SEMICOLON'
+    global dirMem
+    global virMem
     global tempVars
+    global globFlag
+    global era
+    
     x = p[3]
+
+    if globFlag == True :
+        address = dirMem['global'][tempType]
+        dirMem['global'][tempType] = address + 1
+    elif globFlag ==  False : 
+        address = dirMem['local'][tempType]
+        dirMem['local'][tempType] = address + 1
+        virMem['local'][tempType].append(x)
+
     if x not in tempVars['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
-        tempVars['varsTable'][x] = {'type' : tempType, 'param' : 'NO'}
+        tempVars['varsTable'][x] = {'type' : tempType, 'address' : address}
+        era[tempType] = era[tempType] + 1
+        
+        
     else : 
         errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
         sys.exit(errorMsg)
@@ -329,11 +427,19 @@ def p_params(p):
     global tempType
     global tempParams
     global iParams
+    global dirMem
+    global virMem
+    global era
     x = p[2]
+
+    address = dirMem['local'][tempType]
+    dirMem['local'][tempType] = address + 1
     if len(p) > 2 : 
         if x not in tempVars['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
-            tempVars['varsTable'][x] = {'type' : tempType, 'param': iParams+1}
+            tempVars['varsTable'][x] = {'type' : tempType, 'address' : address}
             tempParams['paramsTable'][iParams+1] = {'ID' : x, 'type' : tempType}
+            era[tempType] = era[tempType] + 1
+            virMem['local'][tempType].append(x)
             iParams = iParams + 1
         else : 
             errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
@@ -400,9 +506,15 @@ def p_assign(p):
         idtyp = tempVars['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
-            newQuad('=', '', rop, x)
+            newQuad('=', '', rop, tempVars['varsTable'][x]['address'])
+    elif x in funcTable['global']['varsTable'].keys() : 
+        idtyp = funcTable['global']['varsTable'][x]['type']
+        restyp = typeCheck('=', idtyp, rtyp)
+        if restyp != False : 
+            newQuad('=', '', rop, funcTable['global']['varsTable'][x]['address'])
     else: 
-        sys.exit(p[1], ": variable not declared or not of a supported type.")
+        errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
+        sys.exit(errorMsg)
 
 def p_assign1(p):
     '''assign1 : LBRACKET express RBRACKET 
@@ -413,12 +525,10 @@ def p_call(p):
     
     global paramCall
     global calledFunc
-    print (paramCall)
-    print (paramCall.values())
+    jump = funcTable[calledFunc]['start']
     if len(paramCall.keys()) != funcTable[calledFunc]['params'] : 
         errorMsg = ("ERROR: Number of parameters don't match.")
         sys.exit(errorMsg)
-    
     i = 1
     while i <= funcTable[calledFunc]['params'] :
         if paramCall[i]['type'] == funcTable[calledFunc]['paramsTable'][i]['type'] : 
@@ -428,6 +538,7 @@ def p_call(p):
             sys.exit(errorMsg)
 
         i = i + 1
+    newQuad('GOSUB', calledFunc, '', jump)
     
     paramCall = {}
 
@@ -554,19 +665,53 @@ def p_constant(p):
     global scope
     global pconsts
     global ptypes
-    pconsts.append(p[1])
+    global dirMem
+
     if p[1] in tempVars['varsTable'].keys() :
         ptypes.append(tempVars['varsTable'][p[1]]['type'])
+        pconsts.append(tempVars['varsTable'][p[1]]['address'])
+    elif p[1] in funcTable['global']['varsTable'].keys() :
+        ptypes.append(funcTable['global']['varsTable'][p[1]]['type'])
+        pconsts.append(funcTable['global']['varsTable'][p[1]]['address'])
     elif p[1] == 'true' or p[1] == 'false' :
+        address = dirMem['const']['bool']
+        dirMem['const']['bool'] = address + 1
+        virMem['const']['bool'].append(p[1])
+        pconsts.append(address)
         ptypes.append('bool')
-    elif p[1].isalpha() and len(p[1] == 1): 
+    elif p[1].isalpha() and len(p[1]) == 1: 
+        if p[1] not in virMem['const']['char'] :
+            address = dirMem['const']['char']
+            dirMem['const']['char'] = address + 1
+            virMem['const']['char'].append(p[1])
+        else : 
+            pos = virMem['const']['char'].index(p[1])
+            address = 43000 + pos
+        pconsts.append(address)
         ptypes.append('char')
     elif p[1].isnumeric() :
+        if p[1] not in virMem['const']['int'] :
+            address = dirMem['const']['int']
+            dirMem['const']['int'] = address + 1
+            virMem['const']['int'].append(p[1])
+        else : 
+            pos = virMem['const']['int'].index(p[1])
+            address = 41000 + pos
+        pconsts.append(address)
         ptypes.append('int')
     elif isfloat(p[1]) :
+        if p[1] not in virMem['const']['float'] :
+            address = dirMem['const']['float']
+            dirMem['const']['float'] = address + 1
+            virMem['const']['float'].append(p[1])
+        else : 
+            pos = virMem['const']['float'].index(p[1])
+            address = 42000 + pos
+        pconsts.append(address)
         ptypes.append('float')
     else : 
-        sys.exit(p[1], ": variable not declared or of not supported type.")
+        errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
+        sys.exit(errorMsg)
 
 def p_express(p):
     'express : express1 relational express2'
@@ -595,7 +740,7 @@ def p_andor(p):
         ope = popers.pop()
         restyp = typeCheck(ope, ltyp, rtyp)
         if restyp != False :
-            temp = newTemp(restyp)
+            temp = newAdd(restyp)
             newQuad(ope, lop, rop, temp)
 
 def p_relational(p):
@@ -618,7 +763,7 @@ def p_relational1(p):
         ope = popers.pop()
         restyp = typeCheck(ope, ltyp, rtyp)
         if restyp != False :
-            temp = newTemp(restyp)
+            temp = newAdd(restyp)
             newQuad(ope, lop, rop, temp)
 
 def p_compare(p):
@@ -643,7 +788,7 @@ def p_exp(p):
         ope = popers.pop()
         restyp = typeCheck(ope, ltyp, rtyp)
         if restyp != False :
-            temp = newTemp(restyp)
+            temp = newAdd(restyp)
             newQuad(ope, lop, rop, temp)
 
 def p_exp1(p):
@@ -670,7 +815,7 @@ def p_term(p):
         ope = popers.pop()
         restyp = typeCheck(ope, ltyp, rtyp)
         if restyp != False :
-            temp = newTemp(restyp)
+            temp = newAdd(restyp)
             newQuad(ope, lop, rop, temp)
 
 def p_term1(p):
@@ -697,7 +842,7 @@ def p_error(p):
 
 parser = yacc.yacc()
 
-filename = "docs/tests/prueba1.txt"
+filename = "docs/tests/prueba2.txt"
 fp = codecs.open(filename,"r")
 nextline = fp.read()
 fp.close()
@@ -720,6 +865,8 @@ if compileFlag == True:
     print("consts", pconsts)
     print("tips", ptypes)
     print("jumps", pjumps)
+    print (era)
+    print(virMem)
 else:
     print("ERROR: Could not compile")
 
