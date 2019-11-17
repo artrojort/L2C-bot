@@ -402,8 +402,6 @@ def p_vars(p):
     if x not in tempVars['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
         tempVars['varsTable'][x] = {'type' : tempType, 'address' : address}
         era[tempType] = era[tempType] + 1
-        
-        
     else : 
         errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
         sys.exit(errorMsg)
@@ -511,7 +509,7 @@ def p_assign(p):
         idtyp = funcTable['global']['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
-            newQuad('=', '', rop, funcTable['global']['varsTable'][x]['address'])
+            newQuad('=', rop, '', funcTable['global']['varsTable'][x]['address'])
     else: 
         errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
         sys.exit(errorMsg)
@@ -590,9 +588,20 @@ def p_cin4(p):
 
 def p_cout(p):
     'cout : COUT LPAREN express RPAREN SEMICOLON'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    newQuad('PRINT', rop, '', '')
 
 def p_delay(p):
-    'delay : DELAY LPAREN CTE_INT RPAREN SEMICOLON'
+    'delay : DELAY LPAREN express RPAREN SEMICOLON'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    if rtyp == 'int' :
+        newQuad('DELAY', rop, '', '')
+    else : 
+        errorMsg = "ERROR: delay() was called with a " + rtyp + " but only works with int values."
+        sys.exit(errorMsg)
+ 
 
 def p_forward(p):
     'forward : FORWARD LPAREN express COMMA express RPAREN SEMICOLON'
@@ -600,31 +609,86 @@ def p_forward(p):
     rtyp = ptypes.pop()
     lop = pconsts.pop()
     ltyp = ptypes.pop()
-    newQuad('fwd', lop, rop, '')
+    if rtyp == 'int' and ltyp == 'int':
+        newQuad('FORWD', lop, rop, '')
+    else : 
+        errorMsg = "ERROR: expected int value, got " + rtyp + " instead."
+        sys.exit(errorMsg)
+    
 
 def p_backward(p):
     'backward : BACKWARD LPAREN express COMMA express RPAREN SEMICOLON'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    lop = pconsts.pop()
+    ltyp = ptypes.pop()
+    if rtyp == 'int' and ltyp == 'int':
+        newQuad('BACKWD', lop, rop, '')
+    else : 
+        errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
+        sys.exit(errorMsg)
+
 
 def p_turnleft(p):
     'turnleft : TURNLEFT LPAREN express COMMA express RPAREN SEMICOLON'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    lop = pconsts.pop()
+    ltyp = ptypes.pop()
+    if rtyp == 'int' and ltyp == 'int':
+        newQuad('', lop, rop, '')
+    else : 
+        errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
+        sys.exit(errorMsg)
 
 def p_turnright(p):
     'turnright : TURNRIGHT LPAREN express COMMA express RPAREN SEMICOLON'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    lop = pconsts.pop()
+    ltyp = ptypes.pop()
+    if rtyp == 'int' and ltyp == 'int':
+        newQuad('TURNRIGHT', lop, rop, '')
+    else : 
+        errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
+        sys.exit(errorMsg)
+    
 
 def p_servo(p):
     'servo : SERVO LPAREN express RPAREN SEMICOLON'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    if rtyp == 'int':
+        newQuad('SERVO', rop, '', '')
+    else : 
+        errorMsg = "ERROR: expected int, got " + rtyp + " instead."
+        sys.exit(errorMsg)
 
 def p_lights(p):
-    'lights :  LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON'
+    'lights :  LIGHTS LPAREN express COMMA express RPAREN SEMICOLON'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    lop = pconsts.pop()
+    ltyp = ptypes.pop()
+    if rtyp == 'int' and ltyp == 'int':
+        newQuad('LIGHTS', lop, rop, '')
+    else : 
+        errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
+        sys.exit(errorMsg)
 
 def p_display(p):
-    'display : DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON'
+    'display : DISPLAY LPAREN express RPAREN SEMICOLON'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    newQuad('DISPLAY', rop, '', '')
 
 def p_distance(p):
     'distance : DISTANCE LPAREN RPAREN SEMICOLON'
+    newQuad('DISPLAY', '', '', '')
 
 def p_stop(p):
     'stop : STOP LPAREN RPAREN SEMICOLON'
+    newQuad('STOP', '', '', '')
 
 def p_while(p):
     '''while : WHILE LPAREN express RPAREN while1 LCURLY block RCURLY SEMICOLON'''

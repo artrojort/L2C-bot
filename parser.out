@@ -71,14 +71,14 @@ Rule 60    cin3 -> LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN
 Rule 61    cin4 -> COMMA ID cin4
 Rule 62    cin4 -> empty
 Rule 63    cout -> COUT LPAREN express RPAREN SEMICOLON
-Rule 64    delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON
+Rule 64    delay -> DELAY LPAREN express RPAREN SEMICOLON
 Rule 65    forward -> FORWARD LPAREN express COMMA express RPAREN SEMICOLON
 Rule 66    backward -> BACKWARD LPAREN express COMMA express RPAREN SEMICOLON
 Rule 67    turnleft -> TURNLEFT LPAREN express COMMA express RPAREN SEMICOLON
 Rule 68    turnright -> TURNRIGHT LPAREN express COMMA express RPAREN SEMICOLON
 Rule 69    servo -> SERVO LPAREN express RPAREN SEMICOLON
-Rule 70    lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON
-Rule 71    display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON
+Rule 70    lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON
+Rule 71    display -> DISPLAY LPAREN express RPAREN SEMICOLON
 Rule 72    distance -> DISTANCE LPAREN RPAREN SEMICOLON
 Rule 73    stop -> STOP LPAREN RPAREN SEMICOLON
 Rule 74    while -> WHILE LPAREN express RPAREN while1 LCURLY block RCURLY SEMICOLON
@@ -135,9 +135,9 @@ COMMA                : 20 54 61 65 66 67 68 70
 COUT                 : 63
 CTE_ARR              : 
 CTE_BOOL             : 85
-CTE_CHAR             : 71 84
+CTE_CHAR             : 84
 CTE_FLOAT            : 83
-CTE_INT              : 15 60 64 70 70 82
+CTE_INT              : 15 60 82
 DELAY                : 64
 DISPLAY              : 71
 DISTANCE             : 72
@@ -205,7 +205,7 @@ empty                : 2 3 7 10 12 13 16 21 23 25 44 47 50 55 62 75 88 90 96 103
 era                  : 51
 exp                  : 93 95 102
 exp1                 : 101
-express              : 43 48 49 53 63 65 65 66 66 67 67 68 68 69 74 76 89 111
+express              : 43 48 49 53 63 64 65 65 66 66 67 67 68 68 69 70 70 71 74 76 89 111
 express1             : 86
 express2             : 86
 factor               : 106
@@ -1006,14 +1006,14 @@ state 56
     (51) call -> . era LPAREN paramcall RPAREN SEMICOLON
     (56) cin -> . CIN cin1 SEMICOLON
     (63) cout -> . COUT LPAREN express RPAREN SEMICOLON
-    (64) delay -> . DELAY LPAREN CTE_INT RPAREN SEMICOLON
+    (64) delay -> . DELAY LPAREN express RPAREN SEMICOLON
     (65) forward -> . FORWARD LPAREN express COMMA express RPAREN SEMICOLON
     (66) backward -> . BACKWARD LPAREN express COMMA express RPAREN SEMICOLON
     (67) turnleft -> . TURNLEFT LPAREN express COMMA express RPAREN SEMICOLON
     (68) turnright -> . TURNRIGHT LPAREN express COMMA express RPAREN SEMICOLON
     (69) servo -> . SERVO LPAREN express RPAREN SEMICOLON
-    (70) lights -> . LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON
-    (71) display -> . DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON
+    (70) lights -> . LIGHTS LPAREN express COMMA express RPAREN SEMICOLON
+    (71) display -> . DISPLAY LPAREN express RPAREN SEMICOLON
     (72) distance -> . DISTANCE LPAREN RPAREN SEMICOLON
     (73) stop -> . STOP LPAREN RPAREN SEMICOLON
     (74) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY SEMICOLON
@@ -1156,14 +1156,14 @@ state 61
     (51) call -> . era LPAREN paramcall RPAREN SEMICOLON
     (56) cin -> . CIN cin1 SEMICOLON
     (63) cout -> . COUT LPAREN express RPAREN SEMICOLON
-    (64) delay -> . DELAY LPAREN CTE_INT RPAREN SEMICOLON
+    (64) delay -> . DELAY LPAREN express RPAREN SEMICOLON
     (65) forward -> . FORWARD LPAREN express COMMA express RPAREN SEMICOLON
     (66) backward -> . BACKWARD LPAREN express COMMA express RPAREN SEMICOLON
     (67) turnleft -> . TURNLEFT LPAREN express COMMA express RPAREN SEMICOLON
     (68) turnright -> . TURNRIGHT LPAREN express COMMA express RPAREN SEMICOLON
     (69) servo -> . SERVO LPAREN express RPAREN SEMICOLON
-    (70) lights -> . LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON
-    (71) display -> . DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON
+    (70) lights -> . LIGHTS LPAREN express COMMA express RPAREN SEMICOLON
+    (71) display -> . DISPLAY LPAREN express RPAREN SEMICOLON
     (72) distance -> . DISTANCE LPAREN RPAREN SEMICOLON
     (73) stop -> . STOP LPAREN RPAREN SEMICOLON
     (74) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY SEMICOLON
@@ -1661,7 +1661,7 @@ state 84
 
 state 85
 
-    (64) delay -> DELAY . LPAREN CTE_INT RPAREN SEMICOLON
+    (64) delay -> DELAY . LPAREN express RPAREN SEMICOLON
 
     LPAREN          shift and go to state 111
 
@@ -1703,14 +1703,14 @@ state 90
 
 state 91
 
-    (70) lights -> LIGHTS . LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON
+    (70) lights -> LIGHTS . LPAREN express COMMA express RPAREN SEMICOLON
 
     LPAREN          shift and go to state 117
 
 
 state 92
 
-    (71) display -> DISPLAY . LPAREN CTE_CHAR RPAREN SEMICOLON
+    (71) display -> DISPLAY . LPAREN express RPAREN SEMICOLON
 
     LPAREN          shift and go to state 118
 
@@ -1921,10 +1921,24 @@ state 110
 
 state 111
 
-    (64) delay -> DELAY LPAREN . CTE_INT RPAREN SEMICOLON
+    (64) delay -> DELAY LPAREN . express RPAREN SEMICOLON
+    (86) express -> . express1 relational express2
+    (87) express1 -> . NOTEQUALS
+    (88) express1 -> . empty
+    (113) empty -> .
 
-    CTE_INT         shift and go to state 136
+    NOTEQUALS       shift and go to state 126
+    NOT             reduce using rule 113 (empty -> .)
+    LPAREN          reduce using rule 113 (empty -> .)
+    ID              reduce using rule 113 (empty -> .)
+    CTE_INT         reduce using rule 113 (empty -> .)
+    CTE_FLOAT       reduce using rule 113 (empty -> .)
+    CTE_CHAR        reduce using rule 113 (empty -> .)
+    CTE_BOOL        reduce using rule 113 (empty -> .)
 
+    express                        shift and go to state 136
+    express1                       shift and go to state 125
+    empty                          shift and go to state 127
 
 state 112
 
@@ -2033,17 +2047,45 @@ state 116
 
 state 117
 
-    (70) lights -> LIGHTS LPAREN . CTE_INT COMMA CTE_INT RPAREN SEMICOLON
+    (70) lights -> LIGHTS LPAREN . express COMMA express RPAREN SEMICOLON
+    (86) express -> . express1 relational express2
+    (87) express1 -> . NOTEQUALS
+    (88) express1 -> . empty
+    (113) empty -> .
 
-    CTE_INT         shift and go to state 142
+    NOTEQUALS       shift and go to state 126
+    NOT             reduce using rule 113 (empty -> .)
+    LPAREN          reduce using rule 113 (empty -> .)
+    ID              reduce using rule 113 (empty -> .)
+    CTE_INT         reduce using rule 113 (empty -> .)
+    CTE_FLOAT       reduce using rule 113 (empty -> .)
+    CTE_CHAR        reduce using rule 113 (empty -> .)
+    CTE_BOOL        reduce using rule 113 (empty -> .)
 
+    express                        shift and go to state 142
+    express1                       shift and go to state 125
+    empty                          shift and go to state 127
 
 state 118
 
-    (71) display -> DISPLAY LPAREN . CTE_CHAR RPAREN SEMICOLON
+    (71) display -> DISPLAY LPAREN . express RPAREN SEMICOLON
+    (86) express -> . express1 relational express2
+    (87) express1 -> . NOTEQUALS
+    (88) express1 -> . empty
+    (113) empty -> .
 
-    CTE_CHAR        shift and go to state 143
+    NOTEQUALS       shift and go to state 126
+    NOT             reduce using rule 113 (empty -> .)
+    LPAREN          reduce using rule 113 (empty -> .)
+    ID              reduce using rule 113 (empty -> .)
+    CTE_INT         reduce using rule 113 (empty -> .)
+    CTE_FLOAT       reduce using rule 113 (empty -> .)
+    CTE_CHAR        reduce using rule 113 (empty -> .)
+    CTE_BOOL        reduce using rule 113 (empty -> .)
 
+    express                        shift and go to state 143
+    express1                       shift and go to state 125
+    empty                          shift and go to state 127
 
 state 119
 
@@ -2129,14 +2171,14 @@ state 123
     (51) call -> . era LPAREN paramcall RPAREN SEMICOLON
     (56) cin -> . CIN cin1 SEMICOLON
     (63) cout -> . COUT LPAREN express RPAREN SEMICOLON
-    (64) delay -> . DELAY LPAREN CTE_INT RPAREN SEMICOLON
+    (64) delay -> . DELAY LPAREN express RPAREN SEMICOLON
     (65) forward -> . FORWARD LPAREN express COMMA express RPAREN SEMICOLON
     (66) backward -> . BACKWARD LPAREN express COMMA express RPAREN SEMICOLON
     (67) turnleft -> . TURNLEFT LPAREN express COMMA express RPAREN SEMICOLON
     (68) turnright -> . TURNRIGHT LPAREN express COMMA express RPAREN SEMICOLON
     (69) servo -> . SERVO LPAREN express RPAREN SEMICOLON
-    (70) lights -> . LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON
-    (71) display -> . DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON
+    (70) lights -> . LIGHTS LPAREN express COMMA express RPAREN SEMICOLON
+    (71) display -> . DISPLAY LPAREN express RPAREN SEMICOLON
     (72) distance -> . DISTANCE LPAREN RPAREN SEMICOLON
     (73) stop -> . STOP LPAREN RPAREN SEMICOLON
     (74) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY SEMICOLON
@@ -2339,7 +2381,7 @@ state 135
 
 state 136
 
-    (64) delay -> DELAY LPAREN CTE_INT . RPAREN SEMICOLON
+    (64) delay -> DELAY LPAREN express . RPAREN SEMICOLON
 
     RPAREN          shift and go to state 171
 
@@ -2381,14 +2423,14 @@ state 141
 
 state 142
 
-    (70) lights -> LIGHTS LPAREN CTE_INT . COMMA CTE_INT RPAREN SEMICOLON
+    (70) lights -> LIGHTS LPAREN express . COMMA express RPAREN SEMICOLON
 
     COMMA           shift and go to state 177
 
 
 state 143
 
-    (71) display -> DISPLAY LPAREN CTE_CHAR . RPAREN SEMICOLON
+    (71) display -> DISPLAY LPAREN express . RPAREN SEMICOLON
 
     RPAREN          shift and go to state 178
 
@@ -2769,7 +2811,7 @@ state 170
 
 state 171
 
-    (64) delay -> DELAY LPAREN CTE_INT RPAREN . SEMICOLON
+    (64) delay -> DELAY LPAREN express RPAREN . SEMICOLON
 
     SEMICOLON       shift and go to state 213
 
@@ -2867,14 +2909,28 @@ state 176
 
 state 177
 
-    (70) lights -> LIGHTS LPAREN CTE_INT COMMA . CTE_INT RPAREN SEMICOLON
+    (70) lights -> LIGHTS LPAREN express COMMA . express RPAREN SEMICOLON
+    (86) express -> . express1 relational express2
+    (87) express1 -> . NOTEQUALS
+    (88) express1 -> . empty
+    (113) empty -> .
 
-    CTE_INT         shift and go to state 219
+    NOTEQUALS       shift and go to state 126
+    NOT             reduce using rule 113 (empty -> .)
+    LPAREN          reduce using rule 113 (empty -> .)
+    ID              reduce using rule 113 (empty -> .)
+    CTE_INT         reduce using rule 113 (empty -> .)
+    CTE_FLOAT       reduce using rule 113 (empty -> .)
+    CTE_CHAR        reduce using rule 113 (empty -> .)
+    CTE_BOOL        reduce using rule 113 (empty -> .)
 
+    express                        shift and go to state 219
+    express1                       shift and go to state 125
+    empty                          shift and go to state 127
 
 state 178
 
-    (71) display -> DISPLAY LPAREN CTE_CHAR RPAREN . SEMICOLON
+    (71) display -> DISPLAY LPAREN express RPAREN . SEMICOLON
 
     SEMICOLON       shift and go to state 220
 
@@ -3406,25 +3462,25 @@ state 212
 
 state 213
 
-    (64) delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .
+    (64) delay -> DELAY LPAREN express RPAREN SEMICOLON .
 
-    IF              reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    ID              reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    CIN             reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    COUT            reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    DELAY           reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    FORWARD         reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    BACKWARD        reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    TURNLEFT        reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    TURNRIGHT       reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    SERVO           reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    LIGHTS          reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    DISPLAY         reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    DISTANCE        reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    STOP            reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    WHILE           reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    RETURN          reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
-    RCURLY          reduce using rule 64 (delay -> DELAY LPAREN CTE_INT RPAREN SEMICOLON .)
+    IF              reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    ID              reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    CIN             reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    COUT            reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    DELAY           reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    FORWARD         reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    BACKWARD        reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    TURNLEFT        reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    TURNRIGHT       reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    SERVO           reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    LIGHTS          reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    DISPLAY         reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    DISTANCE        reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    STOP            reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    WHILE           reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    RETURN          reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
+    RCURLY          reduce using rule 64 (delay -> DELAY LPAREN express RPAREN SEMICOLON .)
 
 
 state 214
@@ -3480,32 +3536,32 @@ state 218
 
 state 219
 
-    (70) lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT . RPAREN SEMICOLON
+    (70) lights -> LIGHTS LPAREN express COMMA express . RPAREN SEMICOLON
 
     RPAREN          shift and go to state 238
 
 
 state 220
 
-    (71) display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .
+    (71) display -> DISPLAY LPAREN express RPAREN SEMICOLON .
 
-    IF              reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    ID              reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    CIN             reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    COUT            reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    DELAY           reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    FORWARD         reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    BACKWARD        reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    TURNLEFT        reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    TURNRIGHT       reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    SERVO           reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    LIGHTS          reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    DISPLAY         reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    DISTANCE        reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    STOP            reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    WHILE           reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    RETURN          reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
-    RCURLY          reduce using rule 71 (display -> DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON .)
+    IF              reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    ID              reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    CIN             reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    COUT            reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    DELAY           reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    FORWARD         reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    BACKWARD        reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    TURNLEFT        reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    TURNRIGHT       reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    SERVO           reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    LIGHTS          reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    DISPLAY         reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    DISTANCE        reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    STOP            reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    WHILE           reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    RETURN          reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
+    RCURLY          reduce using rule 71 (display -> DISPLAY LPAREN express RPAREN SEMICOLON .)
 
 
 state 221
@@ -3573,14 +3629,14 @@ state 224
     (51) call -> . era LPAREN paramcall RPAREN SEMICOLON
     (56) cin -> . CIN cin1 SEMICOLON
     (63) cout -> . COUT LPAREN express RPAREN SEMICOLON
-    (64) delay -> . DELAY LPAREN CTE_INT RPAREN SEMICOLON
+    (64) delay -> . DELAY LPAREN express RPAREN SEMICOLON
     (65) forward -> . FORWARD LPAREN express COMMA express RPAREN SEMICOLON
     (66) backward -> . BACKWARD LPAREN express COMMA express RPAREN SEMICOLON
     (67) turnleft -> . TURNLEFT LPAREN express COMMA express RPAREN SEMICOLON
     (68) turnright -> . TURNRIGHT LPAREN express COMMA express RPAREN SEMICOLON
     (69) servo -> . SERVO LPAREN express RPAREN SEMICOLON
-    (70) lights -> . LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON
-    (71) display -> . DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON
+    (70) lights -> . LIGHTS LPAREN express COMMA express RPAREN SEMICOLON
+    (71) display -> . DISPLAY LPAREN express RPAREN SEMICOLON
     (72) distance -> . DISTANCE LPAREN RPAREN SEMICOLON
     (73) stop -> . STOP LPAREN RPAREN SEMICOLON
     (74) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY SEMICOLON
@@ -3777,7 +3833,7 @@ state 237
 
 state 238
 
-    (70) lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN . SEMICOLON
+    (70) lights -> LIGHTS LPAREN express COMMA express RPAREN . SEMICOLON
 
     SEMICOLON       shift and go to state 247
 
@@ -3810,14 +3866,14 @@ state 239
     (51) call -> . era LPAREN paramcall RPAREN SEMICOLON
     (56) cin -> . CIN cin1 SEMICOLON
     (63) cout -> . COUT LPAREN express RPAREN SEMICOLON
-    (64) delay -> . DELAY LPAREN CTE_INT RPAREN SEMICOLON
+    (64) delay -> . DELAY LPAREN express RPAREN SEMICOLON
     (65) forward -> . FORWARD LPAREN express COMMA express RPAREN SEMICOLON
     (66) backward -> . BACKWARD LPAREN express COMMA express RPAREN SEMICOLON
     (67) turnleft -> . TURNLEFT LPAREN express COMMA express RPAREN SEMICOLON
     (68) turnright -> . TURNRIGHT LPAREN express COMMA express RPAREN SEMICOLON
     (69) servo -> . SERVO LPAREN express RPAREN SEMICOLON
-    (70) lights -> . LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON
-    (71) display -> . DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON
+    (70) lights -> . LIGHTS LPAREN express COMMA express RPAREN SEMICOLON
+    (71) display -> . DISPLAY LPAREN express RPAREN SEMICOLON
     (72) distance -> . DISTANCE LPAREN RPAREN SEMICOLON
     (73) stop -> . STOP LPAREN RPAREN SEMICOLON
     (74) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY SEMICOLON
@@ -3985,25 +4041,25 @@ state 246
 
 state 247
 
-    (70) lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .
+    (70) lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .
 
-    IF              reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    ID              reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    CIN             reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    COUT            reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    DELAY           reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    FORWARD         reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    BACKWARD        reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    TURNLEFT        reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    TURNRIGHT       reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    SERVO           reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    LIGHTS          reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    DISPLAY         reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    DISTANCE        reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    STOP            reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    WHILE           reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    RETURN          reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
-    RCURLY          reduce using rule 70 (lights -> LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON .)
+    IF              reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    ID              reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    CIN             reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    COUT            reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    DELAY           reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    FORWARD         reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    BACKWARD        reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    TURNLEFT        reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    TURNRIGHT       reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    SERVO           reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    LIGHTS          reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    DISPLAY         reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    DISTANCE        reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    STOP            reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    WHILE           reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    RETURN          reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
+    RCURLY          reduce using rule 70 (lights -> LIGHTS LPAREN express COMMA express RPAREN SEMICOLON .)
 
 
 state 248
@@ -4169,14 +4225,14 @@ state 257
     (51) call -> . era LPAREN paramcall RPAREN SEMICOLON
     (56) cin -> . CIN cin1 SEMICOLON
     (63) cout -> . COUT LPAREN express RPAREN SEMICOLON
-    (64) delay -> . DELAY LPAREN CTE_INT RPAREN SEMICOLON
+    (64) delay -> . DELAY LPAREN express RPAREN SEMICOLON
     (65) forward -> . FORWARD LPAREN express COMMA express RPAREN SEMICOLON
     (66) backward -> . BACKWARD LPAREN express COMMA express RPAREN SEMICOLON
     (67) turnleft -> . TURNLEFT LPAREN express COMMA express RPAREN SEMICOLON
     (68) turnright -> . TURNRIGHT LPAREN express COMMA express RPAREN SEMICOLON
     (69) servo -> . SERVO LPAREN express RPAREN SEMICOLON
-    (70) lights -> . LIGHTS LPAREN CTE_INT COMMA CTE_INT RPAREN SEMICOLON
-    (71) display -> . DISPLAY LPAREN CTE_CHAR RPAREN SEMICOLON
+    (70) lights -> . LIGHTS LPAREN express COMMA express RPAREN SEMICOLON
+    (71) display -> . DISPLAY LPAREN express RPAREN SEMICOLON
     (72) distance -> . DISTANCE LPAREN RPAREN SEMICOLON
     (73) stop -> . STOP LPAREN RPAREN SEMICOLON
     (74) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY SEMICOLON
