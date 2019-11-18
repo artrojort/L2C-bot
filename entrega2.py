@@ -20,7 +20,7 @@ tempVars = {'sub' : {}}
 tempType = ''
 cont = 0
 
-sem_cube = {'int' : 	{ 'int' : { '+': 'int',
+semCube = {'int' : 	{ 'int' : { '+': 'int',
                                     '-': 'int',
                                     '/': 'float',
                                     '*': 'int',
@@ -88,7 +88,17 @@ sem_cube = {'int' : 	{ 'int' : { '+': 'int',
                                       '==': 'bool',
                                       '!=': 'bool'}}}
 
+def validateSemCube(a, b, ope):
+    try:
+        x = semCube[a][b][ope]
+        print(x)
+    except KeyError:
+        # Key is not present
+        print("operacion no valida")
+        pass
 
+#EJEMPLO
+validateSemCube('int', 'float', '+')
 
 reserved = {
     'program'   : 'PROGRAM',
@@ -180,7 +190,7 @@ def p_main(p):
     global curScope
     global tempVars
     curScope = 'main'
-    print(curScope, "in main")
+    # print(curScope, "in main")
     funcTable[curScope] = {'type' : 'void', 'sub' : {}}
     funcTable[curScope]['sub']= tempVars
     tempVars = {'sub' : {}} 
@@ -188,7 +198,7 @@ def p_main(p):
 
 def p_main2(p):
     'main2 : varsblock block RCURLY'
-    print(curScope, "in main")
+    # print(curScope, "in main")
     
 
 def p_funcsblock(p):
@@ -223,9 +233,9 @@ def p_vars(p):
     global tempVars
     global cont
     cont = cont +1
-    print("im in var", cont)
+    # print("im in var", cont)
     tempVars['sub'][p[3]] = {'type' : tempType}
-    print(tempVars)
+    # print(tempVars)
 
 def p_vars1(p):
     '''vars1 : LBRACKET CTE_INT RBRACKET 
