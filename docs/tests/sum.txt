@@ -1,0 +1,11 @@
+program
+
+main(){
+	vardef int x;
+    vardef int a;
+    a = 5;
+    x = a + 5;
+    cout(x);
+}
+
+fin;

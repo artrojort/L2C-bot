@@ -44,25 +44,25 @@ era =  {'int' : 0,
         'char' : 0,
         'bool' : 0}
 
-dirMem = {'global' : {'int'   : 11000,
-                    'float' : 12000,
-                    'bool'  : 13000,
-                    'char'  : 14000
+dirMem = {'global' : {'int'   : 11001,
+                    'float' : 12001,
+                    'bool'  : 13001,
+                    'char'  : 14001
                     },
-        'local'  : {'int'   : 21000,
-                    'float' : 22000,
-                    'bool'  : 23000,
-                    'char'  : 24000
+        'local'  : {'int'   : 21001,
+                    'float' : 22001,
+                    'bool'  : 23001,
+                    'char'  : 24001
                     },
-        'temp'   : {'int'   : 31000,
-                    'float' : 32000,
-                    'bool'  : 33000,
-                    'char'  : 34000
+        'temp'   : {'int'   : 31001,
+                    'float' : 32001,
+                    'bool'  : 33001,
+                    'char'  : 34001
                     },
-        'const'  : {'int'   : 41000,
-                    'float' : 42000,
-                    'bool'  : 43000,
-                    'char'  : 44000
+        'const'  : {'int'   : 41001,
+                    'float' : 42001,
+                    'bool'  : 43001,
+                    'char'  : 44001
                     }
         }
 
@@ -125,14 +125,14 @@ def tempDump():
         'char' : 0,
         'bool' : 0}
 
-    dirMem['local']['int'] = 20000
-    dirMem['local']['float'] = 21000
-    dirMem['local']['bool'] = 22000
-    dirMem['local']['char'] = 23000
-    dirMem['temp']['int'] = 30000
-    dirMem['temp']['float'] = 31000
-    dirMem['temp']['bool'] = 32000
-    dirMem['temp']['char'] = 33000
+    dirMem['local']['int'] = 21001
+    dirMem['local']['float'] = 22001
+    dirMem['local']['bool'] = 23001
+    dirMem['local']['char'] = 24001
+    dirMem['temp']['int'] = 31001
+    dirMem['temp']['float'] = 32001
+    dirMem['temp']['bool'] = 33001
+    dirMem['temp']['char'] = 34001
 
 opeCode = {
 	'GOTO'      : 0,
@@ -394,6 +394,7 @@ def p_vars(p):
     if globFlag == True :
         address = dirMem['global'][tempType]
         dirMem['global'][tempType] = address + 1
+        virMem['global'][tempType].append(x)
     elif globFlag ==  False : 
         address = dirMem['local'][tempType]
         dirMem['local'][tempType] = address + 1
@@ -504,7 +505,7 @@ def p_assign(p):
         idtyp = tempVars['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
-            newQuad('=', '', rop, tempVars['varsTable'][x]['address'])
+            newQuad('=', rop, '', tempVars['varsTable'][x]['address'])
     elif x in funcTable['global']['varsTable'].keys() : 
         idtyp = funcTable['global']['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
@@ -546,9 +547,13 @@ def p_era(p):
     global calledFunc
     calledFunc = p[1]
     iCalledParams = funcTable[calledFunc]['params']
-    
+    era = []
+    era.append(funcTable[calledFunc]['era']['int'])
+    era.append(funcTable[calledFunc]['era']['float'])
+    era.append(funcTable[calledFunc]['era']['char'])
+    era.append(funcTable[calledFunc]['era']['bool'])
     if calledFunc in funcTable.keys() : 
-        newQuad('ERA', '', '', calledFunc)
+        newQuad('ERA', calledFunc, '', str(era))
     else : 
         errorMsg = "ERROR: function " + calledFunc + " hasn't been declared"
         sys.exit(errorMsg)
@@ -710,7 +715,7 @@ def p_return(p):
     'return : RETURN LPAREN express RPAREN SEMICOLON'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
-    newQuad('ret', rop , '', '')
+    newQuad('RETURN', rop , '', '')
 
 def p_type(p):
     '''type : INT
@@ -906,25 +911,32 @@ def p_error(p):
 
 parser = yacc.yacc()
 
-filename = "docs/tests/prueba2.txt"
+filename = "docs/tests/sum.txt"
 fp = codecs.open(filename,"r")
 nextline = fp.read()
 fp.close()
 lexer.input(nextline)
 parser.parse(nextline)
 
-midcode = open("midcode.txt", "w")
+midcode = open("midcode.l2c", "w")
 if compileFlag == True:
     print("Compiled succesfull")
     for x in funcTable.items():
-        midcode.write(str(x)+"\n")
         print(x)
     i = 0
-    midcode.write("$QUADS$")
     for x in quads :
-        midcode.write(str(i) + str(x)+"\n")
+        for _ in range(4) : 
+            if x[_] == '' : 
+                midcode.write("¬ ")
+            else:
+                midcode.write(str(x[_]) + " ")
+        midcode.write("\n")
         print (i, x)
         i = i + 1
+    midcode.write("ENDPROG\n")
+    midcode.write("GLOB \n" + str(virMem['global']['int']) + str(virMem['global']['float']) + str(virMem['global']['char']) + str(virMem['global']['bool'])+"\n")    
+    midcode.write("LOC \n" + str(virMem['local']['int']) +str(virMem['local']['float']) + str(virMem['local']['char']) + str(virMem['local']['bool'])+ "\n")
+    midcode.write("CONST \n" + str(virMem['const']['int']) + str(virMem['const']['float']) + str(virMem['const']['char']) + str(virMem['const']['bool']))
     print("opers", popers)
     print("consts", pconsts)
     print("tips", ptypes)
