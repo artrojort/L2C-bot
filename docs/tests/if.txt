@@ -1,0 +1,15 @@
+program
+
+main(){
+    vardef int a;
+    vardef int b;
+    a = 5;
+    b = 10;
+    if (a > b){
+	   cout(a+100);
+    }else{
+	   cout(b+1);
+	};
+}
+
+fin;

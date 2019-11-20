@@ -1,11 +1,11 @@
 program
 
 main(){
-	vardef int x;
     vardef int a;
+    vardef int b;
     a = 5;
-    x = a + 5;
-    cout(x);
+    b = a * 2;
+    cout(b - 9);
 }
 
 fin;

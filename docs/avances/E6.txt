@@ -1,0 +1,5 @@
+Los quádruplos ya se generan con direcciones de memoria.
+Se ensambló el carro arduino y ya se probaron los comandos
+que se correrán durante su funcionamiento.
+La máquina virtual ya corre estatutos de aritmetica y saltos (GOTOs)
+Varios bugfixes de cuádruplos sobre errores de generación de memoria. 

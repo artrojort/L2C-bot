@@ -104,6 +104,7 @@ def newAdd(varType):
     global dirMem
     address = dirMem['temp'][varType]
     dirMem['temp'][varType] = address + 1
+    virMem['temp'][varType].append(address)
     pconsts.append(address)
     ptypes.append(varType)
     return address
@@ -221,8 +222,7 @@ reserved = {
     'program'   : 'PROGRAM',
     'main'      : 'MAIN',
     'vardef'    : 'VARDEF',
-    'funcdef'   : 'FUNCDEF', 
-    'call'      : 'CALL',
+    'funcdef'   : 'FUNCDEF',
     'if'        : 'IF',
     'else'      : 'ELSE',
     'cin'       : 'CIN',
@@ -343,19 +343,8 @@ def p_funcsblock(p):
     
 
 def p_funcs(p):
-    'funcs : FUNCDEF choosetype ID LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY'''
-    global scope
-    global tempVars
-    global tempParams
-    global iParams
-
-    scope = p[3]
-    start = pjumps.pop()
-    funcTable[scope] = {'type' : tempType, 'era' : era, 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}, 'start' : start}
-    funcTable[scope]['paramsTable'] = tempParams['paramsTable']
-    funcTable[scope]['varsTable'] = tempVars['varsTable']
-
-    tempDump()
+    'funcs : FUNCDEF choosetype setscope LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY'''
+    
 
 def p_globalvarsblock(p):
     '''globalvarsblock : vars varsblock 
@@ -371,6 +360,11 @@ def p_globalvarsblock(p):
 
     tempDump()
 
+def p_setscope(p):
+    '''setscope : ID'''
+    global scope
+    scope = p[1]
+
 def p_varsblock(p):
     '''varsblock : vars varsblock 
                  | empty'''
@@ -378,8 +372,14 @@ def p_varsblock(p):
 
 def p_startingquad(p):
     '''startingquad : empty'''
-    global iQuads 
-    pjumps.append(iQuads)
+    global tempVars
+    global tempParams
+
+    funcTable[scope] = {'type' : tempType, 'era' : era, 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}, 'start' : iQuads}
+    funcTable[scope]['paramsTable'] = tempParams['paramsTable']
+    funcTable[scope]['varsTable'] = tempVars['varsTable']
+
+    tempDump()
 
 def p_vars(p):
     'vars : VARDEF type ID vars1 SEMICOLON'
@@ -501,18 +501,18 @@ def p_assign(p):
     x = p[1]
     rop = pconsts.pop()
     rtyp = ptypes.pop()
-    if x in tempVars['varsTable'].keys() : 
-        idtyp = tempVars['varsTable'][x]['type']
+    if x in funcTable[scope]['varsTable'].keys() : 
+        idtyp = funcTable[scope]['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
-            newQuad('=', rop, '', tempVars['varsTable'][x]['address'])
+            newQuad('=', rop, '', funcTable[scope]['varsTable'][x]['address'])
     elif x in funcTable['global']['varsTable'].keys() : 
         idtyp = funcTable['global']['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
             newQuad('=', rop, '', funcTable['global']['varsTable'][x]['address'])
     else: 
-        errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
+        errorMsg = str(p[1]) +  " : variable not declared or of not supported type." + str(tempVars['varsTable'].keys())
         sys.exit(errorMsg)
 
 def p_assign1(p):
@@ -592,10 +592,18 @@ def p_cin4(p):
            | empty'''
 
 def p_cout(p):
-    'cout : COUT LPAREN express RPAREN SEMICOLON'
+    'cout : COUT LPAREN express cout1 RPAREN SEMICOLON'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     newQuad('PRINT', rop, '', '')
+
+def p_cout1(p):
+    '''cout1 : COMMA express cout1
+             | empty'''
+    if len(p) > 2:
+        rop = pconsts.pop()
+        rtyp = ptypes.pop()
+        newQuad('PRINT', rop, '', '')
 
 def p_delay(p):
     'delay : DELAY LPAREN express RPAREN SEMICOLON'
@@ -657,7 +665,6 @@ def p_turnright(p):
     else : 
         errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
         sys.exit(errorMsg)
-    
 
 def p_servo(p):
     'servo : SERVO LPAREN express RPAREN SEMICOLON'
@@ -731,14 +738,13 @@ def p_constant(p):
                 | CTE_FLOAT
                 | CTE_CHAR
                 | CTE_BOOL'''
-    global scope
     global pconsts
     global ptypes
     global dirMem
 
-    if p[1] in tempVars['varsTable'].keys() :
-        ptypes.append(tempVars['varsTable'][p[1]]['type'])
-        pconsts.append(tempVars['varsTable'][p[1]]['address'])
+    if p[1] in funcTable[scope]['varsTable'].keys() :
+        ptypes.append(funcTable[scope]['varsTable'][p[1]]['type'])
+        pconsts.append(funcTable[scope]['varsTable'][p[1]]['address'])
     elif p[1] in funcTable['global']['varsTable'].keys() :
         ptypes.append(funcTable['global']['varsTable'][p[1]]['type'])
         pconsts.append(funcTable['global']['varsTable'][p[1]]['address'])
@@ -755,7 +761,7 @@ def p_constant(p):
             virMem['const']['char'].append(p[1])
         else : 
             pos = virMem['const']['char'].index(p[1])
-            address = 43000 + pos
+            address = 43001 + pos
         pconsts.append(address)
         ptypes.append('char')
     elif p[1].isnumeric() :
@@ -765,7 +771,7 @@ def p_constant(p):
             virMem['const']['int'].append(p[1])
         else : 
             pos = virMem['const']['int'].index(p[1])
-            address = 41000 + pos
+            address = 41001 + pos
         pconsts.append(address)
         ptypes.append('int')
     elif isfloat(p[1]) :
@@ -775,7 +781,7 @@ def p_constant(p):
             virMem['const']['float'].append(p[1])
         else : 
             pos = virMem['const']['float'].index(p[1])
-            address = 42000 + pos
+            address = 42001 + pos
         pconsts.append(address)
         ptypes.append('float')
     else : 
@@ -898,7 +904,8 @@ def p_multidivi(p):
 
 def p_factor(p): 
     '''factor : LPAREN express RPAREN
-              | constant'''
+              | constant
+              | call'''
 
 def p_empty(p):
     'empty :'
@@ -909,9 +916,153 @@ def p_error(p):
     global compileFlag 
     compileFlag = False
 
-parser = yacc.yacc()
+def memRead(dir):
 
-filename = "docs/tests/sum.txt"
+    dir = str(dir)
+    pos = int(dir[2] + dir[3] + dir[4])-1
+
+    if dir[0] == '1':
+        scope = 'global'
+    elif dir[0] == '2':
+        scope = 'local'
+    elif dir[0] =='3':
+        scope = 'temp'
+    elif dir[0] == '4':
+        scope = 'const'
+    
+    if dir[1] == '1':
+        typ = 'int'
+        val = virMem[scope][typ][pos]
+        return int(val)
+    elif dir[1] == '2':
+        typ = 'float'
+        val = virMem[scope][typ][pos]
+        return float(val)
+    elif dir[1] == '3':
+        typ = 'bool'
+        val = virMem[scope][typ][pos]
+        return bool(val)
+    elif dir[1] == '4':
+        typ = 'char'
+        val = virMem[scope][typ][pos]
+        return str(val)
+    else :
+        sys.exit("ERROR: Tried to access unassigned memory space")
+
+def memWrite(val, dir):
+    dir = str(dir)
+    pos = int(dir[2] + dir[3] + dir[4])-1
+    if dir[0] == '1':
+        scope = 'global'
+    elif dir[0] == '2':
+        scope = 'local'
+    elif dir[0] =='3':
+        scope = 'temp'
+    elif dir[0] == '4':
+        scope = 'const'
+    
+    if dir[1] == '1':
+        typ = 'int'
+        virMem[scope][typ][pos] = int(val)
+    elif dir[1] == '2':
+        typ = 'float'
+        virMem[scope][typ][pos] = float(val)
+    elif dir[1] == '3':
+        typ = 'bool'
+        virMem[scope][typ][pos] = bool(val)
+    elif dir[1] == '4':
+        typ = 'char'
+        virMem[scope][typ][pos] = str(val)
+    
+    return val
+
+def virtualMachine() : 
+    qPos = 0
+    while qPos < len(quads) :
+        ope = quads[qPos][0]
+        if ope == 'GOTO':
+            qPos = quads[qPos][3]
+
+        if ope == 'GOTOF':
+            lop = memRead(quads[qPos][1])
+            print(lop)
+            if lop == False:
+                qPos = quads[qPos][3]  
+            else :
+                qPos = qPos + 1
+
+        elif ope == '+':
+            lop = memRead(quads[qPos][1])
+            rop = memRead(quads[qPos][2])
+            val = lop + rop
+            res = quads[qPos][3]
+            memWrite(val, res)
+            qPos = qPos + 1
+        
+        elif ope == '-':
+            lop = memRead(quads[qPos][1])
+            rop = memRead(quads[qPos][2])
+            val = lop - rop
+            res = quads[qPos][3]
+            memWrite(val, res)
+            qPos = qPos + 1
+        
+        elif ope == '*':
+            lop = memRead(quads[qPos][1])
+            rop = memRead(quads[qPos][2])
+            val = lop * rop
+            res = quads[qPos][3]
+            memWrite(val, res)
+            qPos = qPos + 1
+
+        elif ope == '/':
+            lop = memRead(quads[qPos][1])
+            rop = memRead(quads[qPos][2])
+            val = lop / rop
+            res = quads[qPos][3]
+            memWrite(val, res)
+            qPos = qPos + 1
+
+        elif ope == '=':
+            rop = memRead(quads[qPos][1])
+            res = quads[qPos][3]
+            memWrite(rop, res)
+            qPos = qPos + 1
+        
+        elif ope == '<':
+            lop = memRead(quads[qPos][1])
+            rop = memRead(quads[qPos][2])
+            val = lop < rop
+            res = quads[qPos][3]
+            memWrite(val, res)
+            qPos = qPos + 1
+
+        elif ope == '>':
+            lop = memRead(quads[qPos][1])
+            rop = memRead(quads[qPos][2])
+            val = lop > rop
+            res = quads[qPos][3]
+            memWrite(val, res)
+            qPos = qPos + 1
+
+        elif ope == '==':
+            lop = memRead(quads[qPos][1])
+            rop = memRead(quads[qPos][2])
+            val = lop == rop
+            res = quads[qPos][3]
+            memWrite(val, res)
+            qPos = qPos + 1
+        
+        elif ope == 'PRINT' :
+            rop = memRead(quads[qPos][1])
+            print("PRINT")
+            print(rop)
+            qPos = qPos + 1
+
+
+parser = yacc.yacc()
+fileinput = input("FILENAME: ")
+filename = "docs/tests/" + fileinput  + ".txt"
 fp = codecs.open(filename,"r")
 nextline = fp.read()
 fp.close()
@@ -923,20 +1074,9 @@ if compileFlag == True:
     print("Compiled succesfull")
     for x in funcTable.items():
         print(x)
-    i = 0
     for x in quads :
-        for _ in range(4) : 
-            if x[_] == '' : 
-                midcode.write("¬ ")
-            else:
-                midcode.write(str(x[_]) + " ")
-        midcode.write("\n")
-        print (i, x)
-        i = i + 1
-    midcode.write("ENDPROG\n")
-    midcode.write("GLOB \n" + str(virMem['global']['int']) + str(virMem['global']['float']) + str(virMem['global']['char']) + str(virMem['global']['bool'])+"\n")    
-    midcode.write("LOC \n" + str(virMem['local']['int']) +str(virMem['local']['float']) + str(virMem['local']['char']) + str(virMem['local']['bool'])+ "\n")
-    midcode.write("CONST \n" + str(virMem['const']['int']) + str(virMem['const']['float']) + str(virMem['const']['char']) + str(virMem['const']['bool']))
+        midcode.write(str(x) + "\n")
+        print(x)
     print("opers", popers)
     print("consts", pconsts)
     print("tips", ptypes)
@@ -945,8 +1085,10 @@ if compileFlag == True:
     print(virMem)
 else:
     print("ERROR: Could not compile")
-
+#virtualMachine()
 midcode.close()
+
+print(virMem)
 
 
     

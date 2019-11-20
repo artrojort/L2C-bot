@@ -1,0 +1,16 @@
+program
+
+vardef int i;
+
+
+funcdef void uno(int a){
+	a = 5;
+	uno(a+1);
+}
+
+main(){
+	vardef int z;
+	z = 5;
+	cout(z);
+}
+fin;

@@ -6,7 +6,7 @@ vardef bool gb;
 funcdef int funcA(int prueba1, float prueba2, bool prueba3){
     vardef float a1;
     vardef int b1;
-    vardef int c1;
+    vardef int c1
     c1 = 1+c1;
     return(1);
 }
