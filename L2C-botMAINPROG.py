@@ -26,12 +26,11 @@ tempindex = 0
 
 
 compileFlag = True
-globFlag = True
 iQuads = 0
 iParams = 0
 iCalledParams = 0
 scope = 'global'
-funcTable = {'global' : {'type' : '', 'params' : '', 'varsTable' : {}, 'start' : ''}}
+funcTable = {'global' : {'type' : '', 'era' : [0,0,0,0], 'params' : '', 'paramsTable' : {}, 'varsTable' : {}, 'start' : ''}}
 tempVars = {'varsTable' : {}} 
 tempParams = {'paramsTable' : {}}
 paramCall  = {}
@@ -302,40 +301,26 @@ def t_newline(t):
 lexer = lex.lex()
 
 def p_program(p):
-    'program : PROGRAM gotomain globalvarsblock globalstartingquad funcsblock main FIN SEMICOLON'
+    'program : PROGRAM gotomain varsblock funcsblock main FIN SEMICOLON'
 
 def p_gotomain(p):
     'gotomain : empty'
     newQuad('GOTO', '', '', '')
 
-def p_globalstartingquad(p):
-    '''globalstartingquad : empty'''
-    global iQuads 
-    global globFlag
-    globFlag = False
-    pjumps.append(iQuads)
-    
-
 def p_main(p):
-    'main : MAIN LPAREN RPAREN LCURLY main2'
-
+    'main : MAIN setmain LPAREN RPAREN LCURLY varsblock block RCURLY'
     global scope
     global tempVars
     global iParams
     global dirMem
-    start = pjumps.pop()
+
+def p_setmain(p):
+    'setmain : empty'
+    global scope 
     scope = 'main'
-    funcTable[scope] = {'type' : 'void', 'era' : era, 'params' : iParams, 'varsTable' : {}, 'start' : start}
-    funcTable[scope]['varsTable']= tempVars['varsTable']
+    funcTable[scope] = {'type' : 'void', 'era' : era, 'params' : iParams, 'varsTable' : {}, 'start' : iQuads}
+    quads[0][3] = iQuads
 
-    tempDump()
-
-    quads[0][3] = start
-    
-
-def p_main2(p):
-    'main2 : varsblock startingquad block RCURLY'
-    
 
 def p_funcsblock(p):
     '''funcsblock : funcs funcsblock 
@@ -343,65 +328,42 @@ def p_funcsblock(p):
     
 
 def p_funcs(p):
-    'funcs : FUNCDEF choosetype setscope LPAREN paramsblock RPAREN LCURLY varsblock startingquad block RCURLY'''
+    'funcs : FUNCDEF choosetype setscope LPAREN paramsblock RPAREN LCURLY varsblock block RCURLY'''
+    funcTable[scope]['era'] = era
+    funcTable[scope]['params'] = iParams
+    tempDump()    
     
-
-def p_globalvarsblock(p):
-    '''globalvarsblock : vars varsblock 
-                       | empty'''
-    global scope
-    global tempVars
-    global tempParams   
-    global iQuads
-    global iParams
-    funcTable[scope] = {'type' : 'void', 'era' : era, 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}}
-    funcTable[scope]['paramsTable'] = tempParams['paramsTable']
-    funcTable[scope]['varsTable'] = tempVars['varsTable']
-
-    tempDump()
 
 def p_setscope(p):
     '''setscope : ID'''
     global scope
     scope = p[1]
+    funcTable[scope] = {'type' : tempType, 'era' : '', 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}, 'start' : iQuads}
 
 def p_varsblock(p):
     '''varsblock : vars varsblock 
                  | empty'''
     
-
-def p_startingquad(p):
-    '''startingquad : empty'''
-    global tempVars
-    global tempParams
-
-    funcTable[scope] = {'type' : tempType, 'era' : era, 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}, 'start' : iQuads}
-    funcTable[scope]['paramsTable'] = tempParams['paramsTable']
-    funcTable[scope]['varsTable'] = tempVars['varsTable']
-
-    tempDump()
-
 def p_vars(p):
     'vars : VARDEF type ID vars1 SEMICOLON'
     global dirMem
     global virMem
     global tempVars
-    global globFlag
     global era
     
     x = p[3]
 
-    if globFlag == True :
+    if scope == 'global' :
         address = dirMem['global'][tempType]
         dirMem['global'][tempType] = address + 1
         virMem['global'][tempType].append(x)
-    elif globFlag ==  False : 
+    else : 
         address = dirMem['local'][tempType]
         dirMem['local'][tempType] = address + 1
         virMem['local'][tempType].append(x)
 
-    if x not in tempVars['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
-        tempVars['varsTable'][x] = {'type' : tempType, 'address' : address}
+    if x not in funcTable[scope]['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
+        funcTable[scope]['varsTable'][x] = {'type' : tempType, 'address' : address}
         era[tempType] = era[tempType] + 1
     else : 
         errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
@@ -434,9 +396,9 @@ def p_params(p):
     address = dirMem['local'][tempType]
     dirMem['local'][tempType] = address + 1
     if len(p) > 2 : 
-        if x not in tempVars['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
-            tempVars['varsTable'][x] = {'type' : tempType, 'address' : address}
-            tempParams['paramsTable'][iParams+1] = {'ID' : x, 'type' : tempType}
+        if x not in funcTable[scope]['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
+            funcTable[scope]['varsTable'][x] = {'type' : tempType, 'address' : address}
+            funcTable[scope]['paramsTable'][iParams+1] = {'ID' : x, 'type' : tempType}
             era[tempType] = era[tempType] + 1
             virMem['local'][tempType].append(x)
             iParams = iParams + 1
@@ -445,7 +407,7 @@ def p_params(p):
             sys.exit(errorMsg)
 
 def p_block(p):
-    '''block : statute block
+    '''block : statute SEMICOLON block
              | empty'''
 
 def p_statute(p):
@@ -483,8 +445,8 @@ def p_gotoif(p):
         newQuad('GOTOF', x, '', '')
 
 def p_else(p):
-    '''else : ELSE LCURLY  gotoelse block RCURLY else
-            | SEMICOLON'''
+    '''else : ELSE LCURLY gotoelse block RCURLY else
+            | empty'''
 
 def p_gotoelse(p):
     'gotoelse : empty'
@@ -496,8 +458,7 @@ def p_gotoelse(p):
 
 
 def p_assign(p):
-    '''assign :  ID assign1 ASSIGN express SEMICOLON'''
-    global tempVars
+    '''assign :  ID assign1 ASSIGN express'''
     x = p[1]
     rop = pconsts.pop()
     rtyp = ptypes.pop()
@@ -512,7 +473,7 @@ def p_assign(p):
         if restyp != False : 
             newQuad('=', rop, '', funcTable['global']['varsTable'][x]['address'])
     else: 
-        errorMsg = str(p[1]) +  " : variable not declared or of not supported type." + str(tempVars['varsTable'].keys())
+        errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
         sys.exit(errorMsg)
 
 def p_assign1(p):
@@ -520,7 +481,7 @@ def p_assign1(p):
                | empty'''
 
 def p_call(p):
-    'call : era LPAREN paramcall RPAREN SEMICOLON'
+    'call : era LPAREN paramcall RPAREN'
     
     global paramCall
     global calledFunc
@@ -535,9 +496,13 @@ def p_call(p):
         else:
             errorMsg = ("ERROR: Types of parameters don't match.")
             sys.exit(errorMsg)
-
         i = i + 1
     newQuad('GOSUB', calledFunc, '', jump)
+    if funcTable[calledFunc]['type']  != 'void':
+        temp = newAdd(funcTable[calledFunc]['type'])
+        newQuad('=', calledFunc, '', temp)
+        pconsts.append(temp)
+        ptypes.append(funcTable[calledFunc]['type'])
     
     paramCall = {}
 
@@ -568,6 +533,7 @@ def p_paramcall(p):
     paramtype = ptypes.pop()
     paramCall[iCalledParams] = {'type' : paramtype, 'val' : param}
     iCalledParams = iCalledParams - 1
+    
 
 def p_call1(p):
     '''paramcall1 : COMMA paramcall 
@@ -575,7 +541,7 @@ def p_call1(p):
     global iCalledParams
 
 def p_cin(p):
-    'cin : CIN cin1 SEMICOLON'
+    'cin : CIN cin1 '
 
 def p_cin1(p):
     '''cin1 : cin2 
@@ -592,7 +558,7 @@ def p_cin4(p):
            | empty'''
 
 def p_cout(p):
-    'cout : COUT LPAREN express cout1 RPAREN SEMICOLON'
+    'cout : COUT LPAREN express cout1 RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     newQuad('PRINT', rop, '', '')
@@ -606,7 +572,7 @@ def p_cout1(p):
         newQuad('PRINT', rop, '', '')
 
 def p_delay(p):
-    'delay : DELAY LPAREN express RPAREN SEMICOLON'
+    'delay : DELAY LPAREN express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     if rtyp == 'int' :
@@ -617,7 +583,7 @@ def p_delay(p):
  
 
 def p_forward(p):
-    'forward : FORWARD LPAREN express COMMA express RPAREN SEMICOLON'
+    'forward : FORWARD LPAREN express COMMA express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     lop = pconsts.pop()
@@ -630,7 +596,7 @@ def p_forward(p):
     
 
 def p_backward(p):
-    'backward : BACKWARD LPAREN express COMMA express RPAREN SEMICOLON'
+    'backward : BACKWARD LPAREN express COMMA express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     lop = pconsts.pop()
@@ -643,7 +609,7 @@ def p_backward(p):
 
 
 def p_turnleft(p):
-    'turnleft : TURNLEFT LPAREN express COMMA express RPAREN SEMICOLON'
+    'turnleft : TURNLEFT LPAREN express COMMA express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     lop = pconsts.pop()
@@ -655,7 +621,7 @@ def p_turnleft(p):
         sys.exit(errorMsg)
 
 def p_turnright(p):
-    'turnright : TURNRIGHT LPAREN express COMMA express RPAREN SEMICOLON'
+    'turnright : TURNRIGHT LPAREN express COMMA express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     lop = pconsts.pop()
@@ -667,7 +633,7 @@ def p_turnright(p):
         sys.exit(errorMsg)
 
 def p_servo(p):
-    'servo : SERVO LPAREN express RPAREN SEMICOLON'
+    'servo : SERVO LPAREN express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     if rtyp == 'int':
@@ -677,7 +643,7 @@ def p_servo(p):
         sys.exit(errorMsg)
 
 def p_lights(p):
-    'lights :  LIGHTS LPAREN express COMMA express RPAREN SEMICOLON'
+    'lights :  LIGHTS LPAREN express COMMA express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     lop = pconsts.pop()
@@ -689,21 +655,21 @@ def p_lights(p):
         sys.exit(errorMsg)
 
 def p_display(p):
-    'display : DISPLAY LPAREN express RPAREN SEMICOLON'
+    'display : DISPLAY LPAREN express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     newQuad('DISPLAY', rop, '', '')
 
 def p_distance(p):
-    'distance : DISTANCE LPAREN RPAREN SEMICOLON'
+    'distance : DISTANCE LPAREN RPAREN'
     newQuad('DISPLAY', '', '', '')
 
 def p_stop(p):
-    'stop : STOP LPAREN RPAREN SEMICOLON'
+    'stop : STOP LPAREN RPAREN'
     newQuad('STOP', '', '', '')
 
 def p_while(p):
-    '''while : WHILE LPAREN express RPAREN while1 LCURLY block RCURLY SEMICOLON'''
+    '''while : WHILE LPAREN express RPAREN while1 LCURLY block RCURLY'''
     global iQuads 
     jump = pjumps.pop()
     newQuad('GOTO', '', '', jump)
@@ -719,10 +685,12 @@ def p_while1(p):
         newQuad('GOTOF', x, '', '')
 
 def p_return(p):
-    'return : RETURN LPAREN express RPAREN SEMICOLON'
+    'return : RETURN LPAREN express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
-    newQuad('RETURN', rop , '', '')
+    newQuad('RETURN', '', '', rop)
+    
+
 
 def p_type(p):
     '''type : INT
@@ -1085,7 +1053,7 @@ if compileFlag == True:
     print(virMem)
 else:
     print("ERROR: Could not compile")
-#virtualMachine()
+virtualMachine()
 midcode.close()
 
 print(virMem)

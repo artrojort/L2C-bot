@@ -3,14 +3,19 @@ program
 vardef int i;
 
 
-funcdef void uno(int a){
-	a = 5;
-	uno(a+1);
+funcdef int uno(int a){
+	a = a + 5;
+}
+
+funcdef float dos(float b){
+	b = b + 4.5;
 }
 
 main(){
 	vardef int z;
-	z = 5;
+	z = 0;
+	z = 2;
+	z = uno(2);
 	cout(z);
 }
 fin;
