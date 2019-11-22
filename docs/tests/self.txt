@@ -1,13 +1,10 @@
 program
 
-vardef int i;
-
-
-funcdef int uno(int a){
+funcdef void uno(int a){
 	while (a > 0 ){
 		cout(a);
-		uno(0);
 	};
+	uno(a);
 }
 
 main(){

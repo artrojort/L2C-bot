@@ -9,6 +9,7 @@ import re
 import codecs
 import os
 import sys
+import ast
 
 #operadores
 popers = []
@@ -18,11 +19,14 @@ pconsts = []
 ptypes = []
 #saltos para GOTOS
 pjumps = []
+#pila para recursion de funciones
+pfuncs = ['main', 'main']
 #cuadruplos
 quads = []
 
 #temporales
 tempindex = 0
+tempQuad = []
 
 
 compileFlag = True
@@ -30,7 +34,7 @@ iQuads = 0
 iParams = 0
 iCalledParams = 0
 scope = 'global'
-funcTable = {'global' : {'type' : '', 'era' : [0,0,0,0], 'params' : '', 'paramsTable' : {}, 'varsTable' : {}, 'start' : ''}}
+funcTable = {'global' : {'type' : 'void', 'era' : {'int': 0, 'float': 0, 'bool': 0, 'char': 0}, 'params' : '', 'paramsTable' : {}, 'varsTable' : {}, 'start' : ''}}
 tempVars = {'varsTable' : {}} 
 tempParams = {'paramsTable' : {}}
 paramCall  = {}
@@ -108,22 +112,21 @@ def newAdd(varType):
     ptypes.append(varType)
     return address
 
-def tempDump():
+def memClear():
     global dirMem
-    global tempVars
-    global tempParams
     global iParams
     global era
-    
+    global funcTable
+
     iParams = 0
 
-    tempVars = {'varsTable' : {}} 
-    tempParams = {'paramsTable' : {}}
+    if scope != 'global':
+        funcTable[scope]['varsTable'] = {}
 
     era =  {'int' : 0,
         'float' : 0,
-        'char' : 0,
-        'bool' : 0}
+        'bool' : 0,
+        'char' : 0}
 
     dirMem['local']['int'] = 21001
     dirMem['local']['float'] = 22001
@@ -133,6 +136,15 @@ def tempDump():
     dirMem['temp']['float'] = 32001
     dirMem['temp']['bool'] = 33001
     dirMem['temp']['char'] = 34001
+
+    virMem['local']['int'] = []
+    virMem['local']['float'] = []
+    virMem['local']['bool'] = []
+    virMem['local']['char'] = []
+    virMem['temp']['int'] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, ]
+    virMem['temp']['float'] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, ]
+    virMem['temp']['bool'] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, ]
+    virMem['temp']['char'] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, ]
 
 opeCode = {
 	'GOTO'      : 0,
@@ -210,11 +222,9 @@ def typeCheck(ope, a, b):
         x = semCube[a][b][ope]
         return x
     except KeyError:
-        # Key is not present
         errormsg = "ERROR: " + a + ope +  b + " is not a valid operation."
         print(errormsg)
-        #SYS EXIT DISABLED DURING DEBUGGING
-        #sys.exit(errormsg)
+        sys.exit(errormsg)
         return False
 
 reserved = {
@@ -309,10 +319,13 @@ def p_gotomain(p):
 
 def p_main(p):
     'main : MAIN setmain LPAREN RPAREN LCURLY varsblock block RCURLY'
-    global scope
-    global tempVars
-    global iParams
-    global dirMem
+    global era
+    era['int'] = 0
+    era['float'] = 0
+    era['bool'] = 0
+    era['char'] = 0
+
+    funcTable['main']['varsTable'] = {}
 
 def p_setmain(p):
     'setmain : empty'
@@ -321,24 +334,31 @@ def p_setmain(p):
     funcTable[scope] = {'type' : 'void', 'era' : era, 'params' : iParams, 'varsTable' : {}, 'start' : iQuads}
     quads[0][3] = iQuads
 
-
 def p_funcsblock(p):
     '''funcsblock : funcs funcsblock 
                   | empty'''
-    
 
 def p_funcs(p):
-    'funcs : FUNCDEF choosetype setscope LPAREN paramsblock RPAREN LCURLY varsblock block RCURLY'''
+    'funcs : FUNCDEF type setscope LPAREN paramsblock RPAREN LCURLY varsblock funcs1 block RCURLY'''
+    
+    newQuad('ENDPROC', '', '', '')
+    memClear()    
+
+def p_funcs1(p):
+    '''funcs1 : empty'''
     funcTable[scope]['era'] = era
     funcTable[scope]['params'] = iParams
-    tempDump()    
-    
-
 def p_setscope(p):
     '''setscope : ID'''
     global scope
+    memClear()
     scope = p[1]
     funcTable[scope] = {'type' : tempType, 'era' : '', 'params' : iParams, 'paramsTable' : {}, 'varsTable' : {}, 'start' : iQuads}
+    if tempType != 'void':
+        address = dirMem['global'][tempType]    
+        dirMem['global'][tempType] = address + 1
+        virMem['global'][tempType].append(p[1])
+        funcTable['global']['varsTable'][p[1]] = {'type' : tempType, 'address' : address}
 
 def p_varsblock(p):
     '''varsblock : vars varsblock 
@@ -373,10 +393,6 @@ def p_vars1(p):
     '''vars1 : LBRACKET CTE_INT RBRACKET 
              | empty'''
 
-def p_choosetype(p):
-    '''choosetype : type
-                  | VOID'''
-
 def p_paramsblock(p):
     '''paramsblock : params paramsblock
                    | COMMA params paramsblock
@@ -398,7 +414,7 @@ def p_params(p):
     if len(p) > 2 : 
         if x not in funcTable[scope]['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
             funcTable[scope]['varsTable'][x] = {'type' : tempType, 'address' : address}
-            funcTable[scope]['paramsTable'][iParams+1] = {'ID' : x, 'type' : tempType}
+            funcTable[scope]['paramsTable'][iParams+1] = {'ID' : x, 'type' : tempType, 'address' : address}
             era[tempType] = era[tempType] + 1
             virMem['local'][tempType].append(x)
             iParams = iParams + 1
@@ -492,7 +508,7 @@ def p_call(p):
     i = 1
     while i <= funcTable[calledFunc]['params'] :
         if paramCall[i]['type'] == funcTable[calledFunc]['paramsTable'][i]['type'] : 
-            newQuad('PARAM', paramCall[i]['val'], '', ('~param' + str(i)))
+            newQuad('PARAM', paramCall[i]['val'], '', funcTable[calledFunc]['paramsTable'][i]['address'])
         else:
             errorMsg = ("ERROR: Types of parameters don't match.")
             sys.exit(errorMsg)
@@ -500,7 +516,8 @@ def p_call(p):
     newQuad('GOSUB', calledFunc, '', jump)
     if funcTable[calledFunc]['type']  != 'void':
         temp = newAdd(funcTable[calledFunc]['type'])
-        newQuad('=', calledFunc, '', temp)
+        globaddress = funcTable['global']['varsTable'][calledFunc]['address']
+        newQuad('=', globaddress, '', temp)
         pconsts.append(temp)
         ptypes.append(funcTable[calledFunc]['type'])
     
@@ -512,13 +529,13 @@ def p_era(p):
     global calledFunc
     calledFunc = p[1]
     iCalledParams = funcTable[calledFunc]['params']
-    era = []
-    era.append(funcTable[calledFunc]['era']['int'])
-    era.append(funcTable[calledFunc]['era']['float'])
-    era.append(funcTable[calledFunc]['era']['char'])
-    era.append(funcTable[calledFunc]['era']['bool'])
+    tera = []
+    tera.append(funcTable[calledFunc]['era']['int'])
+    tera.append(funcTable[calledFunc]['era']['float'])
+    tera.append(funcTable[calledFunc]['era']['bool'])
+    tera.append(funcTable[calledFunc]['era']['char'])
     if calledFunc in funcTable.keys() : 
-        newQuad('ERA', calledFunc, '', str(era))
+        newQuad('ERA', calledFunc, '', tera)
     else : 
         errorMsg = "ERROR: function " + calledFunc + " hasn't been declared"
         sys.exit(errorMsg)
@@ -594,7 +611,6 @@ def p_forward(p):
         errorMsg = "ERROR: expected int value, got " + rtyp + " instead."
         sys.exit(errorMsg)
     
-
 def p_backward(p):
     'backward : BACKWARD LPAREN express COMMA express RPAREN'
     rop = pconsts.pop()
@@ -606,7 +622,6 @@ def p_backward(p):
     else : 
         errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
         sys.exit(errorMsg)
-
 
 def p_turnleft(p):
     'turnleft : TURNLEFT LPAREN express COMMA express RPAREN'
@@ -688,7 +703,10 @@ def p_return(p):
     'return : RETURN LPAREN express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
-    newQuad('RETURN', '', '', rop)
+    retType = funcTable['global']['varsTable'][scope]['type']
+    if rtyp == retType :
+        address = funcTable['global']['varsTable'][scope]['address']
+        newQuad('RETURN', rop, '', address)
     
 
 
@@ -696,7 +714,8 @@ def p_type(p):
     '''type : INT
             | FLOAT
             | BOOL
-            | CHAR'''
+            | CHAR
+            | VOID'''
     global tempType
     tempType = p[1]
         
@@ -885,7 +904,7 @@ def p_error(p):
     compileFlag = False
 
 def memRead(dir):
-
+    scopeFloor = 0
     dir = str(dir)
     pos = int(dir[2] + dir[3] + dir[4])-1
 
@@ -900,24 +919,34 @@ def memRead(dir):
     
     if dir[1] == '1':
         typ = 'int'
-        val = virMem[scope][typ][pos]
+        if scope == 'local' : 
+            scopeFloor = era[typ]
+        print(virMem)
+        val = virMem[scope][typ][pos + scopeFloor] 
         return int(val)
     elif dir[1] == '2':
         typ = 'float'
-        val = virMem[scope][typ][pos]
+        if scope == 'local' : 
+            scopeFloor = era[typ]
+        val = virMem[scope][typ][pos + scopeFloor]
         return float(val)
     elif dir[1] == '3':
         typ = 'bool'
-        val = virMem[scope][typ][pos]
+        if scope == 'local' : 
+            scopeFloor = era[typ]
+        val = virMem[scope][typ][pos + scopeFloor]
         return bool(val)
     elif dir[1] == '4':
         typ = 'char'
-        val = virMem[scope][typ][pos]
+        if scope == 'local' : 
+            scopeFloor = era[typ]
+        val = virMem[scope][typ][pos + scopeFloor]
         return str(val)
     else :
         sys.exit("ERROR: Tried to access unassigned memory space")
 
 def memWrite(val, dir):
+    scopeFloor = 0
     dir = str(dir)
     pos = int(dir[2] + dir[3] + dir[4])-1
     if dir[0] == '1':
@@ -931,18 +960,67 @@ def memWrite(val, dir):
     
     if dir[1] == '1':
         typ = 'int'
-        virMem[scope][typ][pos] = int(val)
+        if scope == 'local' : 
+            scopeFloor = era[typ]
+        virMem[scope][typ][pos + scopeFloor] = int(val)
     elif dir[1] == '2':
         typ = 'float'
-        virMem[scope][typ][pos] = float(val)
+        if scope == 'local' : 
+            scopeFloor = era[typ]
+        virMem[scope][typ][pos + scopeFloor] = float(val)
     elif dir[1] == '3':
         typ = 'bool'
-        virMem[scope][typ][pos] = bool(val)
+        if scope == 'local' : 
+            scopeFloor = era[typ]
+        virMem[scope][typ][pos + scopeFloor] = bool(val)
     elif dir[1] == '4':
         typ = 'char'
-        virMem[scope][typ][pos] = str(val)
+        if scope == 'local' : 
+            scopeFloor = era[typ]
+        virMem[scope][typ][pos + scopeFloor] = str(val)
     
     return val
+
+def newEra(esize):
+    global era
+    prevFunc = pfuncs[-1]
+    eraFloor = funcTable[prevFunc]['era']
+    era['int'] = era['int'] + eraFloor['int']
+    era['float'] = era['float'] + eraFloor['float']
+    era['bool'] = era['bool'] + eraFloor['bool']
+    era['char'] = era['char'] + eraFloor['char']
+
+    for _ in range(esize[0]):
+        virMem['local']['int'].append('NON')
+    
+    for _ in range(esize[1]):
+        virMem['local']['float'].append('NON')
+    
+    for _ in range(esize[2]):
+        virMem['local']['bool'].append('NON')
+
+    for _ in range(esize[3]):
+        virMem['local']['char'].append('NON')
+
+def endEra(func):
+    global era
+    eraFloor = funcTable[func]['era']
+    era['int'] = era['int'] - eraFloor['int']
+    era['float'] = era['float'] - eraFloor['float']
+    era['bool'] = era['bool'] - eraFloor['bool']
+    era['char'] = era['char'] - eraFloor['char']
+
+    for _ in range(funcTable[func]['era']['int']):
+        virMem['local']['int'].append('NON')
+    
+    for _ in range(funcTable[func]['era']['float']):
+        virMem['local']['float'].append('NON')
+    
+    for _ in range(funcTable[func]['era']['bool']):
+        virMem['local']['bool'].append('NON')
+
+    for _ in range(funcTable[func]['era']['char']):
+        virMem['local']['char'].append('NON')
 
 def virtualMachine() : 
     qPos = 0
@@ -958,7 +1036,31 @@ def virtualMachine() :
                 qPos = quads[qPos][3]  
             else :
                 qPos = qPos + 1
-
+        
+        if ope == 'GOSUB':
+            global tempQuad
+            tempQuad.append(qPos + 1)
+            qPos = quads[qPos][3]
+        
+        if ope == 'PARAM':
+            rop = memRead(quads[qPos][1])
+            res = quads[qPos][3]
+            memWrite(rop, res)
+            qPos = qPos + 1
+            
+        if ope == 'ENDPROC':
+            global era
+            qPos = tempQuad.pop()
+            backToFunc = pfuncs.pop()
+            endEra(backToFunc)
+        
+        if ope == 'ERA':
+            erafunc = []
+            erafunc = quads[qPos][3]
+            newEra(erafunc)
+            pfuncs.append(quads[qPos][1]) 
+            qPos = qPos + 1
+                  
         elif ope == '+':
             lop = memRead(quads[qPos][1])
             rop = memRead(quads[qPos][2])
@@ -1026,7 +1128,12 @@ def virtualMachine() :
             print("PRINT")
             print(rop)
             qPos = qPos + 1
-
+        
+        elif ope == 'RETURN' : 
+            rop = memRead(quads[qPos][1])
+            res = quads[qPos][3]
+            memWrite(rop, res)
+            qPos = qPos + 1
 
 parser = yacc.yacc()
 fileinput = input("FILENAME: ")
@@ -1053,9 +1160,8 @@ if compileFlag == True:
     print(virMem)
 else:
     print("ERROR: Could not compile")
-virtualMachine()
 midcode.close()
-
+virtualMachine()
 print(virMem)
 
 
