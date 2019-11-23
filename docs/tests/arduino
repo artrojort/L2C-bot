@@ -1,0 +1,7 @@
+program
+
+main(){
+	cout(2);
+	cout(4.5);
+}
+fin;

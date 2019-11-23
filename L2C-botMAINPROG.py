@@ -10,6 +10,16 @@ import codecs
 import os
 import sys
 import ast
+import pyfirmata
+import time
+
+
+#ARDUINO CODE////////////
+#
+#
+#
+#END ARDUINO CODE ///////
+
 
 #operadores
 popers = []
@@ -20,7 +30,9 @@ ptypes = []
 #saltos para GOTOS
 pjumps = []
 #pila para recursion de funciones
-pfuncs = ['main', 'main']
+pfuncs = ['main']
+pparams = []
+preturns = []
 #cuadruplos
 quads = []
 
@@ -243,7 +255,6 @@ reserved = {
     'turnright' : 'TURNRIGHT',
     'servo'     : 'SERVO',
     'lights'    : 'LIGHTS',
-    'display'   : 'DISPLAY',
     'distance'  : 'DISTANCE',
     'stop'      : 'STOP',
     'while'     : 'WHILE',
@@ -312,26 +323,30 @@ lexer = lex.lex()
 
 def p_program(p):
     'program : PROGRAM gotomain varsblock funcsblock main FIN SEMICOLON'
+    memClear()
 
 def p_gotomain(p):
     'gotomain : empty'
     newQuad('GOTO', '', '', '')
 
 def p_main(p):
-    'main : MAIN setmain LPAREN RPAREN LCURLY varsblock block RCURLY'
-    global era
-    era['int'] = 0
-    era['float'] = 0
-    era['bool'] = 0
-    era['char'] = 0
-
+    'main : MAIN setmain LPAREN RPAREN LCURLY varsblock main1 block RCURLY'
     funcTable['main']['varsTable'] = {}
+
+def p_main1(p):
+    'main1 : empty'
+    
+    print(scope)
+    print(era)
+    funcTable[scope]['era'] = era
+    funcTable[scope]['params'] = iParams
+    
 
 def p_setmain(p):
     'setmain : empty'
     global scope 
     scope = 'main'
-    funcTable[scope] = {'type' : 'void', 'era' : era, 'params' : iParams, 'varsTable' : {}, 'start' : iQuads}
+    funcTable[scope] = {'type' : 'void', 'era' : '', 'params' : iParams, 'varsTable' : {}, 'start' : iQuads}
     quads[0][3] = iQuads
 
 def p_funcsblock(p):
@@ -346,8 +361,11 @@ def p_funcs(p):
 
 def p_funcs1(p):
     '''funcs1 : empty'''
+    print(scope)
+    print(era)
     funcTable[scope]['era'] = era
     funcTable[scope]['params'] = iParams
+    
 def p_setscope(p):
     '''setscope : ID'''
     global scope
@@ -439,7 +457,6 @@ def p_statute(p):
                | turnright
                | servo
                | lights
-               | display
                | distance
                | stop
                | while
@@ -600,51 +617,43 @@ def p_delay(p):
  
 
 def p_forward(p):
-    'forward : FORWARD LPAREN express COMMA express RPAREN'
-    rop = pconsts.pop()
-    rtyp = ptypes.pop()
+    'forward : FORWARD LPAREN express RPAREN'
     lop = pconsts.pop()
     ltyp = ptypes.pop()
-    if rtyp == 'int' and ltyp == 'int':
-        newQuad('FORWD', lop, rop, '')
+    if ltyp == 'int':
+        newQuad('FORWD', lop, '', '')
     else : 
-        errorMsg = "ERROR: expected int value, got " + rtyp + " instead."
+        errorMsg = "ERROR: expected int value, got " + ltyp + " instead."
         sys.exit(errorMsg)
     
 def p_backward(p):
-    'backward : BACKWARD LPAREN express COMMA express RPAREN'
-    rop = pconsts.pop()
-    rtyp = ptypes.pop()
+    'backward : BACKWARD LPAREN express RPAREN'
     lop = pconsts.pop()
     ltyp = ptypes.pop()
-    if rtyp == 'int' and ltyp == 'int':
-        newQuad('BACKWD', lop, rop, '')
+    if  ltyp == 'int':
+        newQuad('BACKWD', lop, '', '')
     else : 
-        errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
+        errorMsg = "ERROR: expected int and int value, got " + ltyp + " instead."
         sys.exit(errorMsg)
 
 def p_turnleft(p):
-    'turnleft : TURNLEFT LPAREN express COMMA express RPAREN'
-    rop = pconsts.pop()
-    rtyp = ptypes.pop()
+    'turnleft : TURNLEFT LPAREN express RPAREN'
     lop = pconsts.pop()
     ltyp = ptypes.pop()
-    if rtyp == 'int' and ltyp == 'int':
-        newQuad('', lop, rop, '')
+    if ltyp == 'int':
+        newQuad('', lop, '', '')
     else : 
-        errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
+        errorMsg = "ERROR: expected int and int value, got " + ltyp + " instead."
         sys.exit(errorMsg)
 
 def p_turnright(p):
-    'turnright : TURNRIGHT LPAREN express COMMA express RPAREN'
-    rop = pconsts.pop()
-    rtyp = ptypes.pop()
+    'turnright : TURNRIGHT LPAREN express RPAREN'
     lop = pconsts.pop()
     ltyp = ptypes.pop()
-    if rtyp == 'int' and ltyp == 'int':
-        newQuad('TURNRIGHT', lop, rop, '')
+    if ltyp == 'int':
+        newQuad('TURNRIGHT', lop, '', '')
     else : 
-        errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
+        errorMsg = "ERROR: expected int and int value, got " + ltyp + " instead."
         sys.exit(errorMsg)
 
 def p_servo(p):
@@ -669,15 +678,10 @@ def p_lights(p):
         errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
         sys.exit(errorMsg)
 
-def p_display(p):
-    'display : DISPLAY LPAREN express RPAREN'
-    rop = pconsts.pop()
-    rtyp = ptypes.pop()
-    newQuad('DISPLAY', rop, '', '')
 
 def p_distance(p):
     'distance : DISTANCE LPAREN RPAREN'
-    newQuad('DISPLAY', '', '', '')
+    newQuad('DISTANCE', '', '', '')
 
 def p_stop(p):
     'stop : STOP LPAREN RPAREN'
@@ -688,7 +692,7 @@ def p_while(p):
     global iQuads 
     jump = pjumps.pop()
     newQuad('GOTO', '', '', jump)
-    quads[jump+1][3] = str(iQuads)
+    quads[jump+1][3] = iQuads
 
 def p_while1(p):
     '''while1 : empty'''
@@ -905,6 +909,7 @@ def p_error(p):
 
 def memRead(dir):
     scopeFloor = 0
+    print (virMem)
     dir = str(dir)
     pos = int(dir[2] + dir[3] + dir[4])-1
 
@@ -921,7 +926,6 @@ def memRead(dir):
         typ = 'int'
         if scope == 'local' : 
             scopeFloor = era[typ]
-        print(virMem)
         val = virMem[scope][typ][pos + scopeFloor] 
         return int(val)
     elif dir[1] == '2':
@@ -982,14 +986,6 @@ def memWrite(val, dir):
     return val
 
 def newEra(esize):
-    global era
-    prevFunc = pfuncs[-1]
-    eraFloor = funcTable[prevFunc]['era']
-    era['int'] = era['int'] + eraFloor['int']
-    era['float'] = era['float'] + eraFloor['float']
-    era['bool'] = era['bool'] + eraFloor['bool']
-    era['char'] = era['char'] + eraFloor['char']
-
     for _ in range(esize[0]):
         virMem['local']['int'].append('NON')
     
@@ -1004,57 +1000,82 @@ def newEra(esize):
 
 def endEra(func):
     global era
-    eraFloor = funcTable[func]['era']
+    backToFunc = pfuncs[-1]
+    eraFloor = funcTable[backToFunc]['era']
     era['int'] = era['int'] - eraFloor['int']
     era['float'] = era['float'] - eraFloor['float']
     era['bool'] = era['bool'] - eraFloor['bool']
     era['char'] = era['char'] - eraFloor['char']
 
     for _ in range(funcTable[func]['era']['int']):
-        virMem['local']['int'].append('NON')
+        virMem['local']['int'].pop()
     
     for _ in range(funcTable[func]['era']['float']):
-        virMem['local']['float'].append('NON')
+        virMem['local']['float'].pop()
     
     for _ in range(funcTable[func]['era']['bool']):
-        virMem['local']['bool'].append('NON')
+        virMem['local']['bool'].pop()
 
     for _ in range(funcTable[func]['era']['char']):
-        virMem['local']['char'].append('NON')
+        virMem['local']['char'].pop()
+
+def contextChange(func) :
+    global era
+    prevFunc = pfuncs[-2]
+    print("THIS IS PREV FUNC")
+    print(prevFunc)
+    eraFloor = funcTable[prevFunc]['era']
+    era['int'] = era['int'] + eraFloor['int']
+    era['float'] = era['float'] + eraFloor['float']
+    era['bool'] = era['bool'] + eraFloor['bool']
+    era['char'] = era['char'] + eraFloor['char']
+
+    numParams = funcTable[func]['params']
+    for _ in range(numParams) : 
+        address = pparams.pop()
+        print("ADD"+ str(address))
+        
+        val = pparams.pop()
+        
+        print("VAL" + str(val))
+        memWrite(val, address)
 
 def virtualMachine() : 
     qPos = 0
+    
     while qPos < len(quads) :
         ope = quads[qPos][0]
         if ope == 'GOTO':
             qPos = quads[qPos][3]
 
-        if ope == 'GOTOF':
+        elif ope == 'GOTOF':
             lop = memRead(quads[qPos][1])
-            print(lop)
             if lop == False:
                 qPos = quads[qPos][3]  
             else :
                 qPos = qPos + 1
         
-        if ope == 'GOSUB':
+        elif ope == 'GOSUB':
+            print(pfuncs)
             global tempQuad
+            contextChange(quads[qPos][1])
             tempQuad.append(qPos + 1)
             qPos = quads[qPos][3]
         
-        if ope == 'PARAM':
+        elif ope == 'PARAM':
             rop = memRead(quads[qPos][1])
             res = quads[qPos][3]
-            memWrite(rop, res)
+            pparams.append(rop)
+            pparams.append(res)
             qPos = qPos + 1
             
-        if ope == 'ENDPROC':
+        elif ope == 'ENDPROC':
             global era
             qPos = tempQuad.pop()
             backToFunc = pfuncs.pop()
             endEra(backToFunc)
-        
-        if ope == 'ERA':
+
+        elif ope == 'ERA':
             erafunc = []
             erafunc = quads[qPos][3]
             newEra(erafunc)
@@ -1129,11 +1150,19 @@ def virtualMachine() :
             print(rop)
             qPos = qPos + 1
         
+        elif ope == 'MOVEFORWARD' :
+            rop = memRead(quads[qPos][1])
+            moveFoward(rop)
+            qPos = qPos + 1
+        
         elif ope == 'RETURN' : 
             rop = memRead(quads[qPos][1])
             res = quads[qPos][3]
             memWrite(rop, res)
             qPos = qPos + 1
+        
+        print(qPos)
+        print(len(quads))
 
 parser = yacc.yacc()
 fileinput = input("FILENAME: ")
