@@ -6,7 +6,7 @@ import time
 
 #ls -l /dev/ttyACM*
 
-board = pyfirmata.Arduino('/dev/ttyACM3')
+board = pyfirmata.Arduino('/dev/ttyACM0')
 
 it = pyfirmata.util.Iterator(board)
 it.start()
@@ -28,11 +28,27 @@ def pwToSer(n):
 
 
 while True:
-    analog_value = analog_input.read()
-    servo_value = pwToSer(analog_value)
-   # servo.write(0)
-    print(str(analog_value)+" - "+str(servo_value))
+           #  analog_value = analog_input.read()
+           #  servo_value = pwToSer(analog_value)
+           # # servo.write(0)
+           #  print(str(analog_value)+" - "+str(servo_value))
+
+
 
     #time.sleep(1)
-    servo.write(servo_value)
-    time.sleep(0.1)
+    # servo.write(servo_value)
+
+    servo.write(0)
+    time.sleep(2)
+    servo.write(30)
+    time.sleep(2)
+    servo.write(60)
+    time.sleep(2)
+    servo.write(90)
+    time.sleep(2)
+    servo.write(120)
+    time.sleep(2)
+    servo.write(150)
+    time.sleep(2)
+    servo.write(180)
+    time.sleep(2)
