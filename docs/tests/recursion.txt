@@ -3,16 +3,16 @@ program
 vardef int i;
 
 
-funcdef void uno(int a, int b, float c){
-	while (a > 0 ){
+funcdef void uno(int a){
+	while (a > 0){
 		cout(a);
-		uno(0, 1, 5.5);
+		uno(a-1);
 	};
 }
 
 main(){
 	vardef int z;
 	z = 4;
-	uno(z, 1, 5.5);
+	uno(z);
 }
 fin;

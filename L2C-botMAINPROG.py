@@ -1042,7 +1042,17 @@ def contextChange(func) :
 
 def virtualMachine() : 
     qPos = 0
+    for _ in range(funcTable['main']['era']['int']):
+        virMem['local']['int'].append('NON')
     
+    for _ in range(funcTable['main']['era']['float']):
+        virMem['local']['float'].append('NON')
+    
+    for _ in range(funcTable['main']['era']['bool']):
+        virMem['local']['bool'].append('NON')
+
+    for _ in range(funcTable['main']['era']['char']):
+        virMem['local']['char'].append('NON')
     while qPos < len(quads) :
         ope = quads[qPos][0]
         if ope == 'GOTO':
