@@ -9,6 +9,7 @@ import re
 import codecs
 import os
 import sys
+from VMfunctions import display, forward
 
 compileFlag = True
 
