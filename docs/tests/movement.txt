@@ -1,0 +1,14 @@
+program
+
+
+main(){
+	lights(2, 1);
+	forward(5);
+	backward(5);
+	turnleft(5);
+	turnright(5);
+	servo(30);
+	lights(2,2);
+	cout(4);
+	}
+fin;

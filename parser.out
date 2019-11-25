@@ -56,154 +56,158 @@ Rule 46    assign1 -> empty
 Rule 47    call -> era LPAREN paramcall RPAREN
 Rule 48    era -> ID
 Rule 49    paramcall -> express paramcall1
-Rule 50    paramcall1 -> COMMA paramcall
-Rule 51    paramcall1 -> empty
-Rule 52    cin -> CIN cin1
-Rule 53    cin1 -> cin2
-Rule 54    cin1 -> cin3
-Rule 55    cin2 -> LPAREN ID RPAREN
-Rule 56    cin3 -> LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN
-Rule 57    cin4 -> COMMA ID cin4
-Rule 58    cin4 -> empty
-Rule 59    cout -> COUT LPAREN express cout1 RPAREN
-Rule 60    cout1 -> COMMA express cout1
-Rule 61    cout1 -> empty
-Rule 62    delay -> DELAY LPAREN express RPAREN
-Rule 63    forward -> FORWARD LPAREN express RPAREN
-Rule 64    backward -> BACKWARD LPAREN express RPAREN
-Rule 65    turnleft -> TURNLEFT LPAREN express RPAREN
-Rule 66    turnright -> TURNRIGHT LPAREN express RPAREN
-Rule 67    servo -> SERVO LPAREN express RPAREN
-Rule 68    lights -> LIGHTS LPAREN express COMMA express RPAREN
-Rule 69    distance -> DISTANCE LPAREN RPAREN
-Rule 70    stop -> STOP LPAREN RPAREN
-Rule 71    while -> WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
-Rule 72    while1 -> empty
-Rule 73    return -> RETURN LPAREN express RPAREN
-Rule 74    type -> INT
-Rule 75    type -> FLOAT
-Rule 76    type -> BOOL
-Rule 77    type -> CHAR
-Rule 78    type -> VOID
-Rule 79    constant -> ID
-Rule 80    constant -> CTE_INT
-Rule 81    constant -> CTE_FLOAT
-Rule 82    constant -> CTE_CHAR
-Rule 83    constant -> CTE_BOOL
-Rule 84    express -> express1 relational express2
-Rule 85    express1 -> NOTEQUALS
-Rule 86    express1 -> empty
-Rule 87    express2 -> andor express
-Rule 88    express2 -> empty
-Rule 89    andor -> AND
-Rule 90    andor -> OR
-Rule 91    relational -> exp relational1
-Rule 92    relational -> NOT
-Rule 93    relational1 -> compare exp
-Rule 94    relational1 -> empty
-Rule 95    compare -> LESSTHAN
-Rule 96    compare -> GREATERTHAN
-Rule 97    compare -> EQUALS
-Rule 98    compare -> NOTEQUALS
-Rule 99    exp -> term exp1
-Rule 100   exp1 -> plusminus exp
-Rule 101   exp1 -> empty
-Rule 102   plusminus -> PLUS
-Rule 103   plusminus -> MINUS
-Rule 104   term -> factor term1
-Rule 105   term1 -> multidivi term
-Rule 106   term1 -> empty
-Rule 107   multidivi -> MULTI
-Rule 108   multidivi -> DIVI
-Rule 109   factor -> LPAREN express RPAREN
-Rule 110   factor -> constant
-Rule 111   factor -> call
-Rule 112   empty -> <empty>
+Rule 50    paramcall -> empty
+Rule 51    paramcall1 -> COMMA paramcall
+Rule 52    paramcall1 -> empty
+Rule 53    cin -> CIN cin1
+Rule 54    cin1 -> cin2
+Rule 55    cin1 -> cin3
+Rule 56    cin2 -> LPAREN ID RPAREN
+Rule 57    cin3 -> LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN
+Rule 58    cin4 -> COMMA ID cin4
+Rule 59    cin4 -> empty
+Rule 60    cout -> COUT LPAREN express cout1 RPAREN
+Rule 61    cout1 -> COMMA express cout1
+Rule 62    cout1 -> empty
+Rule 63    delay -> DELAY LPAREN express RPAREN
+Rule 64    forward -> FORWARD LPAREN express RPAREN
+Rule 65    backward -> BACKWARD LPAREN express RPAREN
+Rule 66    turnleft -> TURNLEFT LPAREN express RPAREN
+Rule 67    turnright -> TURNRIGHT LPAREN express RPAREN
+Rule 68    servo -> SERVO LPAREN express RPAREN
+Rule 69    lights -> LIGHTS LPAREN express COMMA express RPAREN
+Rule 70    distance -> DISTANCE LPAREN RPAREN
+Rule 71    stop -> STOP LPAREN RPAREN
+Rule 72    while -> WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
+Rule 73    while1 -> empty
+Rule 74    return -> RETURN LPAREN express RPAREN
+Rule 75    type -> INT
+Rule 76    type -> FLOAT
+Rule 77    type -> BOOL
+Rule 78    type -> CHAR
+Rule 79    type -> VOID
+Rule 80    constant -> ID
+Rule 81    constant -> CTE_INT
+Rule 82    constant -> CTE_FLOAT
+Rule 83    constant -> CTE_CHAR
+Rule 84    constant -> CTE_BOOL
+Rule 85    express -> express1 relational express2
+Rule 86    express1 -> NOTEQUALS
+Rule 87    express1 -> empty
+Rule 88    express2 -> andor express
+Rule 89    express2 -> empty
+Rule 90    andor -> AND
+Rule 91    andor -> OR
+Rule 92    relational -> exp relational1
+Rule 93    relational -> NOT
+Rule 94    relational1 -> compare exp
+Rule 95    relational1 -> empty
+Rule 96    compare -> LESSTHAN
+Rule 97    compare -> GREATERTHAN
+Rule 98    compare -> EQUALS
+Rule 99    compare -> NOTEQUALS
+Rule 100   exp -> term exp1
+Rule 101   exp1 -> plusminus exp
+Rule 102   exp1 -> empty
+Rule 103   plusminus -> PLUS
+Rule 104   plusminus -> MINUS
+Rule 105   term -> factor term1
+Rule 106   term1 -> multidivi term
+Rule 107   term1 -> empty
+Rule 108   multidivi -> MULTI
+Rule 109   multidivi -> DIVI
+Rule 110   factor -> insertfloor express endfloor
+Rule 111   factor -> constant
+Rule 112   factor -> call
+Rule 113   insertfloor -> RPAREN
+Rule 114   endfloor -> LPAREN
+Rule 115   empty -> <empty>
 
 Terminals, with rules where they appear
 
-AND                  : 89
+AND                  : 90
 ASSIGN               : 44
-BACKWARD             : 64
-BOOL                 : 76
-CHAR                 : 77
-CIN                  : 52
-COMMA                : 17 50 57 60 68
-COUT                 : 59
+BACKWARD             : 65
+BOOL                 : 77
+CHAR                 : 78
+CIN                  : 53
+COMMA                : 17 51 58 61 69
+COUT                 : 60
 CTE_ARR              : 
-CTE_BOOL             : 83
-CTE_CHAR             : 82
-CTE_FLOAT            : 81
-CTE_INT              : 14 56 80
-DELAY                : 62
-DISTANCE             : 69
-DIVI                 : 108
+CTE_BOOL             : 84
+CTE_CHAR             : 83
+CTE_FLOAT            : 82
+CTE_INT              : 14 57 81
+DELAY                : 63
+DISTANCE             : 70
+DIVI                 : 109
 ELSE                 : 41
-EQUALS               : 97
+EQUALS               : 98
 FIN                  : 1
-FLOAT                : 75
-FORWARD              : 63
+FLOAT                : 76
+FORWARD              : 64
 FUNCDEF              : 8
-GREATERTHAN          : 96
-ID                   : 10 13 19 44 48 55 57 79
+GREATERTHAN          : 97
+ID                   : 10 13 19 44 48 56 58 80
 IF                   : 39
-INT                  : 74
-LBRACKET             : 14 45 56
-LCURLY               : 3 8 39 41 71
-LESSTHAN             : 95
-LIGHTS               : 68
-LPAREN               : 3 8 39 47 55 56 59 62 63 64 65 66 67 68 69 70 71 73 109
+INT                  : 75
+LBRACKET             : 14 45 57
+LCURLY               : 3 8 39 41 72
+LESSTHAN             : 96
+LIGHTS               : 69
+LPAREN               : 3 8 39 47 56 57 60 63 64 65 66 67 68 69 70 71 72 74 114
 MAIN                 : 3
-MINUS                : 103
-MULTI                : 107
-NOT                  : 92
-NOTEQUALS            : 85 98
-OR                   : 90
-PLUS                 : 102
+MINUS                : 104
+MULTI                : 108
+NOT                  : 93
+NOTEQUALS            : 86 99
+OR                   : 91
+PLUS                 : 103
 PROGRAM              : 1
-RBRACKET             : 14 45 56
-RCURLY               : 3 8 39 41 71
-RETURN               : 73
-RPAREN               : 3 8 39 47 55 56 59 62 63 64 65 66 67 68 69 70 71 73 109
+RBRACKET             : 14 45 57
+RCURLY               : 3 8 39 41 72
+RETURN               : 74
+RPAREN               : 3 8 39 47 56 57 60 63 64 65 66 67 68 69 70 71 72 74 113
 SEMICOLON            : 1 13 21
-SERVO                : 67
-STOP                 : 70
-TURNLEFT             : 65
-TURNRIGHT            : 66
+SERVO                : 68
+STOP                 : 71
+TURNLEFT             : 66
+TURNRIGHT            : 67
 VARDEF               : 13
-VOID                 : 78
-WHILE                : 71
+VOID                 : 79
+WHILE                : 72
 error                : 
 
 Nonterminals, with rules where they appear
 
-andor                : 87
+andor                : 88
 assign               : 24
 assign1              : 44
 backward             : 30
-block                : 3 8 21 39 41 71
-call                 : 25 111
+block                : 3 8 21 39 41 72
+call                 : 25 112
 cin                  : 26
-cin1                 : 52
-cin2                 : 53
-cin3                 : 54
-cin4                 : 56 57
-compare              : 93
+cin1                 : 53
+cin2                 : 54
+cin3                 : 55
+cin4                 : 57 58
+compare              : 94
 cond                 : 23
-constant             : 110
+constant             : 111
 cout                 : 27
-cout1                : 59 60
+cout1                : 60 61
 delay                : 28
 distance             : 35
 else                 : 39 41
-empty                : 2 4 5 7 9 12 15 18 20 22 40 42 43 46 51 58 61 72 86 88 94 101 106
+empty                : 2 4 5 7 9 12 15 18 20 22 40 42 43 46 50 52 59 62 73 87 89 95 102 107
+endfloor             : 110
 era                  : 47
-exp                  : 91 93 100
-exp1                 : 99
-express              : 39 44 45 49 59 60 62 63 64 65 66 67 68 68 71 73 87 109
-express1             : 84
-express2             : 84
-factor               : 104
+exp                  : 92 94 101
+exp1                 : 100
+express              : 39 44 45 49 60 61 63 64 65 66 67 68 69 69 72 74 88 110
+express1             : 85
+express2             : 85
+factor               : 105
 forward              : 29
 funcs                : 6
 funcs1               : 8
@@ -211,26 +215,27 @@ funcsblock           : 1 6
 gotoelse             : 41
 gotoif               : 39
 gotomain             : 1
+insertfloor          : 110
 lights               : 34
 main                 : 1
 main1                : 3
-multidivi            : 105
-paramcall            : 47 50
+multidivi            : 106
+paramcall            : 47 51
 paramcall1           : 49
 params               : 16 17
 paramsblock          : 8 16 17
-plusminus            : 100
+plusminus            : 101
 program              : 0
-relational           : 84
-relational1          : 91
+relational           : 85
+relational1          : 92
 return               : 38
 servo                : 33
 setmain              : 3
 setscope             : 8
 statute              : 21
 stop                 : 36
-term                 : 99 105
-term1                : 104
+term                 : 100 106
+term1                : 105
 turnleft             : 31
 turnright            : 32
 type                 : 8 13 19
@@ -238,7 +243,7 @@ vars                 : 11
 vars1                : 13
 varsblock            : 1 3 8 11
 while                : 37
-while1               : 71
+while1               : 72
 
 Parsing method: LALR
 
@@ -261,11 +266,11 @@ state 2
 
     (1) program -> PROGRAM . gotomain varsblock funcsblock main FIN SEMICOLON
     (2) gotomain -> . empty
-    (112) empty -> .
+    (115) empty -> .
 
-    VARDEF          reduce using rule 112 (empty -> .)
-    FUNCDEF         reduce using rule 112 (empty -> .)
-    MAIN            reduce using rule 112 (empty -> .)
+    VARDEF          reduce using rule 115 (empty -> .)
+    FUNCDEF         reduce using rule 115 (empty -> .)
+    MAIN            reduce using rule 115 (empty -> .)
 
     gotomain                       shift and go to state 3
     empty                          shift and go to state 4
@@ -276,11 +281,11 @@ state 3
     (11) varsblock -> . vars varsblock
     (12) varsblock -> . empty
     (13) vars -> . VARDEF type ID vars1 SEMICOLON
-    (112) empty -> .
+    (115) empty -> .
 
     VARDEF          shift and go to state 8
-    FUNCDEF         reduce using rule 112 (empty -> .)
-    MAIN            reduce using rule 112 (empty -> .)
+    FUNCDEF         reduce using rule 115 (empty -> .)
+    MAIN            reduce using rule 115 (empty -> .)
 
     varsblock                      shift and go to state 5
     vars                           shift and go to state 6
@@ -301,10 +306,10 @@ state 5
     (6) funcsblock -> . funcs funcsblock
     (7) funcsblock -> . empty
     (8) funcs -> . FUNCDEF type setscope LPAREN paramsblock RPAREN LCURLY varsblock funcs1 block RCURLY
-    (112) empty -> .
+    (115) empty -> .
 
     FUNCDEF         shift and go to state 12
-    MAIN            reduce using rule 112 (empty -> .)
+    MAIN            reduce using rule 115 (empty -> .)
 
     funcsblock                     shift and go to state 9
     funcs                          shift and go to state 10
@@ -316,27 +321,27 @@ state 6
     (11) varsblock -> . vars varsblock
     (12) varsblock -> . empty
     (13) vars -> . VARDEF type ID vars1 SEMICOLON
-    (112) empty -> .
+    (115) empty -> .
 
     VARDEF          shift and go to state 8
-    FUNCDEF         reduce using rule 112 (empty -> .)
-    MAIN            reduce using rule 112 (empty -> .)
-    IF              reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CIN             reduce using rule 112 (empty -> .)
-    COUT            reduce using rule 112 (empty -> .)
-    DELAY           reduce using rule 112 (empty -> .)
-    FORWARD         reduce using rule 112 (empty -> .)
-    BACKWARD        reduce using rule 112 (empty -> .)
-    TURNLEFT        reduce using rule 112 (empty -> .)
-    TURNRIGHT       reduce using rule 112 (empty -> .)
-    SERVO           reduce using rule 112 (empty -> .)
-    LIGHTS          reduce using rule 112 (empty -> .)
-    DISTANCE        reduce using rule 112 (empty -> .)
-    STOP            reduce using rule 112 (empty -> .)
-    WHILE           reduce using rule 112 (empty -> .)
-    RETURN          reduce using rule 112 (empty -> .)
-    RCURLY          reduce using rule 112 (empty -> .)
+    FUNCDEF         reduce using rule 115 (empty -> .)
+    MAIN            reduce using rule 115 (empty -> .)
+    IF              reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CIN             reduce using rule 115 (empty -> .)
+    COUT            reduce using rule 115 (empty -> .)
+    DELAY           reduce using rule 115 (empty -> .)
+    FORWARD         reduce using rule 115 (empty -> .)
+    BACKWARD        reduce using rule 115 (empty -> .)
+    TURNLEFT        reduce using rule 115 (empty -> .)
+    TURNRIGHT       reduce using rule 115 (empty -> .)
+    SERVO           reduce using rule 115 (empty -> .)
+    LIGHTS          reduce using rule 115 (empty -> .)
+    DISTANCE        reduce using rule 115 (empty -> .)
+    STOP            reduce using rule 115 (empty -> .)
+    WHILE           reduce using rule 115 (empty -> .)
+    RETURN          reduce using rule 115 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
 
     vars                           shift and go to state 6
     varsblock                      shift and go to state 13
@@ -369,11 +374,11 @@ state 7
 state 8
 
     (13) vars -> VARDEF . type ID vars1 SEMICOLON
-    (74) type -> . INT
-    (75) type -> . FLOAT
-    (76) type -> . BOOL
-    (77) type -> . CHAR
-    (78) type -> . VOID
+    (75) type -> . INT
+    (76) type -> . FLOAT
+    (77) type -> . BOOL
+    (78) type -> . CHAR
+    (79) type -> . VOID
 
     INT             shift and go to state 15
     FLOAT           shift and go to state 16
@@ -398,10 +403,10 @@ state 10
     (6) funcsblock -> . funcs funcsblock
     (7) funcsblock -> . empty
     (8) funcs -> . FUNCDEF type setscope LPAREN paramsblock RPAREN LCURLY varsblock funcs1 block RCURLY
-    (112) empty -> .
+    (115) empty -> .
 
     FUNCDEF         shift and go to state 12
-    MAIN            reduce using rule 112 (empty -> .)
+    MAIN            reduce using rule 115 (empty -> .)
 
     funcs                          shift and go to state 10
     funcsblock                     shift and go to state 22
@@ -417,11 +422,11 @@ state 11
 state 12
 
     (8) funcs -> FUNCDEF . type setscope LPAREN paramsblock RPAREN LCURLY varsblock funcs1 block RCURLY
-    (74) type -> . INT
-    (75) type -> . FLOAT
-    (76) type -> . BOOL
-    (77) type -> . CHAR
-    (78) type -> . VOID
+    (75) type -> . INT
+    (76) type -> . FLOAT
+    (77) type -> . BOOL
+    (78) type -> . CHAR
+    (79) type -> . VOID
 
     INT             shift and go to state 15
     FLOAT           shift and go to state 16
@@ -464,37 +469,37 @@ state 14
 
 state 15
 
-    (74) type -> INT .
+    (75) type -> INT .
 
-    ID              reduce using rule 74 (type -> INT .)
+    ID              reduce using rule 75 (type -> INT .)
 
 
 state 16
 
-    (75) type -> FLOAT .
+    (76) type -> FLOAT .
 
-    ID              reduce using rule 75 (type -> FLOAT .)
+    ID              reduce using rule 76 (type -> FLOAT .)
 
 
 state 17
 
-    (76) type -> BOOL .
+    (77) type -> BOOL .
 
-    ID              reduce using rule 76 (type -> BOOL .)
+    ID              reduce using rule 77 (type -> BOOL .)
 
 
 state 18
 
-    (77) type -> CHAR .
+    (78) type -> CHAR .
 
-    ID              reduce using rule 77 (type -> CHAR .)
+    ID              reduce using rule 78 (type -> CHAR .)
 
 
 state 19
 
-    (78) type -> VOID .
+    (79) type -> VOID .
 
-    ID              reduce using rule 78 (type -> VOID .)
+    ID              reduce using rule 79 (type -> VOID .)
 
 
 state 20
@@ -508,9 +513,9 @@ state 21
 
     (3) main -> MAIN . setmain LPAREN RPAREN LCURLY varsblock main1 block RCURLY
     (5) setmain -> . empty
-    (112) empty -> .
+    (115) empty -> .
 
-    LPAREN          reduce using rule 112 (empty -> .)
+    LPAREN          reduce using rule 115 (empty -> .)
 
     setmain                        shift and go to state 26
     empty                          shift and go to state 27
@@ -536,10 +541,10 @@ state 24
     (13) vars -> VARDEF type ID . vars1 SEMICOLON
     (14) vars1 -> . LBRACKET CTE_INT RBRACKET
     (15) vars1 -> . empty
-    (112) empty -> .
+    (115) empty -> .
 
     LBRACKET        shift and go to state 31
-    SEMICOLON       reduce using rule 112 (empty -> .)
+    SEMICOLON       reduce using rule 115 (empty -> .)
 
     vars1                          shift and go to state 30
     empty                          shift and go to state 32
@@ -622,12 +627,12 @@ state 35
     (18) paramsblock -> . empty
     (19) params -> . type ID
     (20) params -> . empty
-    (112) empty -> .
-    (74) type -> . INT
-    (75) type -> . FLOAT
-    (76) type -> . BOOL
-    (77) type -> . CHAR
-    (78) type -> . VOID
+    (115) empty -> .
+    (75) type -> . INT
+    (76) type -> . FLOAT
+    (77) type -> . BOOL
+    (78) type -> . CHAR
+    (79) type -> . VOID
 
   ! shift/reduce conflict for COMMA resolved as shift
   ! shift/reduce conflict for INT resolved as shift
@@ -636,19 +641,19 @@ state 35
   ! shift/reduce conflict for CHAR resolved as shift
   ! shift/reduce conflict for VOID resolved as shift
     COMMA           shift and go to state 42
-    RPAREN          reduce using rule 112 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
     INT             shift and go to state 15
     FLOAT           shift and go to state 16
     BOOL            shift and go to state 17
     CHAR            shift and go to state 18
     VOID            shift and go to state 19
 
-  ! COMMA           [ reduce using rule 112 (empty -> .) ]
-  ! INT             [ reduce using rule 112 (empty -> .) ]
-  ! FLOAT           [ reduce using rule 112 (empty -> .) ]
-  ! BOOL            [ reduce using rule 112 (empty -> .) ]
-  ! CHAR            [ reduce using rule 112 (empty -> .) ]
-  ! VOID            [ reduce using rule 112 (empty -> .) ]
+  ! COMMA           [ reduce using rule 115 (empty -> .) ]
+  ! INT             [ reduce using rule 115 (empty -> .) ]
+  ! FLOAT           [ reduce using rule 115 (empty -> .) ]
+  ! BOOL            [ reduce using rule 115 (empty -> .) ]
+  ! CHAR            [ reduce using rule 115 (empty -> .) ]
+  ! VOID            [ reduce using rule 115 (empty -> .) ]
 
     type                           shift and go to state 39
     paramsblock                    shift and go to state 40
@@ -716,12 +721,12 @@ state 41
     (18) paramsblock -> . empty
     (19) params -> . type ID
     (20) params -> . empty
-    (112) empty -> .
-    (74) type -> . INT
-    (75) type -> . FLOAT
-    (76) type -> . BOOL
-    (77) type -> . CHAR
-    (78) type -> . VOID
+    (115) empty -> .
+    (75) type -> . INT
+    (76) type -> . FLOAT
+    (77) type -> . BOOL
+    (78) type -> . CHAR
+    (79) type -> . VOID
 
   ! shift/reduce conflict for COMMA resolved as shift
   ! shift/reduce conflict for INT resolved as shift
@@ -730,19 +735,19 @@ state 41
   ! shift/reduce conflict for CHAR resolved as shift
   ! shift/reduce conflict for VOID resolved as shift
     COMMA           shift and go to state 42
-    RPAREN          reduce using rule 112 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
     INT             shift and go to state 15
     FLOAT           shift and go to state 16
     BOOL            shift and go to state 17
     CHAR            shift and go to state 18
     VOID            shift and go to state 19
 
-  ! COMMA           [ reduce using rule 112 (empty -> .) ]
-  ! INT             [ reduce using rule 112 (empty -> .) ]
-  ! FLOAT           [ reduce using rule 112 (empty -> .) ]
-  ! BOOL            [ reduce using rule 112 (empty -> .) ]
-  ! CHAR            [ reduce using rule 112 (empty -> .) ]
-  ! VOID            [ reduce using rule 112 (empty -> .) ]
+  ! COMMA           [ reduce using rule 115 (empty -> .) ]
+  ! INT             [ reduce using rule 115 (empty -> .) ]
+  ! FLOAT           [ reduce using rule 115 (empty -> .) ]
+  ! BOOL            [ reduce using rule 115 (empty -> .) ]
+  ! CHAR            [ reduce using rule 115 (empty -> .) ]
+  ! VOID            [ reduce using rule 115 (empty -> .) ]
 
     params                         shift and go to state 41
     paramsblock                    shift and go to state 48
@@ -754,12 +759,12 @@ state 42
     (17) paramsblock -> COMMA . params paramsblock
     (19) params -> . type ID
     (20) params -> . empty
-    (74) type -> . INT
-    (75) type -> . FLOAT
-    (76) type -> . BOOL
-    (77) type -> . CHAR
-    (78) type -> . VOID
-    (112) empty -> .
+    (75) type -> . INT
+    (76) type -> . FLOAT
+    (77) type -> . BOOL
+    (78) type -> . CHAR
+    (79) type -> . VOID
+    (115) empty -> .
 
   ! shift/reduce conflict for INT resolved as shift
   ! shift/reduce conflict for FLOAT resolved as shift
@@ -771,14 +776,14 @@ state 42
     BOOL            shift and go to state 17
     CHAR            shift and go to state 18
     VOID            shift and go to state 19
-    COMMA           reduce using rule 112 (empty -> .)
-    RPAREN          reduce using rule 112 (empty -> .)
+    COMMA           reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
 
-  ! INT             [ reduce using rule 112 (empty -> .) ]
-  ! FLOAT           [ reduce using rule 112 (empty -> .) ]
-  ! BOOL            [ reduce using rule 112 (empty -> .) ]
-  ! CHAR            [ reduce using rule 112 (empty -> .) ]
-  ! VOID            [ reduce using rule 112 (empty -> .) ]
+  ! INT             [ reduce using rule 115 (empty -> .) ]
+  ! FLOAT           [ reduce using rule 115 (empty -> .) ]
+  ! BOOL            [ reduce using rule 115 (empty -> .) ]
+  ! CHAR            [ reduce using rule 115 (empty -> .) ]
+  ! VOID            [ reduce using rule 115 (empty -> .) ]
 
     params                         shift and go to state 49
     type                           shift and go to state 39
@@ -814,25 +819,25 @@ state 45
     (11) varsblock -> . vars varsblock
     (12) varsblock -> . empty
     (13) vars -> . VARDEF type ID vars1 SEMICOLON
-    (112) empty -> .
+    (115) empty -> .
 
     VARDEF          shift and go to state 8
-    IF              reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CIN             reduce using rule 112 (empty -> .)
-    COUT            reduce using rule 112 (empty -> .)
-    DELAY           reduce using rule 112 (empty -> .)
-    FORWARD         reduce using rule 112 (empty -> .)
-    BACKWARD        reduce using rule 112 (empty -> .)
-    TURNLEFT        reduce using rule 112 (empty -> .)
-    TURNRIGHT       reduce using rule 112 (empty -> .)
-    SERVO           reduce using rule 112 (empty -> .)
-    LIGHTS          reduce using rule 112 (empty -> .)
-    DISTANCE        reduce using rule 112 (empty -> .)
-    STOP            reduce using rule 112 (empty -> .)
-    WHILE           reduce using rule 112 (empty -> .)
-    RETURN          reduce using rule 112 (empty -> .)
-    RCURLY          reduce using rule 112 (empty -> .)
+    IF              reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CIN             reduce using rule 115 (empty -> .)
+    COUT            reduce using rule 115 (empty -> .)
+    DELAY           reduce using rule 115 (empty -> .)
+    FORWARD         reduce using rule 115 (empty -> .)
+    BACKWARD        reduce using rule 115 (empty -> .)
+    TURNLEFT        reduce using rule 115 (empty -> .)
+    TURNRIGHT       reduce using rule 115 (empty -> .)
+    SERVO           reduce using rule 115 (empty -> .)
+    LIGHTS          reduce using rule 115 (empty -> .)
+    DISTANCE        reduce using rule 115 (empty -> .)
+    STOP            reduce using rule 115 (empty -> .)
+    WHILE           reduce using rule 115 (empty -> .)
+    RETURN          reduce using rule 115 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
 
     varsblock                      shift and go to state 51
     vars                           shift and go to state 6
@@ -873,12 +878,12 @@ state 49
     (18) paramsblock -> . empty
     (19) params -> . type ID
     (20) params -> . empty
-    (112) empty -> .
-    (74) type -> . INT
-    (75) type -> . FLOAT
-    (76) type -> . BOOL
-    (77) type -> . CHAR
-    (78) type -> . VOID
+    (115) empty -> .
+    (75) type -> . INT
+    (76) type -> . FLOAT
+    (77) type -> . BOOL
+    (78) type -> . CHAR
+    (79) type -> . VOID
 
   ! shift/reduce conflict for COMMA resolved as shift
   ! shift/reduce conflict for INT resolved as shift
@@ -887,19 +892,19 @@ state 49
   ! shift/reduce conflict for CHAR resolved as shift
   ! shift/reduce conflict for VOID resolved as shift
     COMMA           shift and go to state 42
-    RPAREN          reduce using rule 112 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
     INT             shift and go to state 15
     FLOAT           shift and go to state 16
     BOOL            shift and go to state 17
     CHAR            shift and go to state 18
     VOID            shift and go to state 19
 
-  ! COMMA           [ reduce using rule 112 (empty -> .) ]
-  ! INT             [ reduce using rule 112 (empty -> .) ]
-  ! FLOAT           [ reduce using rule 112 (empty -> .) ]
-  ! BOOL            [ reduce using rule 112 (empty -> .) ]
-  ! CHAR            [ reduce using rule 112 (empty -> .) ]
-  ! VOID            [ reduce using rule 112 (empty -> .) ]
+  ! COMMA           [ reduce using rule 115 (empty -> .) ]
+  ! INT             [ reduce using rule 115 (empty -> .) ]
+  ! FLOAT           [ reduce using rule 115 (empty -> .) ]
+  ! BOOL            [ reduce using rule 115 (empty -> .) ]
+  ! CHAR            [ reduce using rule 115 (empty -> .) ]
+  ! VOID            [ reduce using rule 115 (empty -> .) ]
 
     params                         shift and go to state 41
     paramsblock                    shift and go to state 53
@@ -923,24 +928,24 @@ state 51
 
     (3) main -> MAIN setmain LPAREN RPAREN LCURLY varsblock . main1 block RCURLY
     (4) main1 -> . empty
-    (112) empty -> .
+    (115) empty -> .
 
-    IF              reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CIN             reduce using rule 112 (empty -> .)
-    COUT            reduce using rule 112 (empty -> .)
-    DELAY           reduce using rule 112 (empty -> .)
-    FORWARD         reduce using rule 112 (empty -> .)
-    BACKWARD        reduce using rule 112 (empty -> .)
-    TURNLEFT        reduce using rule 112 (empty -> .)
-    TURNRIGHT       reduce using rule 112 (empty -> .)
-    SERVO           reduce using rule 112 (empty -> .)
-    LIGHTS          reduce using rule 112 (empty -> .)
-    DISTANCE        reduce using rule 112 (empty -> .)
-    STOP            reduce using rule 112 (empty -> .)
-    WHILE           reduce using rule 112 (empty -> .)
-    RETURN          reduce using rule 112 (empty -> .)
-    RCURLY          reduce using rule 112 (empty -> .)
+    IF              reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CIN             reduce using rule 115 (empty -> .)
+    COUT            reduce using rule 115 (empty -> .)
+    DELAY           reduce using rule 115 (empty -> .)
+    FORWARD         reduce using rule 115 (empty -> .)
+    BACKWARD        reduce using rule 115 (empty -> .)
+    TURNLEFT        reduce using rule 115 (empty -> .)
+    TURNRIGHT       reduce using rule 115 (empty -> .)
+    SERVO           reduce using rule 115 (empty -> .)
+    LIGHTS          reduce using rule 115 (empty -> .)
+    DISTANCE        reduce using rule 115 (empty -> .)
+    STOP            reduce using rule 115 (empty -> .)
+    WHILE           reduce using rule 115 (empty -> .)
+    RETURN          reduce using rule 115 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
 
     main1                          shift and go to state 54
     empty                          shift and go to state 55
@@ -951,25 +956,25 @@ state 52
     (11) varsblock -> . vars varsblock
     (12) varsblock -> . empty
     (13) vars -> . VARDEF type ID vars1 SEMICOLON
-    (112) empty -> .
+    (115) empty -> .
 
     VARDEF          shift and go to state 8
-    IF              reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CIN             reduce using rule 112 (empty -> .)
-    COUT            reduce using rule 112 (empty -> .)
-    DELAY           reduce using rule 112 (empty -> .)
-    FORWARD         reduce using rule 112 (empty -> .)
-    BACKWARD        reduce using rule 112 (empty -> .)
-    TURNLEFT        reduce using rule 112 (empty -> .)
-    TURNRIGHT       reduce using rule 112 (empty -> .)
-    SERVO           reduce using rule 112 (empty -> .)
-    LIGHTS          reduce using rule 112 (empty -> .)
-    DISTANCE        reduce using rule 112 (empty -> .)
-    STOP            reduce using rule 112 (empty -> .)
-    WHILE           reduce using rule 112 (empty -> .)
-    RETURN          reduce using rule 112 (empty -> .)
-    RCURLY          reduce using rule 112 (empty -> .)
+    IF              reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CIN             reduce using rule 115 (empty -> .)
+    COUT            reduce using rule 115 (empty -> .)
+    DELAY           reduce using rule 115 (empty -> .)
+    FORWARD         reduce using rule 115 (empty -> .)
+    BACKWARD        reduce using rule 115 (empty -> .)
+    TURNLEFT        reduce using rule 115 (empty -> .)
+    TURNRIGHT       reduce using rule 115 (empty -> .)
+    SERVO           reduce using rule 115 (empty -> .)
+    LIGHTS          reduce using rule 115 (empty -> .)
+    DISTANCE        reduce using rule 115 (empty -> .)
+    STOP            reduce using rule 115 (empty -> .)
+    WHILE           reduce using rule 115 (empty -> .)
+    RETURN          reduce using rule 115 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
 
     varsblock                      shift and go to state 56
     vars                           shift and go to state 6
@@ -1003,26 +1008,26 @@ state 54
     (36) statute -> . stop
     (37) statute -> . while
     (38) statute -> . return
-    (112) empty -> .
+    (115) empty -> .
     (39) cond -> . IF LPAREN express RPAREN LCURLY gotoif block RCURLY else
     (44) assign -> . ID assign1 ASSIGN express
     (47) call -> . era LPAREN paramcall RPAREN
-    (52) cin -> . CIN cin1
-    (59) cout -> . COUT LPAREN express cout1 RPAREN
-    (62) delay -> . DELAY LPAREN express RPAREN
-    (63) forward -> . FORWARD LPAREN express RPAREN
-    (64) backward -> . BACKWARD LPAREN express RPAREN
-    (65) turnleft -> . TURNLEFT LPAREN express RPAREN
-    (66) turnright -> . TURNRIGHT LPAREN express RPAREN
-    (67) servo -> . SERVO LPAREN express RPAREN
-    (68) lights -> . LIGHTS LPAREN express COMMA express RPAREN
-    (69) distance -> . DISTANCE LPAREN RPAREN
-    (70) stop -> . STOP LPAREN RPAREN
-    (71) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
-    (73) return -> . RETURN LPAREN express RPAREN
+    (53) cin -> . CIN cin1
+    (60) cout -> . COUT LPAREN express cout1 RPAREN
+    (63) delay -> . DELAY LPAREN express RPAREN
+    (64) forward -> . FORWARD LPAREN express RPAREN
+    (65) backward -> . BACKWARD LPAREN express RPAREN
+    (66) turnleft -> . TURNLEFT LPAREN express RPAREN
+    (67) turnright -> . TURNRIGHT LPAREN express RPAREN
+    (68) servo -> . SERVO LPAREN express RPAREN
+    (69) lights -> . LIGHTS LPAREN express COMMA express RPAREN
+    (70) distance -> . DISTANCE LPAREN RPAREN
+    (71) stop -> . STOP LPAREN RPAREN
+    (72) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
+    (74) return -> . RETURN LPAREN express RPAREN
     (48) era -> . ID
 
-    RCURLY          reduce using rule 112 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
     IF              shift and go to state 76
     ID              shift and go to state 77
     CIN             shift and go to state 79
@@ -1086,24 +1091,24 @@ state 56
 
     (8) funcs -> FUNCDEF type setscope LPAREN paramsblock RPAREN LCURLY varsblock . funcs1 block RCURLY
     (9) funcs1 -> . empty
-    (112) empty -> .
+    (115) empty -> .
 
-    IF              reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CIN             reduce using rule 112 (empty -> .)
-    COUT            reduce using rule 112 (empty -> .)
-    DELAY           reduce using rule 112 (empty -> .)
-    FORWARD         reduce using rule 112 (empty -> .)
-    BACKWARD        reduce using rule 112 (empty -> .)
-    TURNLEFT        reduce using rule 112 (empty -> .)
-    TURNRIGHT       reduce using rule 112 (empty -> .)
-    SERVO           reduce using rule 112 (empty -> .)
-    LIGHTS          reduce using rule 112 (empty -> .)
-    DISTANCE        reduce using rule 112 (empty -> .)
-    STOP            reduce using rule 112 (empty -> .)
-    WHILE           reduce using rule 112 (empty -> .)
-    RETURN          reduce using rule 112 (empty -> .)
-    RCURLY          reduce using rule 112 (empty -> .)
+    IF              reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CIN             reduce using rule 115 (empty -> .)
+    COUT            reduce using rule 115 (empty -> .)
+    DELAY           reduce using rule 115 (empty -> .)
+    FORWARD         reduce using rule 115 (empty -> .)
+    BACKWARD        reduce using rule 115 (empty -> .)
+    TURNLEFT        reduce using rule 115 (empty -> .)
+    TURNRIGHT       reduce using rule 115 (empty -> .)
+    SERVO           reduce using rule 115 (empty -> .)
+    LIGHTS          reduce using rule 115 (empty -> .)
+    DISTANCE        reduce using rule 115 (empty -> .)
+    STOP            reduce using rule 115 (empty -> .)
+    WHILE           reduce using rule 115 (empty -> .)
+    RETURN          reduce using rule 115 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
 
     funcs1                         shift and go to state 92
     empty                          shift and go to state 93
@@ -1254,11 +1259,11 @@ state 77
     (48) era -> ID .
     (45) assign1 -> . LBRACKET express RBRACKET
     (46) assign1 -> . empty
-    (112) empty -> .
+    (115) empty -> .
 
     LPAREN          reduce using rule 48 (era -> ID .)
     LBRACKET        shift and go to state 98
-    ASSIGN          reduce using rule 112 (empty -> .)
+    ASSIGN          reduce using rule 115 (empty -> .)
 
     assign1                        shift and go to state 97
     empty                          shift and go to state 99
@@ -1272,11 +1277,11 @@ state 78
 
 state 79
 
-    (52) cin -> CIN . cin1
-    (53) cin1 -> . cin2
-    (54) cin1 -> . cin3
-    (55) cin2 -> . LPAREN ID RPAREN
-    (56) cin3 -> . LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN
+    (53) cin -> CIN . cin1
+    (54) cin1 -> . cin2
+    (55) cin1 -> . cin3
+    (56) cin2 -> . LPAREN ID RPAREN
+    (57) cin3 -> . LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN
 
     LPAREN          shift and go to state 104
     LBRACKET        shift and go to state 105
@@ -1287,84 +1292,84 @@ state 79
 
 state 80
 
-    (59) cout -> COUT . LPAREN express cout1 RPAREN
+    (60) cout -> COUT . LPAREN express cout1 RPAREN
 
     LPAREN          shift and go to state 106
 
 
 state 81
 
-    (62) delay -> DELAY . LPAREN express RPAREN
+    (63) delay -> DELAY . LPAREN express RPAREN
 
     LPAREN          shift and go to state 107
 
 
 state 82
 
-    (63) forward -> FORWARD . LPAREN express RPAREN
+    (64) forward -> FORWARD . LPAREN express RPAREN
 
     LPAREN          shift and go to state 108
 
 
 state 83
 
-    (64) backward -> BACKWARD . LPAREN express RPAREN
+    (65) backward -> BACKWARD . LPAREN express RPAREN
 
     LPAREN          shift and go to state 109
 
 
 state 84
 
-    (65) turnleft -> TURNLEFT . LPAREN express RPAREN
+    (66) turnleft -> TURNLEFT . LPAREN express RPAREN
 
     LPAREN          shift and go to state 110
 
 
 state 85
 
-    (66) turnright -> TURNRIGHT . LPAREN express RPAREN
+    (67) turnright -> TURNRIGHT . LPAREN express RPAREN
 
     LPAREN          shift and go to state 111
 
 
 state 86
 
-    (67) servo -> SERVO . LPAREN express RPAREN
+    (68) servo -> SERVO . LPAREN express RPAREN
 
     LPAREN          shift and go to state 112
 
 
 state 87
 
-    (68) lights -> LIGHTS . LPAREN express COMMA express RPAREN
+    (69) lights -> LIGHTS . LPAREN express COMMA express RPAREN
 
     LPAREN          shift and go to state 113
 
 
 state 88
 
-    (69) distance -> DISTANCE . LPAREN RPAREN
+    (70) distance -> DISTANCE . LPAREN RPAREN
 
     LPAREN          shift and go to state 114
 
 
 state 89
 
-    (70) stop -> STOP . LPAREN RPAREN
+    (71) stop -> STOP . LPAREN RPAREN
 
     LPAREN          shift and go to state 115
 
 
 state 90
 
-    (71) while -> WHILE . LPAREN express RPAREN while1 LCURLY block RCURLY
+    (72) while -> WHILE . LPAREN express RPAREN while1 LCURLY block RCURLY
 
     LPAREN          shift and go to state 116
 
 
 state 91
 
-    (73) return -> RETURN . LPAREN express RPAREN
+    (74) return -> RETURN . LPAREN express RPAREN
 
     LPAREN          shift and go to state 117
 
@@ -1390,26 +1395,26 @@ state 92
     (36) statute -> . stop
     (37) statute -> . while
     (38) statute -> . return
-    (112) empty -> .
+    (115) empty -> .
     (39) cond -> . IF LPAREN express RPAREN LCURLY gotoif block RCURLY else
     (44) assign -> . ID assign1 ASSIGN express
     (47) call -> . era LPAREN paramcall RPAREN
-    (52) cin -> . CIN cin1
-    (59) cout -> . COUT LPAREN express cout1 RPAREN
-    (62) delay -> . DELAY LPAREN express RPAREN
-    (63) forward -> . FORWARD LPAREN express RPAREN
-    (64) backward -> . BACKWARD LPAREN express RPAREN
-    (65) turnleft -> . TURNLEFT LPAREN express RPAREN
-    (66) turnright -> . TURNRIGHT LPAREN express RPAREN
-    (67) servo -> . SERVO LPAREN express RPAREN
-    (68) lights -> . LIGHTS LPAREN express COMMA express RPAREN
-    (69) distance -> . DISTANCE LPAREN RPAREN
-    (70) stop -> . STOP LPAREN RPAREN
-    (71) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
-    (73) return -> . RETURN LPAREN express RPAREN
+    (53) cin -> . CIN cin1
+    (60) cout -> . COUT LPAREN express cout1 RPAREN
+    (63) delay -> . DELAY LPAREN express RPAREN
+    (64) forward -> . FORWARD LPAREN express RPAREN
+    (65) backward -> . BACKWARD LPAREN express RPAREN
+    (66) turnleft -> . TURNLEFT LPAREN express RPAREN
+    (67) turnright -> . TURNRIGHT LPAREN express RPAREN
+    (68) servo -> . SERVO LPAREN express RPAREN
+    (69) lights -> . LIGHTS LPAREN express COMMA express RPAREN
+    (70) distance -> . DISTANCE LPAREN RPAREN
+    (71) stop -> . STOP LPAREN RPAREN
+    (72) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
+    (74) return -> . RETURN LPAREN express RPAREN
     (48) era -> . ID
 
-    RCURLY          reduce using rule 112 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
     IF              shift and go to state 76
     ID              shift and go to state 77
     CIN             shift and go to state 79
@@ -1497,26 +1502,26 @@ state 95
     (36) statute -> . stop
     (37) statute -> . while
     (38) statute -> . return
-    (112) empty -> .
+    (115) empty -> .
     (39) cond -> . IF LPAREN express RPAREN LCURLY gotoif block RCURLY else
     (44) assign -> . ID assign1 ASSIGN express
     (47) call -> . era LPAREN paramcall RPAREN
-    (52) cin -> . CIN cin1
-    (59) cout -> . COUT LPAREN express cout1 RPAREN
-    (62) delay -> . DELAY LPAREN express RPAREN
-    (63) forward -> . FORWARD LPAREN express RPAREN
-    (64) backward -> . BACKWARD LPAREN express RPAREN
-    (65) turnleft -> . TURNLEFT LPAREN express RPAREN
-    (66) turnright -> . TURNRIGHT LPAREN express RPAREN
-    (67) servo -> . SERVO LPAREN express RPAREN
-    (68) lights -> . LIGHTS LPAREN express COMMA express RPAREN
-    (69) distance -> . DISTANCE LPAREN RPAREN
-    (70) stop -> . STOP LPAREN RPAREN
-    (71) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
-    (73) return -> . RETURN LPAREN express RPAREN
+    (53) cin -> . CIN cin1
+    (60) cout -> . COUT LPAREN express cout1 RPAREN
+    (63) delay -> . DELAY LPAREN express RPAREN
+    (64) forward -> . FORWARD LPAREN express RPAREN
+    (65) backward -> . BACKWARD LPAREN express RPAREN
+    (66) turnleft -> . TURNLEFT LPAREN express RPAREN
+    (67) turnright -> . TURNRIGHT LPAREN express RPAREN
+    (68) servo -> . SERVO LPAREN express RPAREN
+    (69) lights -> . LIGHTS LPAREN express COMMA express RPAREN
+    (70) distance -> . DISTANCE LPAREN RPAREN
+    (71) stop -> . STOP LPAREN RPAREN
+    (72) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
+    (74) return -> . RETURN LPAREN express RPAREN
     (48) era -> . ID
 
-    RCURLY          reduce using rule 112 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
     IF              shift and go to state 76
     ID              shift and go to state 77
     CIN             shift and go to state 79
@@ -1557,19 +1562,19 @@ state 95
 state 96
 
     (39) cond -> IF LPAREN . express RPAREN LCURLY gotoif block RCURLY else
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
     express                        shift and go to state 120
     express1                       shift and go to state 121
@@ -1585,19 +1590,19 @@ state 97
 state 98
 
     (45) assign1 -> LBRACKET . express RBRACKET
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
     express                        shift and go to state 125
     express1                       shift and go to state 121
@@ -1614,281 +1619,282 @@ state 100
 
     (47) call -> era LPAREN . paramcall RPAREN
     (49) paramcall -> . express paramcall1
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (50) paramcall -> . empty
+    (85) express -> . express1 relational express2
+    (115) empty -> .
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
 
+    RPAREN          reduce using rule 115 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
 
     paramcall                      shift and go to state 126
     express                        shift and go to state 127
+    empty                          shift and go to state 128
     express1                       shift and go to state 121
-    empty                          shift and go to state 123
 
 state 101
 
-    (52) cin -> CIN cin1 .
+    (53) cin -> CIN cin1 .
 
-    SEMICOLON       reduce using rule 52 (cin -> CIN cin1 .)
+    SEMICOLON       reduce using rule 53 (cin -> CIN cin1 .)
 
 
 state 102
 
-    (53) cin1 -> cin2 .
+    (54) cin1 -> cin2 .
 
-    SEMICOLON       reduce using rule 53 (cin1 -> cin2 .)
+    SEMICOLON       reduce using rule 54 (cin1 -> cin2 .)
 
 
 state 103
 
-    (54) cin1 -> cin3 .
+    (55) cin1 -> cin3 .
 
-    SEMICOLON       reduce using rule 54 (cin1 -> cin3 .)
+    SEMICOLON       reduce using rule 55 (cin1 -> cin3 .)
 
 
 state 104
 
-    (55) cin2 -> LPAREN . ID RPAREN
+    (56) cin2 -> LPAREN . ID RPAREN
 
-    ID              shift and go to state 128
+    ID              shift and go to state 129
 
 
 state 105
 
-    (56) cin3 -> LBRACKET . CTE_INT RBRACKET LPAREN cin4 RPAREN
+    (57) cin3 -> LBRACKET . CTE_INT RBRACKET LPAREN cin4 RPAREN
 
-    CTE_INT         shift and go to state 129
+    CTE_INT         shift and go to state 130
 
 
 state 106
 
-    (59) cout -> COUT LPAREN . express cout1 RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (60) cout -> COUT LPAREN . express cout1 RPAREN
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
-
-    express                        shift and go to state 130
-    express1                       shift and go to state 121
-    empty                          shift and go to state 123
-
-state 107
-
-    (62) delay -> DELAY LPAREN . express RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
-
-    NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
     express                        shift and go to state 131
     express1                       shift and go to state 121
     empty                          shift and go to state 123
 
-state 108
+state 107
 
-    (63) forward -> FORWARD LPAREN . express RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (63) delay -> DELAY LPAREN . express RPAREN
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
     express                        shift and go to state 132
     express1                       shift and go to state 121
     empty                          shift and go to state 123
 
-state 109
+state 108
 
-    (64) backward -> BACKWARD LPAREN . express RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (64) forward -> FORWARD LPAREN . express RPAREN
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
     express                        shift and go to state 133
     express1                       shift and go to state 121
     empty                          shift and go to state 123
 
-state 110
+state 109
 
-    (65) turnleft -> TURNLEFT LPAREN . express RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (65) backward -> BACKWARD LPAREN . express RPAREN
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
     express                        shift and go to state 134
     express1                       shift and go to state 121
     empty                          shift and go to state 123
 
-state 111
+state 110
 
-    (66) turnright -> TURNRIGHT LPAREN . express RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (66) turnleft -> TURNLEFT LPAREN . express RPAREN
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
     express                        shift and go to state 135
     express1                       shift and go to state 121
     empty                          shift and go to state 123
 
-state 112
+state 111
 
-    (67) servo -> SERVO LPAREN . express RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (67) turnright -> TURNRIGHT LPAREN . express RPAREN
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
     express                        shift and go to state 136
     express1                       shift and go to state 121
     empty                          shift and go to state 123
 
-state 113
+state 112
 
-    (68) lights -> LIGHTS LPAREN . express COMMA express RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (68) servo -> SERVO LPAREN . express RPAREN
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
     express                        shift and go to state 137
     express1                       shift and go to state 121
     empty                          shift and go to state 123
 
+state 113
+
+    (69) lights -> LIGHTS LPAREN . express COMMA express RPAREN
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
+
+    NOTEQUALS       shift and go to state 122
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
+
+    express                        shift and go to state 138
+    express1                       shift and go to state 121
+    empty                          shift and go to state 123
+
 state 114
 
-    (69) distance -> DISTANCE LPAREN . RPAREN
-
-    RPAREN          shift and go to state 138
-
-
-state 115
-
-    (70) stop -> STOP LPAREN . RPAREN
+    (70) distance -> DISTANCE LPAREN . RPAREN
 
     RPAREN          shift and go to state 139
 
 
+state 115
+
+    (71) stop -> STOP LPAREN . RPAREN
+
+    RPAREN          shift and go to state 140
+
+
 state 116
 
-    (71) while -> WHILE LPAREN . express RPAREN while1 LCURLY block RCURLY
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (72) while -> WHILE LPAREN . express RPAREN while1 LCURLY block RCURLY
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
-    express                        shift and go to state 140
+    express                        shift and go to state 141
     express1                       shift and go to state 121
     empty                          shift and go to state 123
 
 state 117
 
-    (73) return -> RETURN LPAREN . express RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (74) return -> RETURN LPAREN . express RPAREN
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
-    express                        shift and go to state 141
+    express                        shift and go to state 142
     express1                       shift and go to state 121
     empty                          shift and go to state 123
 
@@ -1896,7 +1902,7 @@ state 118
 
     (8) funcs -> FUNCDEF type setscope LPAREN paramsblock RPAREN LCURLY varsblock funcs1 block . RCURLY
 
-    RCURLY          shift and go to state 142
+    RCURLY          shift and go to state 143
 
 
 state 119
@@ -1910,87 +1916,89 @@ state 120
 
     (39) cond -> IF LPAREN express . RPAREN LCURLY gotoif block RCURLY else
 
-    RPAREN          shift and go to state 143
+    RPAREN          shift and go to state 144
 
 
 state 121
 
-    (84) express -> express1 . relational express2
-    (91) relational -> . exp relational1
-    (92) relational -> . NOT
-    (99) exp -> . term exp1
-    (104) term -> . factor term1
-    (109) factor -> . LPAREN express RPAREN
-    (110) factor -> . constant
-    (111) factor -> . call
-    (79) constant -> . ID
-    (80) constant -> . CTE_INT
-    (81) constant -> . CTE_FLOAT
-    (82) constant -> . CTE_CHAR
-    (83) constant -> . CTE_BOOL
+    (85) express -> express1 . relational express2
+    (92) relational -> . exp relational1
+    (93) relational -> . NOT
+    (100) exp -> . term exp1
+    (105) term -> . factor term1
+    (110) factor -> . insertfloor express endfloor
+    (111) factor -> . constant
+    (112) factor -> . call
+    (113) insertfloor -> . RPAREN
+    (80) constant -> . ID
+    (81) constant -> . CTE_INT
+    (82) constant -> . CTE_FLOAT
+    (83) constant -> . CTE_CHAR
+    (84) constant -> . CTE_BOOL
     (47) call -> . era LPAREN paramcall RPAREN
     (48) era -> . ID
 
-    NOT             shift and go to state 146
-    LPAREN          shift and go to state 149
-    ID              shift and go to state 152
-    CTE_INT         shift and go to state 153
-    CTE_FLOAT       shift and go to state 154
-    CTE_CHAR        shift and go to state 155
-    CTE_BOOL        shift and go to state 156
+    NOT             shift and go to state 147
+    RPAREN          shift and go to state 153
+    ID              shift and go to state 154
+    CTE_INT         shift and go to state 155
+    CTE_FLOAT       shift and go to state 156
+    CTE_CHAR        shift and go to state 157
+    CTE_BOOL        shift and go to state 158
 
-    relational                     shift and go to state 144
-    exp                            shift and go to state 145
-    term                           shift and go to state 147
-    factor                         shift and go to state 148
-    constant                       shift and go to state 150
-    call                           shift and go to state 151
+    relational                     shift and go to state 145
+    exp                            shift and go to state 146
+    term                           shift and go to state 148
+    factor                         shift and go to state 149
+    insertfloor                    shift and go to state 150
+    constant                       shift and go to state 151
+    call                           shift and go to state 152
     era                            shift and go to state 78
 
 state 122
 
-    (85) express1 -> NOTEQUALS .
+    (86) express1 -> NOTEQUALS .
 
-    NOT             reduce using rule 85 (express1 -> NOTEQUALS .)
-    LPAREN          reduce using rule 85 (express1 -> NOTEQUALS .)
-    ID              reduce using rule 85 (express1 -> NOTEQUALS .)
-    CTE_INT         reduce using rule 85 (express1 -> NOTEQUALS .)
-    CTE_FLOAT       reduce using rule 85 (express1 -> NOTEQUALS .)
-    CTE_CHAR        reduce using rule 85 (express1 -> NOTEQUALS .)
-    CTE_BOOL        reduce using rule 85 (express1 -> NOTEQUALS .)
+    NOT             reduce using rule 86 (express1 -> NOTEQUALS .)
+    RPAREN          reduce using rule 86 (express1 -> NOTEQUALS .)
+    ID              reduce using rule 86 (express1 -> NOTEQUALS .)
+    CTE_INT         reduce using rule 86 (express1 -> NOTEQUALS .)
+    CTE_FLOAT       reduce using rule 86 (express1 -> NOTEQUALS .)
+    CTE_CHAR        reduce using rule 86 (express1 -> NOTEQUALS .)
+    CTE_BOOL        reduce using rule 86 (express1 -> NOTEQUALS .)
 
 
 state 123
 
-    (86) express1 -> empty .
+    (87) express1 -> empty .
 
-    NOT             reduce using rule 86 (express1 -> empty .)
-    LPAREN          reduce using rule 86 (express1 -> empty .)
-    ID              reduce using rule 86 (express1 -> empty .)
-    CTE_INT         reduce using rule 86 (express1 -> empty .)
-    CTE_FLOAT       reduce using rule 86 (express1 -> empty .)
-    CTE_CHAR        reduce using rule 86 (express1 -> empty .)
-    CTE_BOOL        reduce using rule 86 (express1 -> empty .)
+    NOT             reduce using rule 87 (express1 -> empty .)
+    RPAREN          reduce using rule 87 (express1 -> empty .)
+    ID              reduce using rule 87 (express1 -> empty .)
+    CTE_INT         reduce using rule 87 (express1 -> empty .)
+    CTE_FLOAT       reduce using rule 87 (express1 -> empty .)
+    CTE_CHAR        reduce using rule 87 (express1 -> empty .)
+    CTE_BOOL        reduce using rule 87 (express1 -> empty .)
 
 
 state 124
 
     (44) assign -> ID assign1 ASSIGN . express
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
     NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
-    express                        shift and go to state 157
+    express                        shift and go to state 159
     express1                       shift and go to state 121
     empty                          shift and go to state 123
 
@@ -1998,134 +2006,151 @@ state 125
 
     (45) assign1 -> LBRACKET express . RBRACKET
 
-    RBRACKET        shift and go to state 158
+    RBRACKET        shift and go to state 160
 
 
 state 126
 
     (47) call -> era LPAREN paramcall . RPAREN
 
-    RPAREN          shift and go to state 159
+    RPAREN          shift and go to state 161
 
 
 state 127
 
     (49) paramcall -> express . paramcall1
-    (50) paramcall1 -> . COMMA paramcall
-    (51) paramcall1 -> . empty
-    (112) empty -> .
+    (51) paramcall1 -> . COMMA paramcall
+    (52) paramcall1 -> . empty
+    (115) empty -> .
 
-    COMMA           shift and go to state 161
-    RPAREN          reduce using rule 112 (empty -> .)
+    COMMA           shift and go to state 163
+    RPAREN          reduce using rule 115 (empty -> .)
 
-    paramcall1                     shift and go to state 160
-    empty                          shift and go to state 162
+    paramcall1                     shift and go to state 162
+    empty                          shift and go to state 164
 
 state 128
 
-    (55) cin2 -> LPAREN ID . RPAREN
+    (50) paramcall -> empty .
+    (87) express1 -> empty .
 
-    RPAREN          shift and go to state 163
+  ! reduce/reduce conflict for RPAREN resolved using rule 50 (paramcall -> empty .)
+    RPAREN          reduce using rule 50 (paramcall -> empty .)
+    NOT             reduce using rule 87 (express1 -> empty .)
+    ID              reduce using rule 87 (express1 -> empty .)
+    CTE_INT         reduce using rule 87 (express1 -> empty .)
+    CTE_FLOAT       reduce using rule 87 (express1 -> empty .)
+    CTE_CHAR        reduce using rule 87 (express1 -> empty .)
+    CTE_BOOL        reduce using rule 87 (express1 -> empty .)
+
+  ! RPAREN          [ reduce using rule 87 (express1 -> empty .) ]
 
 
 state 129
 
-    (56) cin3 -> LBRACKET CTE_INT . RBRACKET LPAREN cin4 RPAREN
+    (56) cin2 -> LPAREN ID . RPAREN
 
-    RBRACKET        shift and go to state 164
+    RPAREN          shift and go to state 165
 
 
 state 130
 
-    (59) cout -> COUT LPAREN express . cout1 RPAREN
-    (60) cout1 -> . COMMA express cout1
-    (61) cout1 -> . empty
-    (112) empty -> .
+    (57) cin3 -> LBRACKET CTE_INT . RBRACKET LPAREN cin4 RPAREN
 
-    COMMA           shift and go to state 166
-    RPAREN          reduce using rule 112 (empty -> .)
+    RBRACKET        shift and go to state 166
 
-    cout1                          shift and go to state 165
-    empty                          shift and go to state 167
 
 state 131
 
-    (62) delay -> DELAY LPAREN express . RPAREN
+    (60) cout -> COUT LPAREN express . cout1 RPAREN
+    (61) cout1 -> . COMMA express cout1
+    (62) cout1 -> . empty
+    (115) empty -> .
 
-    RPAREN          shift and go to state 168
+    COMMA           shift and go to state 168
+    RPAREN          reduce using rule 115 (empty -> .)
 
+    cout1                          shift and go to state 167
+    empty                          shift and go to state 169
 
 state 132
 
-    (63) forward -> FORWARD LPAREN express . RPAREN
-
-    RPAREN          shift and go to state 169
-
-
-state 133
-
-    (64) backward -> BACKWARD LPAREN express . RPAREN
+    (63) delay -> DELAY LPAREN express . RPAREN
 
     RPAREN          shift and go to state 170
 
 
-state 134
+state 133
 
-    (65) turnleft -> TURNLEFT LPAREN express . RPAREN
+    (64) forward -> FORWARD LPAREN express . RPAREN
 
     RPAREN          shift and go to state 171
 
 
-state 135
+state 134
 
-    (66) turnright -> TURNRIGHT LPAREN express . RPAREN
+    (65) backward -> BACKWARD LPAREN express . RPAREN
 
     RPAREN          shift and go to state 172
 
 
-state 136
+state 135
 
-    (67) servo -> SERVO LPAREN express . RPAREN
+    (66) turnleft -> TURNLEFT LPAREN express . RPAREN
 
     RPAREN          shift and go to state 173
 
 
+state 136
+
+    (67) turnright -> TURNRIGHT LPAREN express . RPAREN
+
+    RPAREN          shift and go to state 174
+
+
 state 137
 
-    (68) lights -> LIGHTS LPAREN express . COMMA express RPAREN
-
-    COMMA           shift and go to state 174
-
-
-state 138
-
-    (69) distance -> DISTANCE LPAREN RPAREN .
-
-    SEMICOLON       reduce using rule 69 (distance -> DISTANCE LPAREN RPAREN .)
-
-
-state 139
-
-    (70) stop -> STOP LPAREN RPAREN .
-
-    SEMICOLON       reduce using rule 70 (stop -> STOP LPAREN RPAREN .)
-
-
-state 140
-
-    (71) while -> WHILE LPAREN express . RPAREN while1 LCURLY block RCURLY
+    (68) servo -> SERVO LPAREN express . RPAREN
 
     RPAREN          shift and go to state 175
 
 
+state 138
+
+    (69) lights -> LIGHTS LPAREN express . COMMA express RPAREN
+
+    COMMA           shift and go to state 176
+
+
+state 139
+
+    (70) distance -> DISTANCE LPAREN RPAREN .
+
+    SEMICOLON       reduce using rule 70 (distance -> DISTANCE LPAREN RPAREN .)
+
+
+state 140
+
+    (71) stop -> STOP LPAREN RPAREN .
+
+    SEMICOLON       reduce using rule 71 (stop -> STOP LPAREN RPAREN .)
+
+
 state 141
 
-    (73) return -> RETURN LPAREN express . RPAREN
+    (72) while -> WHILE LPAREN express . RPAREN while1 LCURLY block RCURLY
 
-    RPAREN          shift and go to state 176
+    RPAREN          shift and go to state 177
 
 
 state 142
+
+    (74) return -> RETURN LPAREN express . RPAREN
+
+    RPAREN          shift and go to state 178
+
+
+state 143
 
     (8) funcs -> FUNCDEF type setscope LPAREN paramsblock RPAREN LCURLY varsblock funcs1 block RCURLY .
 
@@ -2133,303 +2158,331 @@ state 142
     MAIN            reduce using rule 8 (funcs -> FUNCDEF type setscope LPAREN paramsblock RPAREN LCURLY varsblock funcs1 block RCURLY .)
 
 
-state 143
+state 144
 
     (39) cond -> IF LPAREN express RPAREN . LCURLY gotoif block RCURLY else
 
-    LCURLY          shift and go to state 177
+    LCURLY          shift and go to state 179
 
-
-state 144
-
-    (84) express -> express1 relational . express2
-    (87) express2 -> . andor express
-    (88) express2 -> . empty
-    (89) andor -> . AND
-    (90) andor -> . OR
-    (112) empty -> .
-
-    AND             shift and go to state 181
-    OR              shift and go to state 182
-    RPAREN          reduce using rule 112 (empty -> .)
-    RBRACKET        reduce using rule 112 (empty -> .)
-    COMMA           reduce using rule 112 (empty -> .)
-    SEMICOLON       reduce using rule 112 (empty -> .)
-
-    express2                       shift and go to state 178
-    andor                          shift and go to state 179
-    empty                          shift and go to state 180
 
 state 145
 
-    (91) relational -> exp . relational1
-    (93) relational1 -> . compare exp
-    (94) relational1 -> . empty
-    (95) compare -> . LESSTHAN
-    (96) compare -> . GREATERTHAN
-    (97) compare -> . EQUALS
-    (98) compare -> . NOTEQUALS
-    (112) empty -> .
+    (85) express -> express1 relational . express2
+    (88) express2 -> . andor express
+    (89) express2 -> . empty
+    (90) andor -> . AND
+    (91) andor -> . OR
+    (115) empty -> .
 
-    LESSTHAN        shift and go to state 186
-    GREATERTHAN     shift and go to state 187
-    EQUALS          shift and go to state 188
-    NOTEQUALS       shift and go to state 189
-    AND             reduce using rule 112 (empty -> .)
-    OR              reduce using rule 112 (empty -> .)
-    RPAREN          reduce using rule 112 (empty -> .)
-    RBRACKET        reduce using rule 112 (empty -> .)
-    COMMA           reduce using rule 112 (empty -> .)
-    SEMICOLON       reduce using rule 112 (empty -> .)
+    AND             shift and go to state 183
+    OR              shift and go to state 184
+    RPAREN          reduce using rule 115 (empty -> .)
+    RBRACKET        reduce using rule 115 (empty -> .)
+    COMMA           reduce using rule 115 (empty -> .)
+    SEMICOLON       reduce using rule 115 (empty -> .)
+    LPAREN          reduce using rule 115 (empty -> .)
 
-    relational1                    shift and go to state 183
-    compare                        shift and go to state 184
-    empty                          shift and go to state 185
+    express2                       shift and go to state 180
+    andor                          shift and go to state 181
+    empty                          shift and go to state 182
 
 state 146
 
-    (92) relational -> NOT .
+    (92) relational -> exp . relational1
+    (94) relational1 -> . compare exp
+    (95) relational1 -> . empty
+    (96) compare -> . LESSTHAN
+    (97) compare -> . GREATERTHAN
+    (98) compare -> . EQUALS
+    (99) compare -> . NOTEQUALS
+    (115) empty -> .
 
-    AND             reduce using rule 92 (relational -> NOT .)
-    OR              reduce using rule 92 (relational -> NOT .)
-    RPAREN          reduce using rule 92 (relational -> NOT .)
-    RBRACKET        reduce using rule 92 (relational -> NOT .)
-    COMMA           reduce using rule 92 (relational -> NOT .)
-    SEMICOLON       reduce using rule 92 (relational -> NOT .)
+    LESSTHAN        shift and go to state 188
+    GREATERTHAN     shift and go to state 189
+    EQUALS          shift and go to state 190
+    NOTEQUALS       shift and go to state 191
+    AND             reduce using rule 115 (empty -> .)
+    OR              reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    RBRACKET        reduce using rule 115 (empty -> .)
+    COMMA           reduce using rule 115 (empty -> .)
+    SEMICOLON       reduce using rule 115 (empty -> .)
+    LPAREN          reduce using rule 115 (empty -> .)
 
+    relational1                    shift and go to state 185
+    compare                        shift and go to state 186
+    empty                          shift and go to state 187
 
 state 147
 
-    (99) exp -> term . exp1
-    (100) exp1 -> . plusminus exp
-    (101) exp1 -> . empty
-    (102) plusminus -> . PLUS
-    (103) plusminus -> . MINUS
-    (112) empty -> .
+    (93) relational -> NOT .
 
-    PLUS            shift and go to state 193
-    MINUS           shift and go to state 194
-    LESSTHAN        reduce using rule 112 (empty -> .)
-    GREATERTHAN     reduce using rule 112 (empty -> .)
-    EQUALS          reduce using rule 112 (empty -> .)
-    NOTEQUALS       reduce using rule 112 (empty -> .)
-    AND             reduce using rule 112 (empty -> .)
-    OR              reduce using rule 112 (empty -> .)
-    RPAREN          reduce using rule 112 (empty -> .)
-    RBRACKET        reduce using rule 112 (empty -> .)
-    COMMA           reduce using rule 112 (empty -> .)
-    SEMICOLON       reduce using rule 112 (empty -> .)
+    AND             reduce using rule 93 (relational -> NOT .)
+    OR              reduce using rule 93 (relational -> NOT .)
+    RPAREN          reduce using rule 93 (relational -> NOT .)
+    RBRACKET        reduce using rule 93 (relational -> NOT .)
+    COMMA           reduce using rule 93 (relational -> NOT .)
+    SEMICOLON       reduce using rule 93 (relational -> NOT .)
+    LPAREN          reduce using rule 93 (relational -> NOT .)
 
-    exp1                           shift and go to state 190
-    plusminus                      shift and go to state 191
-    empty                          shift and go to state 192
 
 state 148
 
-    (104) term -> factor . term1
-    (105) term1 -> . multidivi term
-    (106) term1 -> . empty
-    (107) multidivi -> . MULTI
-    (108) multidivi -> . DIVI
-    (112) empty -> .
+    (100) exp -> term . exp1
+    (101) exp1 -> . plusminus exp
+    (102) exp1 -> . empty
+    (103) plusminus -> . PLUS
+    (104) plusminus -> . MINUS
+    (115) empty -> .
 
-    MULTI           shift and go to state 198
-    DIVI            shift and go to state 199
-    PLUS            reduce using rule 112 (empty -> .)
-    MINUS           reduce using rule 112 (empty -> .)
-    LESSTHAN        reduce using rule 112 (empty -> .)
-    GREATERTHAN     reduce using rule 112 (empty -> .)
-    EQUALS          reduce using rule 112 (empty -> .)
-    NOTEQUALS       reduce using rule 112 (empty -> .)
-    AND             reduce using rule 112 (empty -> .)
-    OR              reduce using rule 112 (empty -> .)
-    RPAREN          reduce using rule 112 (empty -> .)
-    RBRACKET        reduce using rule 112 (empty -> .)
-    COMMA           reduce using rule 112 (empty -> .)
-    SEMICOLON       reduce using rule 112 (empty -> .)
+    PLUS            shift and go to state 195
+    MINUS           shift and go to state 196
+    LESSTHAN        reduce using rule 115 (empty -> .)
+    GREATERTHAN     reduce using rule 115 (empty -> .)
+    EQUALS          reduce using rule 115 (empty -> .)
+    NOTEQUALS       reduce using rule 115 (empty -> .)
+    AND             reduce using rule 115 (empty -> .)
+    OR              reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    RBRACKET        reduce using rule 115 (empty -> .)
+    COMMA           reduce using rule 115 (empty -> .)
+    SEMICOLON       reduce using rule 115 (empty -> .)
+    LPAREN          reduce using rule 115 (empty -> .)
 
-    term1                          shift and go to state 195
-    multidivi                      shift and go to state 196
-    empty                          shift and go to state 197
+    exp1                           shift and go to state 192
+    plusminus                      shift and go to state 193
+    empty                          shift and go to state 194
 
 state 149
 
-    (109) factor -> LPAREN . express RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (105) term -> factor . term1
+    (106) term1 -> . multidivi term
+    (107) term1 -> . empty
+    (108) multidivi -> . MULTI
+    (109) multidivi -> . DIVI
+    (115) empty -> .
 
-    NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    MULTI           shift and go to state 200
+    DIVI            shift and go to state 201
+    PLUS            reduce using rule 115 (empty -> .)
+    MINUS           reduce using rule 115 (empty -> .)
+    LESSTHAN        reduce using rule 115 (empty -> .)
+    GREATERTHAN     reduce using rule 115 (empty -> .)
+    EQUALS          reduce using rule 115 (empty -> .)
+    NOTEQUALS       reduce using rule 115 (empty -> .)
+    AND             reduce using rule 115 (empty -> .)
+    OR              reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    RBRACKET        reduce using rule 115 (empty -> .)
+    COMMA           reduce using rule 115 (empty -> .)
+    SEMICOLON       reduce using rule 115 (empty -> .)
+    LPAREN          reduce using rule 115 (empty -> .)
 
-    express                        shift and go to state 200
-    express1                       shift and go to state 121
-    empty                          shift and go to state 123
+    term1                          shift and go to state 197
+    multidivi                      shift and go to state 198
+    empty                          shift and go to state 199
 
 state 150
 
-    (110) factor -> constant .
+    (110) factor -> insertfloor . express endfloor
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
-    MULTI           reduce using rule 110 (factor -> constant .)
-    DIVI            reduce using rule 110 (factor -> constant .)
-    PLUS            reduce using rule 110 (factor -> constant .)
-    MINUS           reduce using rule 110 (factor -> constant .)
-    LESSTHAN        reduce using rule 110 (factor -> constant .)
-    GREATERTHAN     reduce using rule 110 (factor -> constant .)
-    EQUALS          reduce using rule 110 (factor -> constant .)
-    NOTEQUALS       reduce using rule 110 (factor -> constant .)
-    AND             reduce using rule 110 (factor -> constant .)
-    OR              reduce using rule 110 (factor -> constant .)
-    RPAREN          reduce using rule 110 (factor -> constant .)
-    RBRACKET        reduce using rule 110 (factor -> constant .)
-    COMMA           reduce using rule 110 (factor -> constant .)
-    SEMICOLON       reduce using rule 110 (factor -> constant .)
+    NOTEQUALS       shift and go to state 122
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
+    express                        shift and go to state 202
+    express1                       shift and go to state 121
+    empty                          shift and go to state 123
 
 state 151
 
-    (111) factor -> call .
+    (111) factor -> constant .
 
-    MULTI           reduce using rule 111 (factor -> call .)
-    DIVI            reduce using rule 111 (factor -> call .)
-    PLUS            reduce using rule 111 (factor -> call .)
-    MINUS           reduce using rule 111 (factor -> call .)
-    LESSTHAN        reduce using rule 111 (factor -> call .)
-    GREATERTHAN     reduce using rule 111 (factor -> call .)
-    EQUALS          reduce using rule 111 (factor -> call .)
-    NOTEQUALS       reduce using rule 111 (factor -> call .)
-    AND             reduce using rule 111 (factor -> call .)
-    OR              reduce using rule 111 (factor -> call .)
-    RPAREN          reduce using rule 111 (factor -> call .)
-    RBRACKET        reduce using rule 111 (factor -> call .)
-    COMMA           reduce using rule 111 (factor -> call .)
-    SEMICOLON       reduce using rule 111 (factor -> call .)
+    MULTI           reduce using rule 111 (factor -> constant .)
+    DIVI            reduce using rule 111 (factor -> constant .)
+    PLUS            reduce using rule 111 (factor -> constant .)
+    MINUS           reduce using rule 111 (factor -> constant .)
+    LESSTHAN        reduce using rule 111 (factor -> constant .)
+    GREATERTHAN     reduce using rule 111 (factor -> constant .)
+    EQUALS          reduce using rule 111 (factor -> constant .)
+    NOTEQUALS       reduce using rule 111 (factor -> constant .)
+    AND             reduce using rule 111 (factor -> constant .)
+    OR              reduce using rule 111 (factor -> constant .)
+    RPAREN          reduce using rule 111 (factor -> constant .)
+    RBRACKET        reduce using rule 111 (factor -> constant .)
+    COMMA           reduce using rule 111 (factor -> constant .)
+    SEMICOLON       reduce using rule 111 (factor -> constant .)
+    LPAREN          reduce using rule 111 (factor -> constant .)
 
 
 state 152
 
-    (79) constant -> ID .
-    (48) era -> ID .
+    (112) factor -> call .
 
-    MULTI           reduce using rule 79 (constant -> ID .)
-    DIVI            reduce using rule 79 (constant -> ID .)
-    PLUS            reduce using rule 79 (constant -> ID .)
-    MINUS           reduce using rule 79 (constant -> ID .)
-    LESSTHAN        reduce using rule 79 (constant -> ID .)
-    GREATERTHAN     reduce using rule 79 (constant -> ID .)
-    EQUALS          reduce using rule 79 (constant -> ID .)
-    NOTEQUALS       reduce using rule 79 (constant -> ID .)
-    AND             reduce using rule 79 (constant -> ID .)
-    OR              reduce using rule 79 (constant -> ID .)
-    RPAREN          reduce using rule 79 (constant -> ID .)
-    RBRACKET        reduce using rule 79 (constant -> ID .)
-    COMMA           reduce using rule 79 (constant -> ID .)
-    SEMICOLON       reduce using rule 79 (constant -> ID .)
-    LPAREN          reduce using rule 48 (era -> ID .)
+    MULTI           reduce using rule 112 (factor -> call .)
+    DIVI            reduce using rule 112 (factor -> call .)
+    PLUS            reduce using rule 112 (factor -> call .)
+    MINUS           reduce using rule 112 (factor -> call .)
+    LESSTHAN        reduce using rule 112 (factor -> call .)
+    GREATERTHAN     reduce using rule 112 (factor -> call .)
+    EQUALS          reduce using rule 112 (factor -> call .)
+    NOTEQUALS       reduce using rule 112 (factor -> call .)
+    AND             reduce using rule 112 (factor -> call .)
+    OR              reduce using rule 112 (factor -> call .)
+    RPAREN          reduce using rule 112 (factor -> call .)
+    RBRACKET        reduce using rule 112 (factor -> call .)
+    COMMA           reduce using rule 112 (factor -> call .)
+    SEMICOLON       reduce using rule 112 (factor -> call .)
+    LPAREN          reduce using rule 112 (factor -> call .)
 
 
 state 153
 
-    (80) constant -> CTE_INT .
+    (113) insertfloor -> RPAREN .
 
-    MULTI           reduce using rule 80 (constant -> CTE_INT .)
-    DIVI            reduce using rule 80 (constant -> CTE_INT .)
-    PLUS            reduce using rule 80 (constant -> CTE_INT .)
-    MINUS           reduce using rule 80 (constant -> CTE_INT .)
-    LESSTHAN        reduce using rule 80 (constant -> CTE_INT .)
-    GREATERTHAN     reduce using rule 80 (constant -> CTE_INT .)
-    EQUALS          reduce using rule 80 (constant -> CTE_INT .)
-    NOTEQUALS       reduce using rule 80 (constant -> CTE_INT .)
-    AND             reduce using rule 80 (constant -> CTE_INT .)
-    OR              reduce using rule 80 (constant -> CTE_INT .)
-    RPAREN          reduce using rule 80 (constant -> CTE_INT .)
-    RBRACKET        reduce using rule 80 (constant -> CTE_INT .)
-    COMMA           reduce using rule 80 (constant -> CTE_INT .)
-    SEMICOLON       reduce using rule 80 (constant -> CTE_INT .)
+    NOTEQUALS       reduce using rule 113 (insertfloor -> RPAREN .)
+    NOT             reduce using rule 113 (insertfloor -> RPAREN .)
+    RPAREN          reduce using rule 113 (insertfloor -> RPAREN .)
+    ID              reduce using rule 113 (insertfloor -> RPAREN .)
+    CTE_INT         reduce using rule 113 (insertfloor -> RPAREN .)
+    CTE_FLOAT       reduce using rule 113 (insertfloor -> RPAREN .)
+    CTE_CHAR        reduce using rule 113 (insertfloor -> RPAREN .)
+    CTE_BOOL        reduce using rule 113 (insertfloor -> RPAREN .)
 
 
 state 154
 
-    (81) constant -> CTE_FLOAT .
+    (80) constant -> ID .
+    (48) era -> ID .
 
-    MULTI           reduce using rule 81 (constant -> CTE_FLOAT .)
-    DIVI            reduce using rule 81 (constant -> CTE_FLOAT .)
-    PLUS            reduce using rule 81 (constant -> CTE_FLOAT .)
-    MINUS           reduce using rule 81 (constant -> CTE_FLOAT .)
-    LESSTHAN        reduce using rule 81 (constant -> CTE_FLOAT .)
-    GREATERTHAN     reduce using rule 81 (constant -> CTE_FLOAT .)
-    EQUALS          reduce using rule 81 (constant -> CTE_FLOAT .)
-    NOTEQUALS       reduce using rule 81 (constant -> CTE_FLOAT .)
-    AND             reduce using rule 81 (constant -> CTE_FLOAT .)
-    OR              reduce using rule 81 (constant -> CTE_FLOAT .)
-    RPAREN          reduce using rule 81 (constant -> CTE_FLOAT .)
-    RBRACKET        reduce using rule 81 (constant -> CTE_FLOAT .)
-    COMMA           reduce using rule 81 (constant -> CTE_FLOAT .)
-    SEMICOLON       reduce using rule 81 (constant -> CTE_FLOAT .)
+  ! reduce/reduce conflict for LPAREN resolved using rule 48 (era -> ID .)
+    MULTI           reduce using rule 80 (constant -> ID .)
+    DIVI            reduce using rule 80 (constant -> ID .)
+    PLUS            reduce using rule 80 (constant -> ID .)
+    MINUS           reduce using rule 80 (constant -> ID .)
+    LESSTHAN        reduce using rule 80 (constant -> ID .)
+    GREATERTHAN     reduce using rule 80 (constant -> ID .)
+    EQUALS          reduce using rule 80 (constant -> ID .)
+    NOTEQUALS       reduce using rule 80 (constant -> ID .)
+    AND             reduce using rule 80 (constant -> ID .)
+    OR              reduce using rule 80 (constant -> ID .)
+    RPAREN          reduce using rule 80 (constant -> ID .)
+    RBRACKET        reduce using rule 80 (constant -> ID .)
+    COMMA           reduce using rule 80 (constant -> ID .)
+    SEMICOLON       reduce using rule 80 (constant -> ID .)
+    LPAREN          reduce using rule 48 (era -> ID .)
+
+  ! LPAREN          [ reduce using rule 80 (constant -> ID .) ]
 
 
 state 155
 
-    (82) constant -> CTE_CHAR .
+    (81) constant -> CTE_INT .
 
-    MULTI           reduce using rule 82 (constant -> CTE_CHAR .)
-    DIVI            reduce using rule 82 (constant -> CTE_CHAR .)
-    PLUS            reduce using rule 82 (constant -> CTE_CHAR .)
-    MINUS           reduce using rule 82 (constant -> CTE_CHAR .)
-    LESSTHAN        reduce using rule 82 (constant -> CTE_CHAR .)
-    GREATERTHAN     reduce using rule 82 (constant -> CTE_CHAR .)
-    EQUALS          reduce using rule 82 (constant -> CTE_CHAR .)
-    NOTEQUALS       reduce using rule 82 (constant -> CTE_CHAR .)
-    AND             reduce using rule 82 (constant -> CTE_CHAR .)
-    OR              reduce using rule 82 (constant -> CTE_CHAR .)
-    RPAREN          reduce using rule 82 (constant -> CTE_CHAR .)
-    RBRACKET        reduce using rule 82 (constant -> CTE_CHAR .)
-    COMMA           reduce using rule 82 (constant -> CTE_CHAR .)
-    SEMICOLON       reduce using rule 82 (constant -> CTE_CHAR .)
+    MULTI           reduce using rule 81 (constant -> CTE_INT .)
+    DIVI            reduce using rule 81 (constant -> CTE_INT .)
+    PLUS            reduce using rule 81 (constant -> CTE_INT .)
+    MINUS           reduce using rule 81 (constant -> CTE_INT .)
+    LESSTHAN        reduce using rule 81 (constant -> CTE_INT .)
+    GREATERTHAN     reduce using rule 81 (constant -> CTE_INT .)
+    EQUALS          reduce using rule 81 (constant -> CTE_INT .)
+    NOTEQUALS       reduce using rule 81 (constant -> CTE_INT .)
+    AND             reduce using rule 81 (constant -> CTE_INT .)
+    OR              reduce using rule 81 (constant -> CTE_INT .)
+    RPAREN          reduce using rule 81 (constant -> CTE_INT .)
+    RBRACKET        reduce using rule 81 (constant -> CTE_INT .)
+    COMMA           reduce using rule 81 (constant -> CTE_INT .)
+    SEMICOLON       reduce using rule 81 (constant -> CTE_INT .)
+    LPAREN          reduce using rule 81 (constant -> CTE_INT .)
 
 
 state 156
 
-    (83) constant -> CTE_BOOL .
+    (82) constant -> CTE_FLOAT .
 
-    MULTI           reduce using rule 83 (constant -> CTE_BOOL .)
-    DIVI            reduce using rule 83 (constant -> CTE_BOOL .)
-    PLUS            reduce using rule 83 (constant -> CTE_BOOL .)
-    MINUS           reduce using rule 83 (constant -> CTE_BOOL .)
-    LESSTHAN        reduce using rule 83 (constant -> CTE_BOOL .)
-    GREATERTHAN     reduce using rule 83 (constant -> CTE_BOOL .)
-    EQUALS          reduce using rule 83 (constant -> CTE_BOOL .)
-    NOTEQUALS       reduce using rule 83 (constant -> CTE_BOOL .)
-    AND             reduce using rule 83 (constant -> CTE_BOOL .)
-    OR              reduce using rule 83 (constant -> CTE_BOOL .)
-    RPAREN          reduce using rule 83 (constant -> CTE_BOOL .)
-    RBRACKET        reduce using rule 83 (constant -> CTE_BOOL .)
-    COMMA           reduce using rule 83 (constant -> CTE_BOOL .)
-    SEMICOLON       reduce using rule 83 (constant -> CTE_BOOL .)
+    MULTI           reduce using rule 82 (constant -> CTE_FLOAT .)
+    DIVI            reduce using rule 82 (constant -> CTE_FLOAT .)
+    PLUS            reduce using rule 82 (constant -> CTE_FLOAT .)
+    MINUS           reduce using rule 82 (constant -> CTE_FLOAT .)
+    LESSTHAN        reduce using rule 82 (constant -> CTE_FLOAT .)
+    GREATERTHAN     reduce using rule 82 (constant -> CTE_FLOAT .)
+    EQUALS          reduce using rule 82 (constant -> CTE_FLOAT .)
+    NOTEQUALS       reduce using rule 82 (constant -> CTE_FLOAT .)
+    AND             reduce using rule 82 (constant -> CTE_FLOAT .)
+    OR              reduce using rule 82 (constant -> CTE_FLOAT .)
+    RPAREN          reduce using rule 82 (constant -> CTE_FLOAT .)
+    RBRACKET        reduce using rule 82 (constant -> CTE_FLOAT .)
+    COMMA           reduce using rule 82 (constant -> CTE_FLOAT .)
+    SEMICOLON       reduce using rule 82 (constant -> CTE_FLOAT .)
+    LPAREN          reduce using rule 82 (constant -> CTE_FLOAT .)
 
 
 state 157
+
+    (83) constant -> CTE_CHAR .
+
+    MULTI           reduce using rule 83 (constant -> CTE_CHAR .)
+    DIVI            reduce using rule 83 (constant -> CTE_CHAR .)
+    PLUS            reduce using rule 83 (constant -> CTE_CHAR .)
+    MINUS           reduce using rule 83 (constant -> CTE_CHAR .)
+    LESSTHAN        reduce using rule 83 (constant -> CTE_CHAR .)
+    GREATERTHAN     reduce using rule 83 (constant -> CTE_CHAR .)
+    EQUALS          reduce using rule 83 (constant -> CTE_CHAR .)
+    NOTEQUALS       reduce using rule 83 (constant -> CTE_CHAR .)
+    AND             reduce using rule 83 (constant -> CTE_CHAR .)
+    OR              reduce using rule 83 (constant -> CTE_CHAR .)
+    RPAREN          reduce using rule 83 (constant -> CTE_CHAR .)
+    RBRACKET        reduce using rule 83 (constant -> CTE_CHAR .)
+    COMMA           reduce using rule 83 (constant -> CTE_CHAR .)
+    SEMICOLON       reduce using rule 83 (constant -> CTE_CHAR .)
+    LPAREN          reduce using rule 83 (constant -> CTE_CHAR .)
+
+
+state 158
+
+    (84) constant -> CTE_BOOL .
+
+    MULTI           reduce using rule 84 (constant -> CTE_BOOL .)
+    DIVI            reduce using rule 84 (constant -> CTE_BOOL .)
+    PLUS            reduce using rule 84 (constant -> CTE_BOOL .)
+    MINUS           reduce using rule 84 (constant -> CTE_BOOL .)
+    LESSTHAN        reduce using rule 84 (constant -> CTE_BOOL .)
+    GREATERTHAN     reduce using rule 84 (constant -> CTE_BOOL .)
+    EQUALS          reduce using rule 84 (constant -> CTE_BOOL .)
+    NOTEQUALS       reduce using rule 84 (constant -> CTE_BOOL .)
+    AND             reduce using rule 84 (constant -> CTE_BOOL .)
+    OR              reduce using rule 84 (constant -> CTE_BOOL .)
+    RPAREN          reduce using rule 84 (constant -> CTE_BOOL .)
+    RBRACKET        reduce using rule 84 (constant -> CTE_BOOL .)
+    COMMA           reduce using rule 84 (constant -> CTE_BOOL .)
+    SEMICOLON       reduce using rule 84 (constant -> CTE_BOOL .)
+    LPAREN          reduce using rule 84 (constant -> CTE_BOOL .)
+
+
+state 159
 
     (44) assign -> ID assign1 ASSIGN express .
 
     SEMICOLON       reduce using rule 44 (assign -> ID assign1 ASSIGN express .)
 
 
-state 158
+state 160
 
     (45) assign1 -> LBRACKET express RBRACKET .
 
     ASSIGN          reduce using rule 45 (assign1 -> LBRACKET express RBRACKET .)
 
 
-state 159
+state 161
 
     (47) call -> era LPAREN paramcall RPAREN .
 
@@ -2447,615 +2500,633 @@ state 159
     RPAREN          reduce using rule 47 (call -> era LPAREN paramcall RPAREN .)
     RBRACKET        reduce using rule 47 (call -> era LPAREN paramcall RPAREN .)
     COMMA           reduce using rule 47 (call -> era LPAREN paramcall RPAREN .)
+    LPAREN          reduce using rule 47 (call -> era LPAREN paramcall RPAREN .)
 
 
-state 160
+state 162
 
     (49) paramcall -> express paramcall1 .
 
     RPAREN          reduce using rule 49 (paramcall -> express paramcall1 .)
 
 
-state 161
-
-    (50) paramcall1 -> COMMA . paramcall
-    (49) paramcall -> . express paramcall1
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
-
-    NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
-
-    paramcall                      shift and go to state 201
-    express                        shift and go to state 127
-    express1                       shift and go to state 121
-    empty                          shift and go to state 123
-
-state 162
-
-    (51) paramcall1 -> empty .
-
-    RPAREN          reduce using rule 51 (paramcall1 -> empty .)
-
-
 state 163
 
-    (55) cin2 -> LPAREN ID RPAREN .
+    (51) paramcall1 -> COMMA . paramcall
+    (49) paramcall -> . express paramcall1
+    (50) paramcall -> . empty
+    (85) express -> . express1 relational express2
+    (115) empty -> .
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
 
-    SEMICOLON       reduce using rule 55 (cin2 -> LPAREN ID RPAREN .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    NOT             reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
+    NOTEQUALS       shift and go to state 122
 
+    paramcall                      shift and go to state 203
+    express                        shift and go to state 127
+    empty                          shift and go to state 128
+    express1                       shift and go to state 121
 
 state 164
 
-    (56) cin3 -> LBRACKET CTE_INT RBRACKET . LPAREN cin4 RPAREN
+    (52) paramcall1 -> empty .
 
-    LPAREN          shift and go to state 202
+    RPAREN          reduce using rule 52 (paramcall1 -> empty .)
 
 
 state 165
 
-    (59) cout -> COUT LPAREN express cout1 . RPAREN
+    (56) cin2 -> LPAREN ID RPAREN .
 
-    RPAREN          shift and go to state 203
+    SEMICOLON       reduce using rule 56 (cin2 -> LPAREN ID RPAREN .)
 
 
 state 166
 
-    (60) cout1 -> COMMA . express cout1
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (57) cin3 -> LBRACKET CTE_INT RBRACKET . LPAREN cin4 RPAREN
 
-    NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    LPAREN          shift and go to state 204
 
-    express                        shift and go to state 204
-    express1                       shift and go to state 121
-    empty                          shift and go to state 123
 
 state 167
 
-    (61) cout1 -> empty .
+    (60) cout -> COUT LPAREN express cout1 . RPAREN
 
-    RPAREN          reduce using rule 61 (cout1 -> empty .)
+    RPAREN          shift and go to state 205
 
 
 state 168
 
-    (62) delay -> DELAY LPAREN express RPAREN .
+    (61) cout1 -> COMMA . express cout1
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
-    SEMICOLON       reduce using rule 62 (delay -> DELAY LPAREN express RPAREN .)
+    NOTEQUALS       shift and go to state 122
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
+    express                        shift and go to state 206
+    express1                       shift and go to state 121
+    empty                          shift and go to state 123
 
 state 169
 
-    (63) forward -> FORWARD LPAREN express RPAREN .
+    (62) cout1 -> empty .
 
-    SEMICOLON       reduce using rule 63 (forward -> FORWARD LPAREN express RPAREN .)
+    RPAREN          reduce using rule 62 (cout1 -> empty .)
 
 
 state 170
 
-    (64) backward -> BACKWARD LPAREN express RPAREN .
+    (63) delay -> DELAY LPAREN express RPAREN .
 
-    SEMICOLON       reduce using rule 64 (backward -> BACKWARD LPAREN express RPAREN .)
+    SEMICOLON       reduce using rule 63 (delay -> DELAY LPAREN express RPAREN .)
 
 
 state 171
 
-    (65) turnleft -> TURNLEFT LPAREN express RPAREN .
+    (64) forward -> FORWARD LPAREN express RPAREN .
 
-    SEMICOLON       reduce using rule 65 (turnleft -> TURNLEFT LPAREN express RPAREN .)
+    SEMICOLON       reduce using rule 64 (forward -> FORWARD LPAREN express RPAREN .)
 
 
 state 172
 
-    (66) turnright -> TURNRIGHT LPAREN express RPAREN .
+    (65) backward -> BACKWARD LPAREN express RPAREN .
 
-    SEMICOLON       reduce using rule 66 (turnright -> TURNRIGHT LPAREN express RPAREN .)
+    SEMICOLON       reduce using rule 65 (backward -> BACKWARD LPAREN express RPAREN .)
 
 
 state 173
 
-    (67) servo -> SERVO LPAREN express RPAREN .
+    (66) turnleft -> TURNLEFT LPAREN express RPAREN .
 
-    SEMICOLON       reduce using rule 67 (servo -> SERVO LPAREN express RPAREN .)
+    SEMICOLON       reduce using rule 66 (turnleft -> TURNLEFT LPAREN express RPAREN .)
 
 
 state 174
 
-    (68) lights -> LIGHTS LPAREN express COMMA . express RPAREN
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (67) turnright -> TURNRIGHT LPAREN express RPAREN .
 
-    NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    SEMICOLON       reduce using rule 67 (turnright -> TURNRIGHT LPAREN express RPAREN .)
 
-    express                        shift and go to state 205
-    express1                       shift and go to state 121
-    empty                          shift and go to state 123
 
 state 175
 
-    (71) while -> WHILE LPAREN express RPAREN . while1 LCURLY block RCURLY
-    (72) while1 -> . empty
-    (112) empty -> .
+    (68) servo -> SERVO LPAREN express RPAREN .
 
-    LCURLY          reduce using rule 112 (empty -> .)
+    SEMICOLON       reduce using rule 68 (servo -> SERVO LPAREN express RPAREN .)
 
-    while1                         shift and go to state 206
-    empty                          shift and go to state 207
 
 state 176
 
-    (73) return -> RETURN LPAREN express RPAREN .
+    (69) lights -> LIGHTS LPAREN express COMMA . express RPAREN
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
-    SEMICOLON       reduce using rule 73 (return -> RETURN LPAREN express RPAREN .)
+    NOTEQUALS       shift and go to state 122
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
+    express                        shift and go to state 207
+    express1                       shift and go to state 121
+    empty                          shift and go to state 123
 
 state 177
 
-    (39) cond -> IF LPAREN express RPAREN LCURLY . gotoif block RCURLY else
-    (40) gotoif -> . empty
-    (112) empty -> .
+    (72) while -> WHILE LPAREN express RPAREN . while1 LCURLY block RCURLY
+    (73) while1 -> . empty
+    (115) empty -> .
 
-    IF              reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CIN             reduce using rule 112 (empty -> .)
-    COUT            reduce using rule 112 (empty -> .)
-    DELAY           reduce using rule 112 (empty -> .)
-    FORWARD         reduce using rule 112 (empty -> .)
-    BACKWARD        reduce using rule 112 (empty -> .)
-    TURNLEFT        reduce using rule 112 (empty -> .)
-    TURNRIGHT       reduce using rule 112 (empty -> .)
-    SERVO           reduce using rule 112 (empty -> .)
-    LIGHTS          reduce using rule 112 (empty -> .)
-    DISTANCE        reduce using rule 112 (empty -> .)
-    STOP            reduce using rule 112 (empty -> .)
-    WHILE           reduce using rule 112 (empty -> .)
-    RETURN          reduce using rule 112 (empty -> .)
-    RCURLY          reduce using rule 112 (empty -> .)
+    LCURLY          reduce using rule 115 (empty -> .)
 
-    gotoif                         shift and go to state 208
+    while1                         shift and go to state 208
     empty                          shift and go to state 209
 
 state 178
 
-    (84) express -> express1 relational express2 .
+    (74) return -> RETURN LPAREN express RPAREN .
 
-    RPAREN          reduce using rule 84 (express -> express1 relational express2 .)
-    RBRACKET        reduce using rule 84 (express -> express1 relational express2 .)
-    COMMA           reduce using rule 84 (express -> express1 relational express2 .)
-    SEMICOLON       reduce using rule 84 (express -> express1 relational express2 .)
+    SEMICOLON       reduce using rule 74 (return -> RETURN LPAREN express RPAREN .)
 
 
 state 179
 
-    (87) express2 -> andor . express
-    (84) express -> . express1 relational express2
-    (85) express1 -> . NOTEQUALS
-    (86) express1 -> . empty
-    (112) empty -> .
+    (39) cond -> IF LPAREN express RPAREN LCURLY . gotoif block RCURLY else
+    (40) gotoif -> . empty
+    (115) empty -> .
 
-    NOTEQUALS       shift and go to state 122
-    NOT             reduce using rule 112 (empty -> .)
-    LPAREN          reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CTE_INT         reduce using rule 112 (empty -> .)
-    CTE_FLOAT       reduce using rule 112 (empty -> .)
-    CTE_CHAR        reduce using rule 112 (empty -> .)
-    CTE_BOOL        reduce using rule 112 (empty -> .)
+    IF              reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CIN             reduce using rule 115 (empty -> .)
+    COUT            reduce using rule 115 (empty -> .)
+    DELAY           reduce using rule 115 (empty -> .)
+    FORWARD         reduce using rule 115 (empty -> .)
+    BACKWARD        reduce using rule 115 (empty -> .)
+    TURNLEFT        reduce using rule 115 (empty -> .)
+    TURNRIGHT       reduce using rule 115 (empty -> .)
+    SERVO           reduce using rule 115 (empty -> .)
+    LIGHTS          reduce using rule 115 (empty -> .)
+    DISTANCE        reduce using rule 115 (empty -> .)
+    STOP            reduce using rule 115 (empty -> .)
+    WHILE           reduce using rule 115 (empty -> .)
+    RETURN          reduce using rule 115 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
 
-    express                        shift and go to state 210
-    express1                       shift and go to state 121
-    empty                          shift and go to state 123
+    gotoif                         shift and go to state 210
+    empty                          shift and go to state 211
 
 state 180
 
-    (88) express2 -> empty .
+    (85) express -> express1 relational express2 .
 
-    RPAREN          reduce using rule 88 (express2 -> empty .)
-    RBRACKET        reduce using rule 88 (express2 -> empty .)
-    COMMA           reduce using rule 88 (express2 -> empty .)
-    SEMICOLON       reduce using rule 88 (express2 -> empty .)
+    RPAREN          reduce using rule 85 (express -> express1 relational express2 .)
+    RBRACKET        reduce using rule 85 (express -> express1 relational express2 .)
+    COMMA           reduce using rule 85 (express -> express1 relational express2 .)
+    SEMICOLON       reduce using rule 85 (express -> express1 relational express2 .)
+    LPAREN          reduce using rule 85 (express -> express1 relational express2 .)
 
 
 state 181
 
-    (89) andor -> AND .
+    (88) express2 -> andor . express
+    (85) express -> . express1 relational express2
+    (86) express1 -> . NOTEQUALS
+    (87) express1 -> . empty
+    (115) empty -> .
 
-    NOTEQUALS       reduce using rule 89 (andor -> AND .)
-    NOT             reduce using rule 89 (andor -> AND .)
-    LPAREN          reduce using rule 89 (andor -> AND .)
-    ID              reduce using rule 89 (andor -> AND .)
-    CTE_INT         reduce using rule 89 (andor -> AND .)
-    CTE_FLOAT       reduce using rule 89 (andor -> AND .)
-    CTE_CHAR        reduce using rule 89 (andor -> AND .)
-    CTE_BOOL        reduce using rule 89 (andor -> AND .)
+    NOTEQUALS       shift and go to state 122
+    NOT             reduce using rule 115 (empty -> .)
+    RPAREN          reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CTE_INT         reduce using rule 115 (empty -> .)
+    CTE_FLOAT       reduce using rule 115 (empty -> .)
+    CTE_CHAR        reduce using rule 115 (empty -> .)
+    CTE_BOOL        reduce using rule 115 (empty -> .)
 
+    express                        shift and go to state 212
+    express1                       shift and go to state 121
+    empty                          shift and go to state 123
 
 state 182
 
-    (90) andor -> OR .
+    (89) express2 -> empty .
 
-    NOTEQUALS       reduce using rule 90 (andor -> OR .)
-    NOT             reduce using rule 90 (andor -> OR .)
-    LPAREN          reduce using rule 90 (andor -> OR .)
-    ID              reduce using rule 90 (andor -> OR .)
-    CTE_INT         reduce using rule 90 (andor -> OR .)
-    CTE_FLOAT       reduce using rule 90 (andor -> OR .)
-    CTE_CHAR        reduce using rule 90 (andor -> OR .)
-    CTE_BOOL        reduce using rule 90 (andor -> OR .)
+    RPAREN          reduce using rule 89 (express2 -> empty .)
+    RBRACKET        reduce using rule 89 (express2 -> empty .)
+    COMMA           reduce using rule 89 (express2 -> empty .)
+    SEMICOLON       reduce using rule 89 (express2 -> empty .)
+    LPAREN          reduce using rule 89 (express2 -> empty .)
 
 
 state 183
 
-    (91) relational -> exp relational1 .
+    (90) andor -> AND .
 
-    AND             reduce using rule 91 (relational -> exp relational1 .)
-    OR              reduce using rule 91 (relational -> exp relational1 .)
-    RPAREN          reduce using rule 91 (relational -> exp relational1 .)
-    RBRACKET        reduce using rule 91 (relational -> exp relational1 .)
-    COMMA           reduce using rule 91 (relational -> exp relational1 .)
-    SEMICOLON       reduce using rule 91 (relational -> exp relational1 .)
+    NOTEQUALS       reduce using rule 90 (andor -> AND .)
+    NOT             reduce using rule 90 (andor -> AND .)
+    RPAREN          reduce using rule 90 (andor -> AND .)
+    ID              reduce using rule 90 (andor -> AND .)
+    CTE_INT         reduce using rule 90 (andor -> AND .)
+    CTE_FLOAT       reduce using rule 90 (andor -> AND .)
+    CTE_CHAR        reduce using rule 90 (andor -> AND .)
+    CTE_BOOL        reduce using rule 90 (andor -> AND .)
 
 
 state 184
 
-    (93) relational1 -> compare . exp
-    (99) exp -> . term exp1
-    (104) term -> . factor term1
-    (109) factor -> . LPAREN express RPAREN
-    (110) factor -> . constant
-    (111) factor -> . call
-    (79) constant -> . ID
-    (80) constant -> . CTE_INT
-    (81) constant -> . CTE_FLOAT
-    (82) constant -> . CTE_CHAR
-    (83) constant -> . CTE_BOOL
-    (47) call -> . era LPAREN paramcall RPAREN
-    (48) era -> . ID
+    (91) andor -> OR .
 
-    LPAREN          shift and go to state 149
-    ID              shift and go to state 152
-    CTE_INT         shift and go to state 153
-    CTE_FLOAT       shift and go to state 154
-    CTE_CHAR        shift and go to state 155
-    CTE_BOOL        shift and go to state 156
+    NOTEQUALS       reduce using rule 91 (andor -> OR .)
+    NOT             reduce using rule 91 (andor -> OR .)
+    RPAREN          reduce using rule 91 (andor -> OR .)
+    ID              reduce using rule 91 (andor -> OR .)
+    CTE_INT         reduce using rule 91 (andor -> OR .)
+    CTE_FLOAT       reduce using rule 91 (andor -> OR .)
+    CTE_CHAR        reduce using rule 91 (andor -> OR .)
+    CTE_BOOL        reduce using rule 91 (andor -> OR .)
 
-    exp                            shift and go to state 211
-    term                           shift and go to state 147
-    factor                         shift and go to state 148
-    constant                       shift and go to state 150
-    call                           shift and go to state 151
-    era                            shift and go to state 78
 
 state 185
 
-    (94) relational1 -> empty .
+    (92) relational -> exp relational1 .
 
-    AND             reduce using rule 94 (relational1 -> empty .)
-    OR              reduce using rule 94 (relational1 -> empty .)
-    RPAREN          reduce using rule 94 (relational1 -> empty .)
-    RBRACKET        reduce using rule 94 (relational1 -> empty .)
-    COMMA           reduce using rule 94 (relational1 -> empty .)
-    SEMICOLON       reduce using rule 94 (relational1 -> empty .)
+    AND             reduce using rule 92 (relational -> exp relational1 .)
+    OR              reduce using rule 92 (relational -> exp relational1 .)
+    RPAREN          reduce using rule 92 (relational -> exp relational1 .)
+    RBRACKET        reduce using rule 92 (relational -> exp relational1 .)
+    COMMA           reduce using rule 92 (relational -> exp relational1 .)
+    SEMICOLON       reduce using rule 92 (relational -> exp relational1 .)
+    LPAREN          reduce using rule 92 (relational -> exp relational1 .)
 
 
 state 186
 
-    (95) compare -> LESSTHAN .
+    (94) relational1 -> compare . exp
+    (100) exp -> . term exp1
+    (105) term -> . factor term1
+    (110) factor -> . insertfloor express endfloor
+    (111) factor -> . constant
+    (112) factor -> . call
+    (113) insertfloor -> . RPAREN
+    (80) constant -> . ID
+    (81) constant -> . CTE_INT
+    (82) constant -> . CTE_FLOAT
+    (83) constant -> . CTE_CHAR
+    (84) constant -> . CTE_BOOL
+    (47) call -> . era LPAREN paramcall RPAREN
+    (48) era -> . ID
 
-    LPAREN          reduce using rule 95 (compare -> LESSTHAN .)
-    ID              reduce using rule 95 (compare -> LESSTHAN .)
-    CTE_INT         reduce using rule 95 (compare -> LESSTHAN .)
-    CTE_FLOAT       reduce using rule 95 (compare -> LESSTHAN .)
-    CTE_CHAR        reduce using rule 95 (compare -> LESSTHAN .)
-    CTE_BOOL        reduce using rule 95 (compare -> LESSTHAN .)
+    RPAREN          shift and go to state 153
+    ID              shift and go to state 154
+    CTE_INT         shift and go to state 155
+    CTE_FLOAT       shift and go to state 156
+    CTE_CHAR        shift and go to state 157
+    CTE_BOOL        shift and go to state 158
 
+    exp                            shift and go to state 213
+    term                           shift and go to state 148
+    factor                         shift and go to state 149
+    insertfloor                    shift and go to state 150
+    constant                       shift and go to state 151
+    call                           shift and go to state 152
+    era                            shift and go to state 78
 
 state 187
 
-    (96) compare -> GREATERTHAN .
+    (95) relational1 -> empty .
 
-    LPAREN          reduce using rule 96 (compare -> GREATERTHAN .)
-    ID              reduce using rule 96 (compare -> GREATERTHAN .)
-    CTE_INT         reduce using rule 96 (compare -> GREATERTHAN .)
-    CTE_FLOAT       reduce using rule 96 (compare -> GREATERTHAN .)
-    CTE_CHAR        reduce using rule 96 (compare -> GREATERTHAN .)
-    CTE_BOOL        reduce using rule 96 (compare -> GREATERTHAN .)
+    AND             reduce using rule 95 (relational1 -> empty .)
+    OR              reduce using rule 95 (relational1 -> empty .)
+    RPAREN          reduce using rule 95 (relational1 -> empty .)
+    RBRACKET        reduce using rule 95 (relational1 -> empty .)
+    COMMA           reduce using rule 95 (relational1 -> empty .)
+    SEMICOLON       reduce using rule 95 (relational1 -> empty .)
+    LPAREN          reduce using rule 95 (relational1 -> empty .)
 
 
 state 188
 
-    (97) compare -> EQUALS .
+    (96) compare -> LESSTHAN .
 
-    LPAREN          reduce using rule 97 (compare -> EQUALS .)
-    ID              reduce using rule 97 (compare -> EQUALS .)
-    CTE_INT         reduce using rule 97 (compare -> EQUALS .)
-    CTE_FLOAT       reduce using rule 97 (compare -> EQUALS .)
-    CTE_CHAR        reduce using rule 97 (compare -> EQUALS .)
-    CTE_BOOL        reduce using rule 97 (compare -> EQUALS .)
+    RPAREN          reduce using rule 96 (compare -> LESSTHAN .)
+    ID              reduce using rule 96 (compare -> LESSTHAN .)
+    CTE_INT         reduce using rule 96 (compare -> LESSTHAN .)
+    CTE_FLOAT       reduce using rule 96 (compare -> LESSTHAN .)
+    CTE_CHAR        reduce using rule 96 (compare -> LESSTHAN .)
+    CTE_BOOL        reduce using rule 96 (compare -> LESSTHAN .)
 
 
 state 189
 
-    (98) compare -> NOTEQUALS .
+    (97) compare -> GREATERTHAN .
 
-    LPAREN          reduce using rule 98 (compare -> NOTEQUALS .)
-    ID              reduce using rule 98 (compare -> NOTEQUALS .)
-    CTE_INT         reduce using rule 98 (compare -> NOTEQUALS .)
-    CTE_FLOAT       reduce using rule 98 (compare -> NOTEQUALS .)
-    CTE_CHAR        reduce using rule 98 (compare -> NOTEQUALS .)
-    CTE_BOOL        reduce using rule 98 (compare -> NOTEQUALS .)
+    RPAREN          reduce using rule 97 (compare -> GREATERTHAN .)
+    ID              reduce using rule 97 (compare -> GREATERTHAN .)
+    CTE_INT         reduce using rule 97 (compare -> GREATERTHAN .)
+    CTE_FLOAT       reduce using rule 97 (compare -> GREATERTHAN .)
+    CTE_CHAR        reduce using rule 97 (compare -> GREATERTHAN .)
+    CTE_BOOL        reduce using rule 97 (compare -> GREATERTHAN .)
 
 
 state 190
 
-    (99) exp -> term exp1 .
+    (98) compare -> EQUALS .
 
-    LESSTHAN        reduce using rule 99 (exp -> term exp1 .)
-    GREATERTHAN     reduce using rule 99 (exp -> term exp1 .)
-    EQUALS          reduce using rule 99 (exp -> term exp1 .)
-    NOTEQUALS       reduce using rule 99 (exp -> term exp1 .)
-    AND             reduce using rule 99 (exp -> term exp1 .)
-    OR              reduce using rule 99 (exp -> term exp1 .)
-    RPAREN          reduce using rule 99 (exp -> term exp1 .)
-    RBRACKET        reduce using rule 99 (exp -> term exp1 .)
-    COMMA           reduce using rule 99 (exp -> term exp1 .)
-    SEMICOLON       reduce using rule 99 (exp -> term exp1 .)
+    RPAREN          reduce using rule 98 (compare -> EQUALS .)
+    ID              reduce using rule 98 (compare -> EQUALS .)
+    CTE_INT         reduce using rule 98 (compare -> EQUALS .)
+    CTE_FLOAT       reduce using rule 98 (compare -> EQUALS .)
+    CTE_CHAR        reduce using rule 98 (compare -> EQUALS .)
+    CTE_BOOL        reduce using rule 98 (compare -> EQUALS .)
 
 
 state 191
 
-    (100) exp1 -> plusminus . exp
-    (99) exp -> . term exp1
-    (104) term -> . factor term1
-    (109) factor -> . LPAREN express RPAREN
-    (110) factor -> . constant
-    (111) factor -> . call
-    (79) constant -> . ID
-    (80) constant -> . CTE_INT
-    (81) constant -> . CTE_FLOAT
-    (82) constant -> . CTE_CHAR
-    (83) constant -> . CTE_BOOL
-    (47) call -> . era LPAREN paramcall RPAREN
-    (48) era -> . ID
+    (99) compare -> NOTEQUALS .
 
-    LPAREN          shift and go to state 149
-    ID              shift and go to state 152
-    CTE_INT         shift and go to state 153
-    CTE_FLOAT       shift and go to state 154
-    CTE_CHAR        shift and go to state 155
-    CTE_BOOL        shift and go to state 156
+    RPAREN          reduce using rule 99 (compare -> NOTEQUALS .)
+    ID              reduce using rule 99 (compare -> NOTEQUALS .)
+    CTE_INT         reduce using rule 99 (compare -> NOTEQUALS .)
+    CTE_FLOAT       reduce using rule 99 (compare -> NOTEQUALS .)
+    CTE_CHAR        reduce using rule 99 (compare -> NOTEQUALS .)
+    CTE_BOOL        reduce using rule 99 (compare -> NOTEQUALS .)
 
-    exp                            shift and go to state 212
-    term                           shift and go to state 147
-    factor                         shift and go to state 148
-    constant                       shift and go to state 150
-    call                           shift and go to state 151
-    era                            shift and go to state 78
 
 state 192
 
-    (101) exp1 -> empty .
+    (100) exp -> term exp1 .
 
-    LESSTHAN        reduce using rule 101 (exp1 -> empty .)
-    GREATERTHAN     reduce using rule 101 (exp1 -> empty .)
-    EQUALS          reduce using rule 101 (exp1 -> empty .)
-    NOTEQUALS       reduce using rule 101 (exp1 -> empty .)
-    AND             reduce using rule 101 (exp1 -> empty .)
-    OR              reduce using rule 101 (exp1 -> empty .)
-    RPAREN          reduce using rule 101 (exp1 -> empty .)
-    RBRACKET        reduce using rule 101 (exp1 -> empty .)
-    COMMA           reduce using rule 101 (exp1 -> empty .)
-    SEMICOLON       reduce using rule 101 (exp1 -> empty .)
+    LESSTHAN        reduce using rule 100 (exp -> term exp1 .)
+    GREATERTHAN     reduce using rule 100 (exp -> term exp1 .)
+    EQUALS          reduce using rule 100 (exp -> term exp1 .)
+    NOTEQUALS       reduce using rule 100 (exp -> term exp1 .)
+    AND             reduce using rule 100 (exp -> term exp1 .)
+    OR              reduce using rule 100 (exp -> term exp1 .)
+    RPAREN          reduce using rule 100 (exp -> term exp1 .)
+    RBRACKET        reduce using rule 100 (exp -> term exp1 .)
+    COMMA           reduce using rule 100 (exp -> term exp1 .)
+    SEMICOLON       reduce using rule 100 (exp -> term exp1 .)
+    LPAREN          reduce using rule 100 (exp -> term exp1 .)
 
 
 state 193
 
-    (102) plusminus -> PLUS .
+    (101) exp1 -> plusminus . exp
+    (100) exp -> . term exp1
+    (105) term -> . factor term1
+    (110) factor -> . insertfloor express endfloor
+    (111) factor -> . constant
+    (112) factor -> . call
+    (113) insertfloor -> . RPAREN
+    (80) constant -> . ID
+    (81) constant -> . CTE_INT
+    (82) constant -> . CTE_FLOAT
+    (83) constant -> . CTE_CHAR
+    (84) constant -> . CTE_BOOL
+    (47) call -> . era LPAREN paramcall RPAREN
+    (48) era -> . ID
 
-    LPAREN          reduce using rule 102 (plusminus -> PLUS .)
-    ID              reduce using rule 102 (plusminus -> PLUS .)
-    CTE_INT         reduce using rule 102 (plusminus -> PLUS .)
-    CTE_FLOAT       reduce using rule 102 (plusminus -> PLUS .)
-    CTE_CHAR        reduce using rule 102 (plusminus -> PLUS .)
-    CTE_BOOL        reduce using rule 102 (plusminus -> PLUS .)
+    RPAREN          shift and go to state 153
+    ID              shift and go to state 154
+    CTE_INT         shift and go to state 155
+    CTE_FLOAT       shift and go to state 156
+    CTE_CHAR        shift and go to state 157
+    CTE_BOOL        shift and go to state 158
 
+    exp                            shift and go to state 214
+    term                           shift and go to state 148
+    factor                         shift and go to state 149
+    insertfloor                    shift and go to state 150
+    constant                       shift and go to state 151
+    call                           shift and go to state 152
+    era                            shift and go to state 78
 
 state 194
 
-    (103) plusminus -> MINUS .
+    (102) exp1 -> empty .
 
-    LPAREN          reduce using rule 103 (plusminus -> MINUS .)
-    ID              reduce using rule 103 (plusminus -> MINUS .)
-    CTE_INT         reduce using rule 103 (plusminus -> MINUS .)
-    CTE_FLOAT       reduce using rule 103 (plusminus -> MINUS .)
-    CTE_CHAR        reduce using rule 103 (plusminus -> MINUS .)
-    CTE_BOOL        reduce using rule 103 (plusminus -> MINUS .)
+    LESSTHAN        reduce using rule 102 (exp1 -> empty .)
+    GREATERTHAN     reduce using rule 102 (exp1 -> empty .)
+    EQUALS          reduce using rule 102 (exp1 -> empty .)
+    NOTEQUALS       reduce using rule 102 (exp1 -> empty .)
+    AND             reduce using rule 102 (exp1 -> empty .)
+    OR              reduce using rule 102 (exp1 -> empty .)
+    RPAREN          reduce using rule 102 (exp1 -> empty .)
+    RBRACKET        reduce using rule 102 (exp1 -> empty .)
+    COMMA           reduce using rule 102 (exp1 -> empty .)
+    SEMICOLON       reduce using rule 102 (exp1 -> empty .)
+    LPAREN          reduce using rule 102 (exp1 -> empty .)
 
 
 state 195
 
-    (104) term -> factor term1 .
+    (103) plusminus -> PLUS .
 
-    PLUS            reduce using rule 104 (term -> factor term1 .)
-    MINUS           reduce using rule 104 (term -> factor term1 .)
-    LESSTHAN        reduce using rule 104 (term -> factor term1 .)
-    GREATERTHAN     reduce using rule 104 (term -> factor term1 .)
-    EQUALS          reduce using rule 104 (term -> factor term1 .)
-    NOTEQUALS       reduce using rule 104 (term -> factor term1 .)
-    AND             reduce using rule 104 (term -> factor term1 .)
-    OR              reduce using rule 104 (term -> factor term1 .)
-    RPAREN          reduce using rule 104 (term -> factor term1 .)
-    RBRACKET        reduce using rule 104 (term -> factor term1 .)
-    COMMA           reduce using rule 104 (term -> factor term1 .)
-    SEMICOLON       reduce using rule 104 (term -> factor term1 .)
+    RPAREN          reduce using rule 103 (plusminus -> PLUS .)
+    ID              reduce using rule 103 (plusminus -> PLUS .)
+    CTE_INT         reduce using rule 103 (plusminus -> PLUS .)
+    CTE_FLOAT       reduce using rule 103 (plusminus -> PLUS .)
+    CTE_CHAR        reduce using rule 103 (plusminus -> PLUS .)
+    CTE_BOOL        reduce using rule 103 (plusminus -> PLUS .)
 
 
 state 196
 
-    (105) term1 -> multidivi . term
-    (104) term -> . factor term1
-    (109) factor -> . LPAREN express RPAREN
-    (110) factor -> . constant
-    (111) factor -> . call
-    (79) constant -> . ID
-    (80) constant -> . CTE_INT
-    (81) constant -> . CTE_FLOAT
-    (82) constant -> . CTE_CHAR
-    (83) constant -> . CTE_BOOL
-    (47) call -> . era LPAREN paramcall RPAREN
-    (48) era -> . ID
+    (104) plusminus -> MINUS .
 
-    LPAREN          shift and go to state 149
-    ID              shift and go to state 152
-    CTE_INT         shift and go to state 153
-    CTE_FLOAT       shift and go to state 154
-    CTE_CHAR        shift and go to state 155
-    CTE_BOOL        shift and go to state 156
+    RPAREN          reduce using rule 104 (plusminus -> MINUS .)
+    ID              reduce using rule 104 (plusminus -> MINUS .)
+    CTE_INT         reduce using rule 104 (plusminus -> MINUS .)
+    CTE_FLOAT       reduce using rule 104 (plusminus -> MINUS .)
+    CTE_CHAR        reduce using rule 104 (plusminus -> MINUS .)
+    CTE_BOOL        reduce using rule 104 (plusminus -> MINUS .)
 
-    term                           shift and go to state 213
-    factor                         shift and go to state 148
-    constant                       shift and go to state 150
-    call                           shift and go to state 151
-    era                            shift and go to state 78
 
 state 197
 
-    (106) term1 -> empty .
+    (105) term -> factor term1 .
 
-    PLUS            reduce using rule 106 (term1 -> empty .)
-    MINUS           reduce using rule 106 (term1 -> empty .)
-    LESSTHAN        reduce using rule 106 (term1 -> empty .)
-    GREATERTHAN     reduce using rule 106 (term1 -> empty .)
-    EQUALS          reduce using rule 106 (term1 -> empty .)
-    NOTEQUALS       reduce using rule 106 (term1 -> empty .)
-    AND             reduce using rule 106 (term1 -> empty .)
-    OR              reduce using rule 106 (term1 -> empty .)
-    RPAREN          reduce using rule 106 (term1 -> empty .)
-    RBRACKET        reduce using rule 106 (term1 -> empty .)
-    COMMA           reduce using rule 106 (term1 -> empty .)
-    SEMICOLON       reduce using rule 106 (term1 -> empty .)
+    PLUS            reduce using rule 105 (term -> factor term1 .)
+    MINUS           reduce using rule 105 (term -> factor term1 .)
+    LESSTHAN        reduce using rule 105 (term -> factor term1 .)
+    GREATERTHAN     reduce using rule 105 (term -> factor term1 .)
+    EQUALS          reduce using rule 105 (term -> factor term1 .)
+    NOTEQUALS       reduce using rule 105 (term -> factor term1 .)
+    AND             reduce using rule 105 (term -> factor term1 .)
+    OR              reduce using rule 105 (term -> factor term1 .)
+    RPAREN          reduce using rule 105 (term -> factor term1 .)
+    RBRACKET        reduce using rule 105 (term -> factor term1 .)
+    COMMA           reduce using rule 105 (term -> factor term1 .)
+    SEMICOLON       reduce using rule 105 (term -> factor term1 .)
+    LPAREN          reduce using rule 105 (term -> factor term1 .)
 
 
 state 198
 
-    (107) multidivi -> MULTI .
+    (106) term1 -> multidivi . term
+    (105) term -> . factor term1
+    (110) factor -> . insertfloor express endfloor
+    (111) factor -> . constant
+    (112) factor -> . call
+    (113) insertfloor -> . RPAREN
+    (80) constant -> . ID
+    (81) constant -> . CTE_INT
+    (82) constant -> . CTE_FLOAT
+    (83) constant -> . CTE_CHAR
+    (84) constant -> . CTE_BOOL
+    (47) call -> . era LPAREN paramcall RPAREN
+    (48) era -> . ID
 
-    LPAREN          reduce using rule 107 (multidivi -> MULTI .)
-    ID              reduce using rule 107 (multidivi -> MULTI .)
-    CTE_INT         reduce using rule 107 (multidivi -> MULTI .)
-    CTE_FLOAT       reduce using rule 107 (multidivi -> MULTI .)
-    CTE_CHAR        reduce using rule 107 (multidivi -> MULTI .)
-    CTE_BOOL        reduce using rule 107 (multidivi -> MULTI .)
+    RPAREN          shift and go to state 153
+    ID              shift and go to state 154
+    CTE_INT         shift and go to state 155
+    CTE_FLOAT       shift and go to state 156
+    CTE_CHAR        shift and go to state 157
+    CTE_BOOL        shift and go to state 158
 
+    term                           shift and go to state 215
+    factor                         shift and go to state 149
+    insertfloor                    shift and go to state 150
+    constant                       shift and go to state 151
+    call                           shift and go to state 152
+    era                            shift and go to state 78
 
 state 199
 
-    (108) multidivi -> DIVI .
+    (107) term1 -> empty .
 
-    LPAREN          reduce using rule 108 (multidivi -> DIVI .)
-    ID              reduce using rule 108 (multidivi -> DIVI .)
-    CTE_INT         reduce using rule 108 (multidivi -> DIVI .)
-    CTE_FLOAT       reduce using rule 108 (multidivi -> DIVI .)
-    CTE_CHAR        reduce using rule 108 (multidivi -> DIVI .)
-    CTE_BOOL        reduce using rule 108 (multidivi -> DIVI .)
+    PLUS            reduce using rule 107 (term1 -> empty .)
+    MINUS           reduce using rule 107 (term1 -> empty .)
+    LESSTHAN        reduce using rule 107 (term1 -> empty .)
+    GREATERTHAN     reduce using rule 107 (term1 -> empty .)
+    EQUALS          reduce using rule 107 (term1 -> empty .)
+    NOTEQUALS       reduce using rule 107 (term1 -> empty .)
+    AND             reduce using rule 107 (term1 -> empty .)
+    OR              reduce using rule 107 (term1 -> empty .)
+    RPAREN          reduce using rule 107 (term1 -> empty .)
+    RBRACKET        reduce using rule 107 (term1 -> empty .)
+    COMMA           reduce using rule 107 (term1 -> empty .)
+    SEMICOLON       reduce using rule 107 (term1 -> empty .)
+    LPAREN          reduce using rule 107 (term1 -> empty .)
 
 
 state 200
 
-    (109) factor -> LPAREN express . RPAREN
+    (108) multidivi -> MULTI .
 
-    RPAREN          shift and go to state 214
+    RPAREN          reduce using rule 108 (multidivi -> MULTI .)
+    ID              reduce using rule 108 (multidivi -> MULTI .)
+    CTE_INT         reduce using rule 108 (multidivi -> MULTI .)
+    CTE_FLOAT       reduce using rule 108 (multidivi -> MULTI .)
+    CTE_CHAR        reduce using rule 108 (multidivi -> MULTI .)
+    CTE_BOOL        reduce using rule 108 (multidivi -> MULTI .)
 
 
 state 201
 
-    (50) paramcall1 -> COMMA paramcall .
+    (109) multidivi -> DIVI .
 
-    RPAREN          reduce using rule 50 (paramcall1 -> COMMA paramcall .)
+    RPAREN          reduce using rule 109 (multidivi -> DIVI .)
+    ID              reduce using rule 109 (multidivi -> DIVI .)
+    CTE_INT         reduce using rule 109 (multidivi -> DIVI .)
+    CTE_FLOAT       reduce using rule 109 (multidivi -> DIVI .)
+    CTE_CHAR        reduce using rule 109 (multidivi -> DIVI .)
+    CTE_BOOL        reduce using rule 109 (multidivi -> DIVI .)
 
 
 state 202
 
-    (56) cin3 -> LBRACKET CTE_INT RBRACKET LPAREN . cin4 RPAREN
-    (57) cin4 -> . COMMA ID cin4
-    (58) cin4 -> . empty
-    (112) empty -> .
+    (110) factor -> insertfloor express . endfloor
+    (114) endfloor -> . LPAREN
 
-    COMMA           shift and go to state 216
-    RPAREN          reduce using rule 112 (empty -> .)
+    LPAREN          shift and go to state 217
 
-    cin4                           shift and go to state 215
-    empty                          shift and go to state 217
+    endfloor                       shift and go to state 216
 
 state 203
 
-    (59) cout -> COUT LPAREN express cout1 RPAREN .
+    (51) paramcall1 -> COMMA paramcall .
 
-    SEMICOLON       reduce using rule 59 (cout -> COUT LPAREN express cout1 RPAREN .)
+    RPAREN          reduce using rule 51 (paramcall1 -> COMMA paramcall .)
 
 
 state 204
 
-    (60) cout1 -> COMMA express . cout1
-    (60) cout1 -> . COMMA express cout1
-    (61) cout1 -> . empty
-    (112) empty -> .
+    (57) cin3 -> LBRACKET CTE_INT RBRACKET LPAREN . cin4 RPAREN
+    (58) cin4 -> . COMMA ID cin4
+    (59) cin4 -> . empty
+    (115) empty -> .
 
-    COMMA           shift and go to state 166
-    RPAREN          reduce using rule 112 (empty -> .)
+    COMMA           shift and go to state 219
+    RPAREN          reduce using rule 115 (empty -> .)
 
-    cout1                          shift and go to state 218
-    empty                          shift and go to state 167
+    cin4                           shift and go to state 218
+    empty                          shift and go to state 220
 
 state 205
 
-    (68) lights -> LIGHTS LPAREN express COMMA express . RPAREN
+    (60) cout -> COUT LPAREN express cout1 RPAREN .
 
-    RPAREN          shift and go to state 219
+    SEMICOLON       reduce using rule 60 (cout -> COUT LPAREN express cout1 RPAREN .)
 
 
 state 206
 
-    (71) while -> WHILE LPAREN express RPAREN while1 . LCURLY block RCURLY
+    (61) cout1 -> COMMA express . cout1
+    (61) cout1 -> . COMMA express cout1
+    (62) cout1 -> . empty
+    (115) empty -> .
 
-    LCURLY          shift and go to state 220
+    COMMA           shift and go to state 168
+    RPAREN          reduce using rule 115 (empty -> .)
 
+    cout1                          shift and go to state 221
+    empty                          shift and go to state 169
 
 state 207
 
-    (72) while1 -> empty .
+    (69) lights -> LIGHTS LPAREN express COMMA express . RPAREN
 
-    LCURLY          reduce using rule 72 (while1 -> empty .)
+    RPAREN          shift and go to state 222
 
 
 state 208
+
+    (72) while -> WHILE LPAREN express RPAREN while1 . LCURLY block RCURLY
+
+    LCURLY          shift and go to state 223
+
+
+state 209
+
+    (73) while1 -> empty .
+
+    LCURLY          reduce using rule 73 (while1 -> empty .)
+
+
+state 210
 
     (39) cond -> IF LPAREN express RPAREN LCURLY gotoif . block RCURLY else
     (21) block -> . statute SEMICOLON block
@@ -3076,237 +3147,26 @@ state 208
     (36) statute -> . stop
     (37) statute -> . while
     (38) statute -> . return
-    (112) empty -> .
+    (115) empty -> .
     (39) cond -> . IF LPAREN express RPAREN LCURLY gotoif block RCURLY else
     (44) assign -> . ID assign1 ASSIGN express
     (47) call -> . era LPAREN paramcall RPAREN
-    (52) cin -> . CIN cin1
-    (59) cout -> . COUT LPAREN express cout1 RPAREN
-    (62) delay -> . DELAY LPAREN express RPAREN
-    (63) forward -> . FORWARD LPAREN express RPAREN
-    (64) backward -> . BACKWARD LPAREN express RPAREN
-    (65) turnleft -> . TURNLEFT LPAREN express RPAREN
-    (66) turnright -> . TURNRIGHT LPAREN express RPAREN
-    (67) servo -> . SERVO LPAREN express RPAREN
-    (68) lights -> . LIGHTS LPAREN express COMMA express RPAREN
-    (69) distance -> . DISTANCE LPAREN RPAREN
-    (70) stop -> . STOP LPAREN RPAREN
-    (71) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
-    (73) return -> . RETURN LPAREN express RPAREN
+    (53) cin -> . CIN cin1
+    (60) cout -> . COUT LPAREN express cout1 RPAREN
+    (63) delay -> . DELAY LPAREN express RPAREN
+    (64) forward -> . FORWARD LPAREN express RPAREN
+    (65) backward -> . BACKWARD LPAREN express RPAREN
+    (66) turnleft -> . TURNLEFT LPAREN express RPAREN
+    (67) turnright -> . TURNRIGHT LPAREN express RPAREN
+    (68) servo -> . SERVO LPAREN express RPAREN
+    (69) lights -> . LIGHTS LPAREN express COMMA express RPAREN
+    (70) distance -> . DISTANCE LPAREN RPAREN
+    (71) stop -> . STOP LPAREN RPAREN
+    (72) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
+    (74) return -> . RETURN LPAREN express RPAREN
     (48) era -> . ID
 
-    RCURLY          reduce using rule 112 (empty -> .)
-    IF              shift and go to state 76
-    ID              shift and go to state 77
-    CIN             shift and go to state 79
-    COUT            shift and go to state 80
-    DELAY           shift and go to state 81
-    FORWARD         shift and go to state 82
-    BACKWARD        shift and go to state 83
-    TURNLEFT        shift and go to state 84
-    TURNRIGHT       shift and go to state 85
-    SERVO           shift and go to state 86
-    LIGHTS          shift and go to state 87
-    DISTANCE        shift and go to state 88
-    STOP            shift and go to state 89
-    WHILE           shift and go to state 90
-    RETURN          shift and go to state 91
-
-    block                          shift and go to state 221
-    statute                        shift and go to state 58
-    empty                          shift and go to state 59
-    cond                           shift and go to state 60
-    assign                         shift and go to state 61
-    call                           shift and go to state 62
-    cin                            shift and go to state 63
-    cout                           shift and go to state 64
-    delay                          shift and go to state 65
-    forward                        shift and go to state 66
-    backward                       shift and go to state 67
-    turnleft                       shift and go to state 68
-    turnright                      shift and go to state 69
-    servo                          shift and go to state 70
-    lights                         shift and go to state 71
-    distance                       shift and go to state 72
-    stop                           shift and go to state 73
-    while                          shift and go to state 74
-    return                         shift and go to state 75
-    era                            shift and go to state 78
-
-state 209
-
-    (40) gotoif -> empty .
-
-    IF              reduce using rule 40 (gotoif -> empty .)
-    ID              reduce using rule 40 (gotoif -> empty .)
-    CIN             reduce using rule 40 (gotoif -> empty .)
-    COUT            reduce using rule 40 (gotoif -> empty .)
-    DELAY           reduce using rule 40 (gotoif -> empty .)
-    FORWARD         reduce using rule 40 (gotoif -> empty .)
-    BACKWARD        reduce using rule 40 (gotoif -> empty .)
-    TURNLEFT        reduce using rule 40 (gotoif -> empty .)
-    TURNRIGHT       reduce using rule 40 (gotoif -> empty .)
-    SERVO           reduce using rule 40 (gotoif -> empty .)
-    LIGHTS          reduce using rule 40 (gotoif -> empty .)
-    DISTANCE        reduce using rule 40 (gotoif -> empty .)
-    STOP            reduce using rule 40 (gotoif -> empty .)
-    WHILE           reduce using rule 40 (gotoif -> empty .)
-    RETURN          reduce using rule 40 (gotoif -> empty .)
-    RCURLY          reduce using rule 40 (gotoif -> empty .)
-
-
-state 210
-
-    (87) express2 -> andor express .
-
-    RPAREN          reduce using rule 87 (express2 -> andor express .)
-    RBRACKET        reduce using rule 87 (express2 -> andor express .)
-    COMMA           reduce using rule 87 (express2 -> andor express .)
-    SEMICOLON       reduce using rule 87 (express2 -> andor express .)
-
-
-state 211
-
-    (93) relational1 -> compare exp .
-
-    AND             reduce using rule 93 (relational1 -> compare exp .)
-    OR              reduce using rule 93 (relational1 -> compare exp .)
-    RPAREN          reduce using rule 93 (relational1 -> compare exp .)
-    RBRACKET        reduce using rule 93 (relational1 -> compare exp .)
-    COMMA           reduce using rule 93 (relational1 -> compare exp .)
-    SEMICOLON       reduce using rule 93 (relational1 -> compare exp .)
-
-
-state 212
-
-    (100) exp1 -> plusminus exp .
-
-    LESSTHAN        reduce using rule 100 (exp1 -> plusminus exp .)
-    GREATERTHAN     reduce using rule 100 (exp1 -> plusminus exp .)
-    EQUALS          reduce using rule 100 (exp1 -> plusminus exp .)
-    NOTEQUALS       reduce using rule 100 (exp1 -> plusminus exp .)
-    AND             reduce using rule 100 (exp1 -> plusminus exp .)
-    OR              reduce using rule 100 (exp1 -> plusminus exp .)
-    RPAREN          reduce using rule 100 (exp1 -> plusminus exp .)
-    RBRACKET        reduce using rule 100 (exp1 -> plusminus exp .)
-    COMMA           reduce using rule 100 (exp1 -> plusminus exp .)
-    SEMICOLON       reduce using rule 100 (exp1 -> plusminus exp .)
-
-
-state 213
-
-    (105) term1 -> multidivi term .
-
-    PLUS            reduce using rule 105 (term1 -> multidivi term .)
-    MINUS           reduce using rule 105 (term1 -> multidivi term .)
-    LESSTHAN        reduce using rule 105 (term1 -> multidivi term .)
-    GREATERTHAN     reduce using rule 105 (term1 -> multidivi term .)
-    EQUALS          reduce using rule 105 (term1 -> multidivi term .)
-    NOTEQUALS       reduce using rule 105 (term1 -> multidivi term .)
-    AND             reduce using rule 105 (term1 -> multidivi term .)
-    OR              reduce using rule 105 (term1 -> multidivi term .)
-    RPAREN          reduce using rule 105 (term1 -> multidivi term .)
-    RBRACKET        reduce using rule 105 (term1 -> multidivi term .)
-    COMMA           reduce using rule 105 (term1 -> multidivi term .)
-    SEMICOLON       reduce using rule 105 (term1 -> multidivi term .)
-
-
-state 214
-
-    (109) factor -> LPAREN express RPAREN .
-
-    MULTI           reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    DIVI            reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    PLUS            reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    MINUS           reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    LESSTHAN        reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    GREATERTHAN     reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    EQUALS          reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    NOTEQUALS       reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    AND             reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    OR              reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    RPAREN          reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    RBRACKET        reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    COMMA           reduce using rule 109 (factor -> LPAREN express RPAREN .)
-    SEMICOLON       reduce using rule 109 (factor -> LPAREN express RPAREN .)
-
-
-state 215
-
-    (56) cin3 -> LBRACKET CTE_INT RBRACKET LPAREN cin4 . RPAREN
-
-    RPAREN          shift and go to state 222
-
-
-state 216
-
-    (57) cin4 -> COMMA . ID cin4
-
-    ID              shift and go to state 223
-
-
-state 217
-
-    (58) cin4 -> empty .
-
-    RPAREN          reduce using rule 58 (cin4 -> empty .)
-
-
-state 218
-
-    (60) cout1 -> COMMA express cout1 .
-
-    RPAREN          reduce using rule 60 (cout1 -> COMMA express cout1 .)
-
-
-state 219
-
-    (68) lights -> LIGHTS LPAREN express COMMA express RPAREN .
-
-    SEMICOLON       reduce using rule 68 (lights -> LIGHTS LPAREN express COMMA express RPAREN .)
-
-
-state 220
-
-    (71) while -> WHILE LPAREN express RPAREN while1 LCURLY . block RCURLY
-    (21) block -> . statute SEMICOLON block
-    (22) block -> . empty
-    (23) statute -> . cond
-    (24) statute -> . assign
-    (25) statute -> . call
-    (26) statute -> . cin
-    (27) statute -> . cout
-    (28) statute -> . delay
-    (29) statute -> . forward
-    (30) statute -> . backward
-    (31) statute -> . turnleft
-    (32) statute -> . turnright
-    (33) statute -> . servo
-    (34) statute -> . lights
-    (35) statute -> . distance
-    (36) statute -> . stop
-    (37) statute -> . while
-    (38) statute -> . return
-    (112) empty -> .
-    (39) cond -> . IF LPAREN express RPAREN LCURLY gotoif block RCURLY else
-    (44) assign -> . ID assign1 ASSIGN express
-    (47) call -> . era LPAREN paramcall RPAREN
-    (52) cin -> . CIN cin1
-    (59) cout -> . COUT LPAREN express cout1 RPAREN
-    (62) delay -> . DELAY LPAREN express RPAREN
-    (63) forward -> . FORWARD LPAREN express RPAREN
-    (64) backward -> . BACKWARD LPAREN express RPAREN
-    (65) turnleft -> . TURNLEFT LPAREN express RPAREN
-    (66) turnright -> . TURNRIGHT LPAREN express RPAREN
-    (67) servo -> . SERVO LPAREN express RPAREN
-    (68) lights -> . LIGHTS LPAREN express COMMA express RPAREN
-    (69) distance -> . DISTANCE LPAREN RPAREN
-    (70) stop -> . STOP LPAREN RPAREN
-    (71) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
-    (73) return -> . RETURN LPAREN express RPAREN
-    (48) era -> . ID
-
-    RCURLY          reduce using rule 112 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
     IF              shift and go to state 76
     ID              shift and go to state 77
     CIN             shift and go to state 79
@@ -3344,117 +3204,168 @@ state 220
     return                         shift and go to state 75
     era                            shift and go to state 78
 
+state 211
+
+    (40) gotoif -> empty .
+
+    IF              reduce using rule 40 (gotoif -> empty .)
+    ID              reduce using rule 40 (gotoif -> empty .)
+    CIN             reduce using rule 40 (gotoif -> empty .)
+    COUT            reduce using rule 40 (gotoif -> empty .)
+    DELAY           reduce using rule 40 (gotoif -> empty .)
+    FORWARD         reduce using rule 40 (gotoif -> empty .)
+    BACKWARD        reduce using rule 40 (gotoif -> empty .)
+    TURNLEFT        reduce using rule 40 (gotoif -> empty .)
+    TURNRIGHT       reduce using rule 40 (gotoif -> empty .)
+    SERVO           reduce using rule 40 (gotoif -> empty .)
+    LIGHTS          reduce using rule 40 (gotoif -> empty .)
+    DISTANCE        reduce using rule 40 (gotoif -> empty .)
+    STOP            reduce using rule 40 (gotoif -> empty .)
+    WHILE           reduce using rule 40 (gotoif -> empty .)
+    RETURN          reduce using rule 40 (gotoif -> empty .)
+    RCURLY          reduce using rule 40 (gotoif -> empty .)
+
+
+state 212
+
+    (88) express2 -> andor express .
+
+    RPAREN          reduce using rule 88 (express2 -> andor express .)
+    RBRACKET        reduce using rule 88 (express2 -> andor express .)
+    COMMA           reduce using rule 88 (express2 -> andor express .)
+    SEMICOLON       reduce using rule 88 (express2 -> andor express .)
+    LPAREN          reduce using rule 88 (express2 -> andor express .)
+
+
+state 213
+
+    (94) relational1 -> compare exp .
+
+    AND             reduce using rule 94 (relational1 -> compare exp .)
+    OR              reduce using rule 94 (relational1 -> compare exp .)
+    RPAREN          reduce using rule 94 (relational1 -> compare exp .)
+    RBRACKET        reduce using rule 94 (relational1 -> compare exp .)
+    COMMA           reduce using rule 94 (relational1 -> compare exp .)
+    SEMICOLON       reduce using rule 94 (relational1 -> compare exp .)
+    LPAREN          reduce using rule 94 (relational1 -> compare exp .)
+
+
+state 214
+
+    (101) exp1 -> plusminus exp .
+
+    LESSTHAN        reduce using rule 101 (exp1 -> plusminus exp .)
+    GREATERTHAN     reduce using rule 101 (exp1 -> plusminus exp .)
+    EQUALS          reduce using rule 101 (exp1 -> plusminus exp .)
+    NOTEQUALS       reduce using rule 101 (exp1 -> plusminus exp .)
+    AND             reduce using rule 101 (exp1 -> plusminus exp .)
+    OR              reduce using rule 101 (exp1 -> plusminus exp .)
+    RPAREN          reduce using rule 101 (exp1 -> plusminus exp .)
+    RBRACKET        reduce using rule 101 (exp1 -> plusminus exp .)
+    COMMA           reduce using rule 101 (exp1 -> plusminus exp .)
+    SEMICOLON       reduce using rule 101 (exp1 -> plusminus exp .)
+    LPAREN          reduce using rule 101 (exp1 -> plusminus exp .)
+
+
+state 215
+
+    (106) term1 -> multidivi term .
+
+    PLUS            reduce using rule 106 (term1 -> multidivi term .)
+    MINUS           reduce using rule 106 (term1 -> multidivi term .)
+    LESSTHAN        reduce using rule 106 (term1 -> multidivi term .)
+    GREATERTHAN     reduce using rule 106 (term1 -> multidivi term .)
+    EQUALS          reduce using rule 106 (term1 -> multidivi term .)
+    NOTEQUALS       reduce using rule 106 (term1 -> multidivi term .)
+    AND             reduce using rule 106 (term1 -> multidivi term .)
+    OR              reduce using rule 106 (term1 -> multidivi term .)
+    RPAREN          reduce using rule 106 (term1 -> multidivi term .)
+    RBRACKET        reduce using rule 106 (term1 -> multidivi term .)
+    COMMA           reduce using rule 106 (term1 -> multidivi term .)
+    SEMICOLON       reduce using rule 106 (term1 -> multidivi term .)
+    LPAREN          reduce using rule 106 (term1 -> multidivi term .)
+
+
+state 216
+
+    (110) factor -> insertfloor express endfloor .
+
+    MULTI           reduce using rule 110 (factor -> insertfloor express endfloor .)
+    DIVI            reduce using rule 110 (factor -> insertfloor express endfloor .)
+    PLUS            reduce using rule 110 (factor -> insertfloor express endfloor .)
+    MINUS           reduce using rule 110 (factor -> insertfloor express endfloor .)
+    LESSTHAN        reduce using rule 110 (factor -> insertfloor express endfloor .)
+    GREATERTHAN     reduce using rule 110 (factor -> insertfloor express endfloor .)
+    EQUALS          reduce using rule 110 (factor -> insertfloor express endfloor .)
+    NOTEQUALS       reduce using rule 110 (factor -> insertfloor express endfloor .)
+    AND             reduce using rule 110 (factor -> insertfloor express endfloor .)
+    OR              reduce using rule 110 (factor -> insertfloor express endfloor .)
+    RPAREN          reduce using rule 110 (factor -> insertfloor express endfloor .)
+    RBRACKET        reduce using rule 110 (factor -> insertfloor express endfloor .)
+    COMMA           reduce using rule 110 (factor -> insertfloor express endfloor .)
+    SEMICOLON       reduce using rule 110 (factor -> insertfloor express endfloor .)
+    LPAREN          reduce using rule 110 (factor -> insertfloor express endfloor .)
+
+
+state 217
+
+    (114) endfloor -> LPAREN .
+
+    MULTI           reduce using rule 114 (endfloor -> LPAREN .)
+    DIVI            reduce using rule 114 (endfloor -> LPAREN .)
+    PLUS            reduce using rule 114 (endfloor -> LPAREN .)
+    MINUS           reduce using rule 114 (endfloor -> LPAREN .)
+    LESSTHAN        reduce using rule 114 (endfloor -> LPAREN .)
+    GREATERTHAN     reduce using rule 114 (endfloor -> LPAREN .)
+    EQUALS          reduce using rule 114 (endfloor -> LPAREN .)
+    NOTEQUALS       reduce using rule 114 (endfloor -> LPAREN .)
+    AND             reduce using rule 114 (endfloor -> LPAREN .)
+    OR              reduce using rule 114 (endfloor -> LPAREN .)
+    RPAREN          reduce using rule 114 (endfloor -> LPAREN .)
+    RBRACKET        reduce using rule 114 (endfloor -> LPAREN .)
+    COMMA           reduce using rule 114 (endfloor -> LPAREN .)
+    SEMICOLON       reduce using rule 114 (endfloor -> LPAREN .)
+    LPAREN          reduce using rule 114 (endfloor -> LPAREN .)
+
+
+state 218
+
+    (57) cin3 -> LBRACKET CTE_INT RBRACKET LPAREN cin4 . RPAREN
+
+    RPAREN          shift and go to state 225
+
+
+state 219
+
+    (58) cin4 -> COMMA . ID cin4
+
+    ID              shift and go to state 226
+
+
+state 220
+
+    (59) cin4 -> empty .
+
+    RPAREN          reduce using rule 59 (cin4 -> empty .)
+
+
 state 221
 
-    (39) cond -> IF LPAREN express RPAREN LCURLY gotoif block . RCURLY else
+    (61) cout1 -> COMMA express cout1 .
 
-    RCURLY          shift and go to state 225
+    RPAREN          reduce using rule 61 (cout1 -> COMMA express cout1 .)
 
 
 state 222
 
-    (56) cin3 -> LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN .
+    (69) lights -> LIGHTS LPAREN express COMMA express RPAREN .
 
-    SEMICOLON       reduce using rule 56 (cin3 -> LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN .)
+    SEMICOLON       reduce using rule 69 (lights -> LIGHTS LPAREN express COMMA express RPAREN .)
 
 
 state 223
 
-    (57) cin4 -> COMMA ID . cin4
-    (57) cin4 -> . COMMA ID cin4
-    (58) cin4 -> . empty
-    (112) empty -> .
-
-    COMMA           shift and go to state 216
-    RPAREN          reduce using rule 112 (empty -> .)
-
-    cin4                           shift and go to state 226
-    empty                          shift and go to state 217
-
-state 224
-
-    (71) while -> WHILE LPAREN express RPAREN while1 LCURLY block . RCURLY
-
-    RCURLY          shift and go to state 227
-
-
-state 225
-
-    (39) cond -> IF LPAREN express RPAREN LCURLY gotoif block RCURLY . else
-    (41) else -> . ELSE LCURLY gotoelse block RCURLY else
-    (42) else -> . empty
-    (112) empty -> .
-
-    ELSE            shift and go to state 229
-    SEMICOLON       reduce using rule 112 (empty -> .)
-
-    else                           shift and go to state 228
-    empty                          shift and go to state 230
-
-state 226
-
-    (57) cin4 -> COMMA ID cin4 .
-
-    RPAREN          reduce using rule 57 (cin4 -> COMMA ID cin4 .)
-
-
-state 227
-
-    (71) while -> WHILE LPAREN express RPAREN while1 LCURLY block RCURLY .
-
-    SEMICOLON       reduce using rule 71 (while -> WHILE LPAREN express RPAREN while1 LCURLY block RCURLY .)
-
-
-state 228
-
-    (39) cond -> IF LPAREN express RPAREN LCURLY gotoif block RCURLY else .
-
-    SEMICOLON       reduce using rule 39 (cond -> IF LPAREN express RPAREN LCURLY gotoif block RCURLY else .)
-
-
-state 229
-
-    (41) else -> ELSE . LCURLY gotoelse block RCURLY else
-
-    LCURLY          shift and go to state 231
-
-
-state 230
-
-    (42) else -> empty .
-
-    SEMICOLON       reduce using rule 42 (else -> empty .)
-
-
-state 231
-
-    (41) else -> ELSE LCURLY . gotoelse block RCURLY else
-    (43) gotoelse -> . empty
-    (112) empty -> .
-
-    IF              reduce using rule 112 (empty -> .)
-    ID              reduce using rule 112 (empty -> .)
-    CIN             reduce using rule 112 (empty -> .)
-    COUT            reduce using rule 112 (empty -> .)
-    DELAY           reduce using rule 112 (empty -> .)
-    FORWARD         reduce using rule 112 (empty -> .)
-    BACKWARD        reduce using rule 112 (empty -> .)
-    TURNLEFT        reduce using rule 112 (empty -> .)
-    TURNRIGHT       reduce using rule 112 (empty -> .)
-    SERVO           reduce using rule 112 (empty -> .)
-    LIGHTS          reduce using rule 112 (empty -> .)
-    DISTANCE        reduce using rule 112 (empty -> .)
-    STOP            reduce using rule 112 (empty -> .)
-    WHILE           reduce using rule 112 (empty -> .)
-    RETURN          reduce using rule 112 (empty -> .)
-    RCURLY          reduce using rule 112 (empty -> .)
-
-    gotoelse                       shift and go to state 232
-    empty                          shift and go to state 233
-
-state 232
-
-    (41) else -> ELSE LCURLY gotoelse . block RCURLY else
+    (72) while -> WHILE LPAREN express RPAREN while1 LCURLY . block RCURLY
     (21) block -> . statute SEMICOLON block
     (22) block -> . empty
     (23) statute -> . cond
@@ -3473,26 +3384,26 @@ state 232
     (36) statute -> . stop
     (37) statute -> . while
     (38) statute -> . return
-    (112) empty -> .
+    (115) empty -> .
     (39) cond -> . IF LPAREN express RPAREN LCURLY gotoif block RCURLY else
     (44) assign -> . ID assign1 ASSIGN express
     (47) call -> . era LPAREN paramcall RPAREN
-    (52) cin -> . CIN cin1
-    (59) cout -> . COUT LPAREN express cout1 RPAREN
-    (62) delay -> . DELAY LPAREN express RPAREN
-    (63) forward -> . FORWARD LPAREN express RPAREN
-    (64) backward -> . BACKWARD LPAREN express RPAREN
-    (65) turnleft -> . TURNLEFT LPAREN express RPAREN
-    (66) turnright -> . TURNRIGHT LPAREN express RPAREN
-    (67) servo -> . SERVO LPAREN express RPAREN
-    (68) lights -> . LIGHTS LPAREN express COMMA express RPAREN
-    (69) distance -> . DISTANCE LPAREN RPAREN
-    (70) stop -> . STOP LPAREN RPAREN
-    (71) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
-    (73) return -> . RETURN LPAREN express RPAREN
+    (53) cin -> . CIN cin1
+    (60) cout -> . COUT LPAREN express cout1 RPAREN
+    (63) delay -> . DELAY LPAREN express RPAREN
+    (64) forward -> . FORWARD LPAREN express RPAREN
+    (65) backward -> . BACKWARD LPAREN express RPAREN
+    (66) turnleft -> . TURNLEFT LPAREN express RPAREN
+    (67) turnright -> . TURNRIGHT LPAREN express RPAREN
+    (68) servo -> . SERVO LPAREN express RPAREN
+    (69) lights -> . LIGHTS LPAREN express COMMA express RPAREN
+    (70) distance -> . DISTANCE LPAREN RPAREN
+    (71) stop -> . STOP LPAREN RPAREN
+    (72) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
+    (74) return -> . RETURN LPAREN express RPAREN
     (48) era -> . ID
 
-    RCURLY          reduce using rule 112 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
     IF              shift and go to state 76
     ID              shift and go to state 77
     CIN             shift and go to state 79
@@ -3509,7 +3420,7 @@ state 232
     WHILE           shift and go to state 90
     RETURN          shift and go to state 91
 
-    block                          shift and go to state 234
+    block                          shift and go to state 227
     statute                        shift and go to state 58
     empty                          shift and go to state 59
     cond                           shift and go to state 60
@@ -3530,7 +3441,193 @@ state 232
     return                         shift and go to state 75
     era                            shift and go to state 78
 
+state 224
+
+    (39) cond -> IF LPAREN express RPAREN LCURLY gotoif block . RCURLY else
+
+    RCURLY          shift and go to state 228
+
+
+state 225
+
+    (57) cin3 -> LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN .
+
+    SEMICOLON       reduce using rule 57 (cin3 -> LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN .)
+
+
+state 226
+
+    (58) cin4 -> COMMA ID . cin4
+    (58) cin4 -> . COMMA ID cin4
+    (59) cin4 -> . empty
+    (115) empty -> .
+
+    COMMA           shift and go to state 219
+    RPAREN          reduce using rule 115 (empty -> .)
+
+    cin4                           shift and go to state 229
+    empty                          shift and go to state 220
+
+state 227
+
+    (72) while -> WHILE LPAREN express RPAREN while1 LCURLY block . RCURLY
+
+    RCURLY          shift and go to state 230
+
+
+state 228
+
+    (39) cond -> IF LPAREN express RPAREN LCURLY gotoif block RCURLY . else
+    (41) else -> . ELSE LCURLY gotoelse block RCURLY else
+    (42) else -> . empty
+    (115) empty -> .
+
+    ELSE            shift and go to state 232
+    SEMICOLON       reduce using rule 115 (empty -> .)
+
+    else                           shift and go to state 231
+    empty                          shift and go to state 233
+
+state 229
+
+    (58) cin4 -> COMMA ID cin4 .
+
+    RPAREN          reduce using rule 58 (cin4 -> COMMA ID cin4 .)
+
+
+state 230
+
+    (72) while -> WHILE LPAREN express RPAREN while1 LCURLY block RCURLY .
+
+    SEMICOLON       reduce using rule 72 (while -> WHILE LPAREN express RPAREN while1 LCURLY block RCURLY .)
+
+
+state 231
+
+    (39) cond -> IF LPAREN express RPAREN LCURLY gotoif block RCURLY else .
+
+    SEMICOLON       reduce using rule 39 (cond -> IF LPAREN express RPAREN LCURLY gotoif block RCURLY else .)
+
+
+state 232
+
+    (41) else -> ELSE . LCURLY gotoelse block RCURLY else
+
+    LCURLY          shift and go to state 234
+
+
 state 233
+
+    (42) else -> empty .
+
+    SEMICOLON       reduce using rule 42 (else -> empty .)
+
+
+state 234
+
+    (41) else -> ELSE LCURLY . gotoelse block RCURLY else
+    (43) gotoelse -> . empty
+    (115) empty -> .
+
+    IF              reduce using rule 115 (empty -> .)
+    ID              reduce using rule 115 (empty -> .)
+    CIN             reduce using rule 115 (empty -> .)
+    COUT            reduce using rule 115 (empty -> .)
+    DELAY           reduce using rule 115 (empty -> .)
+    FORWARD         reduce using rule 115 (empty -> .)
+    BACKWARD        reduce using rule 115 (empty -> .)
+    TURNLEFT        reduce using rule 115 (empty -> .)
+    TURNRIGHT       reduce using rule 115 (empty -> .)
+    SERVO           reduce using rule 115 (empty -> .)
+    LIGHTS          reduce using rule 115 (empty -> .)
+    DISTANCE        reduce using rule 115 (empty -> .)
+    STOP            reduce using rule 115 (empty -> .)
+    WHILE           reduce using rule 115 (empty -> .)
+    RETURN          reduce using rule 115 (empty -> .)
+    RCURLY          reduce using rule 115 (empty -> .)
+
+    gotoelse                       shift and go to state 235
+    empty                          shift and go to state 236
+
+state 235
+
+    (41) else -> ELSE LCURLY gotoelse . block RCURLY else
+    (21) block -> . statute SEMICOLON block
+    (22) block -> . empty
+    (23) statute -> . cond
+    (24) statute -> . assign
+    (25) statute -> . call
+    (26) statute -> . cin
+    (27) statute -> . cout
+    (28) statute -> . delay
+    (29) statute -> . forward
+    (30) statute -> . backward
+    (31) statute -> . turnleft
+    (32) statute -> . turnright
+    (33) statute -> . servo
+    (34) statute -> . lights
+    (35) statute -> . distance
+    (36) statute -> . stop
+    (37) statute -> . while
+    (38) statute -> . return
+    (115) empty -> .
+    (39) cond -> . IF LPAREN express RPAREN LCURLY gotoif block RCURLY else
+    (44) assign -> . ID assign1 ASSIGN express
+    (47) call -> . era LPAREN paramcall RPAREN
+    (53) cin -> . CIN cin1
+    (60) cout -> . COUT LPAREN express cout1 RPAREN
+    (63) delay -> . DELAY LPAREN express RPAREN
+    (64) forward -> . FORWARD LPAREN express RPAREN
+    (65) backward -> . BACKWARD LPAREN express RPAREN
+    (66) turnleft -> . TURNLEFT LPAREN express RPAREN
+    (67) turnright -> . TURNRIGHT LPAREN express RPAREN
+    (68) servo -> . SERVO LPAREN express RPAREN
+    (69) lights -> . LIGHTS LPAREN express COMMA express RPAREN
+    (70) distance -> . DISTANCE LPAREN RPAREN
+    (71) stop -> . STOP LPAREN RPAREN
+    (72) while -> . WHILE LPAREN express RPAREN while1 LCURLY block RCURLY
+    (74) return -> . RETURN LPAREN express RPAREN
+    (48) era -> . ID
+
+    RCURLY          reduce using rule 115 (empty -> .)
+    IF              shift and go to state 76
+    ID              shift and go to state 77
+    CIN             shift and go to state 79
+    COUT            shift and go to state 80
+    DELAY           shift and go to state 81
+    FORWARD         shift and go to state 82
+    BACKWARD        shift and go to state 83
+    TURNLEFT        shift and go to state 84
+    TURNRIGHT       shift and go to state 85
+    SERVO           shift and go to state 86
+    LIGHTS          shift and go to state 87
+    DISTANCE        shift and go to state 88
+    STOP            shift and go to state 89
+    WHILE           shift and go to state 90
+    RETURN          shift and go to state 91
+
+    block                          shift and go to state 237
+    statute                        shift and go to state 58
+    empty                          shift and go to state 59
+    cond                           shift and go to state 60
+    assign                         shift and go to state 61
+    call                           shift and go to state 62
+    cin                            shift and go to state 63
+    cout                           shift and go to state 64
+    delay                          shift and go to state 65
+    forward                        shift and go to state 66
+    backward                       shift and go to state 67
+    turnleft                       shift and go to state 68
+    turnright                      shift and go to state 69
+    servo                          shift and go to state 70
+    lights                         shift and go to state 71
+    distance                       shift and go to state 72
+    stop                           shift and go to state 73
+    while                          shift and go to state 74
+    return                         shift and go to state 75
+    era                            shift and go to state 78
+
+state 236
 
     (43) gotoelse -> empty .
 
@@ -3552,27 +3649,27 @@ state 233
     RCURLY          reduce using rule 43 (gotoelse -> empty .)
 
 
-state 234
+state 237
 
     (41) else -> ELSE LCURLY gotoelse block . RCURLY else
 
-    RCURLY          shift and go to state 235
+    RCURLY          shift and go to state 238
 
 
-state 235
+state 238
 
     (41) else -> ELSE LCURLY gotoelse block RCURLY . else
     (41) else -> . ELSE LCURLY gotoelse block RCURLY else
     (42) else -> . empty
-    (112) empty -> .
+    (115) empty -> .
 
-    ELSE            shift and go to state 229
-    SEMICOLON       reduce using rule 112 (empty -> .)
+    ELSE            shift and go to state 232
+    SEMICOLON       reduce using rule 115 (empty -> .)
 
-    else                           shift and go to state 236
-    empty                          shift and go to state 230
+    else                           shift and go to state 239
+    empty                          shift and go to state 233
 
-state 236
+state 239
 
     (41) else -> ELSE LCURLY gotoelse block RCURLY else .
 
@@ -3606,3 +3703,7 @@ WARNING: shift/reduce conflict for CHAR in state 49 resolved as shift
 WARNING: shift/reduce conflict for VOID in state 49 resolved as shift
 WARNING: reduce/reduce conflict in state 43 resolved using rule (paramsblock -> empty)
 WARNING: rejected rule (params -> empty) in state 43
+WARNING: reduce/reduce conflict in state 128 resolved using rule (paramcall -> empty)
+WARNING: rejected rule (express1 -> empty) in state 128
+WARNING: reduce/reduce conflict in state 154 resolved using rule (era -> ID)
+WARNING: rejected rule (constant -> ID) in state 154

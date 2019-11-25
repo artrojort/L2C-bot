@@ -1,0 +1,23 @@
+program
+
+vardef int i;
+
+
+funcdef int fibo(int n){
+	vardef int a;
+	vardef int b;
+	vardef int r;
+	if (n < 2) {
+		return(n);
+	}else{
+		a = fibo(n-1);
+		b = fibo(n-2);
+		r = a+b;
+		return(r);
+	};
+}
+
+main(){
+	cout(fibo(10));
+	}
+fin;

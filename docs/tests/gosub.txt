@@ -1,0 +1,10 @@
+program
+
+funcdef int uno(int z){
+	return(z+5);
+}
+
+main(){
+	cout(uno(4) + uno(100));
+}
+fin;
