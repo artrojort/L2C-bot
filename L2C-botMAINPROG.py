@@ -11,7 +11,7 @@ import os
 import sys
 import ast
 
-from VMfunctions import forward, backward, turnLeft, turnRight, delay, servo, lights, display
+#from VMfunctions import forward, backward, turnLeft, turnRight, delay, servo, lights, display
 
 
 #operadores
@@ -28,10 +28,13 @@ pparams = []
 preturns = []
 #cuadruplos
 quads = []
+parrays = []
 
 #temporales
 tempindex = 0
 tempQuad = []
+tempID = ''
+
 
 
 compileFlag = True
@@ -57,6 +60,7 @@ tempera =  {'int' : 0,
         'char' : 0,
         'bool' : 0}
 
+
 dirMem = {'global' : {'int'   : 11001,
                     'float' : 12001,
                     'bool'  : 13001,
@@ -76,6 +80,28 @@ dirMem = {'global' : {'int'   : 11001,
                     'float' : 42001,
                     'bool'  : 43001,
                     'char'  : 44001
+                    }
+        }
+
+overflows = {'global' : {'int'   : 12001,
+                    'float' : 13001,
+                    'bool'  : 14001,
+                    'char'  : 15001
+                    },
+        'local'  : {'int'   : 22001,
+                    'float' : 23001,
+                    'bool'  : 24001,
+                    'char'  : 25001
+                    },
+        'temp'   : {'int'   : 32001,
+                    'float' : 33001,
+                    'bool'  : 34001,
+                    'char'  : 35001
+                    },
+        'const'  : {'int'   : 42001,
+                    'float' : 43001,
+                    'bool'  : 44001,
+                    'char'  : 45001
                     }
         }
 
@@ -118,6 +144,7 @@ def newAdd(varType):
     global tempera
     address = dirMem['temp'][varType]
     dirMem['temp'][varType] = address + 1
+    checkOverflow('temp', varType)
     virMem['temp'][varType].append(address)
     pconsts.append(address)
     ptypes.append(varType)
@@ -164,6 +191,11 @@ def memClear():
     virMem['temp']['bool'] = []
     virMem['temp']['char'] = []
 
+def checkOverflow(scope, typ):
+    if dirMem[scope][typ] >= overflows[scope][typ]:
+        msg = ">> ERROR: Memory overflow. Too many " + typ + "s declared in " + scope  + " memory."
+        sys.exit(msg)
+    
 opeCode = {
 	'GOTO'      : 0,
     'GOTOF'     : 1,
@@ -273,7 +305,7 @@ reserved = {
     'void'      : 'VOID'
 }
 
-tokens = ['ASSIGN', 'PLUS', 'MINUS', 'MULTI', 'DIVI', 'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY', 'EQUALS', 'LESSTHAN', 'GREATERTHAN', 'NOTEQUALS', 'SEMICOLON', 'COMMA', 'AND', 'OR', 'NOT', 'CTE_BOOL', 'CTE_INT', 'CTE_FLOAT', 'CTE_CHAR', 'CTE_ARR', 'ID']  + list(reserved.values())
+tokens = ['ASSIGN', 'PLUS', 'MINUS', 'MULTI', 'DIVI', 'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY', 'EQUALS', 'LESSTHAN', 'GREATERTHAN', 'NOTEQUALS', 'SEMICOLON', 'COMMA', 'AND', 'OR', 'NOT', 'CTE_BOOL', 'CTE_INT', 'CTE_FLOAT', 'CTE_CHAR', 'ID']  + list(reserved.values())
 t_ASSIGN    = r'='
 t_PLUS      = r'\+'
 t_MINUS     = r'-'
@@ -304,10 +336,6 @@ def t_error(t):
     compileFlag = False
     print("Caracter ilegal '%s'" % t.value[0])
     t.lexer.skip(1)
-
-def t_CTE_ARR(t):
-    r'\[[0-9]\]'
-    return t
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -378,41 +406,57 @@ def p_setscope(p):
     if tempType != 'void':
         address = dirMem['global'][tempType]    
         dirMem['global'][tempType] = address + 1
+        checkOverflow('global', tempType)
         virMem['global'][tempType].append(p[1])
-        funcTable['global']['varsTable'][p[1]] = {'type' : tempType, 'address' : address}
+        funcTable['global']['varsTable'][p[1]] = {'type' : tempType, 'address' : address, 'dim' : 1}
 
 def p_varsblock(p):
     '''varsblock : vars varsblock 
                  | empty'''
     
 def p_vars(p):
-    'vars : VARDEF type ID vars1 SEMICOLON'
+    'vars : VARDEF type ID dimvar SEMICOLON'
     global dirMem
     global virMem
     global tempVars
     global era
-    
     x = p[3]
-
+    print(p[4])
+    erasize = 1
     if scope == 'global' :
         address = dirMem['global'][tempType]
         dirMem['global'][tempType] = address + 1
+        checkOverflow('global', tempType)
         virMem['global'][tempType].append(x)
     else : 
         address = dirMem['local'][tempType]
         dirMem['local'][tempType] = address + 1
+        checkOverflow('local', tempType)
         virMem['local'][tempType].append(x)
 
     if x not in funcTable[scope]['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
-        funcTable[scope]['varsTable'][x] = {'type' : tempType, 'address' : address}
-        era[tempType] = era[tempType] + 1
+        funcTable[scope]['varsTable'][x] = {'type' : tempType, 'address' : address, 'dim' : 1}
+        if p[4] == '[' :
+            dimsize = int(virMem['const']['int'][int(str(pconsts[-1])[2] + str(pconsts[-1])[3] + str(pconsts[-1])[4])-1])
+            print(dimsize)
+            if ptypes[-1] == 'int' and dimsize > 1:
+                pconsts.pop() 
+                ptypes.pop()
+                funcTable[scope]['varsTable'][p[3]]['dim'] == dimsize
+                erasize = dimsize
+                print("HERE", funcTable[scope]['varsTable'])
+            else:
+                msg = ">> ERROR: dimension of array must be of type INT and > 1"
+                sys.exit(msg)
+        era[tempType] = era[tempType] + erasize
     else : 
         errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
         sys.exit(errorMsg)
     
-def p_vars1(p):
-    '''vars1 : LBRACKET CTE_INT RBRACKET 
-             | empty'''
+def p_dimvar(p):
+    '''dimvar : LBRACKET express RBRACKET 
+              | empty'''
+    p[0] = p[1]
 
 def p_paramsblock(p):
     '''paramsblock : params paramsblock
@@ -432,6 +476,7 @@ def p_params(p):
 
     address = dirMem['local'][tempType]
     dirMem['local'][tempType] = address + 1
+    checkOverflow('local', tempType)
     if len(p) > 2 : 
         if x not in funcTable[scope]['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
             funcTable[scope]['varsTable'][x] = {'type' : tempType, 'address' : address}
@@ -494,7 +539,7 @@ def p_gotoelse(p):
 
 
 def p_assign(p):
-    '''assign :  ID assign1 ASSIGN express'''
+    '''assign :  ID array ASSIGN express'''
     x = p[1]
     rop = pconsts.pop()
     rtyp = ptypes.pop()
@@ -502,7 +547,12 @@ def p_assign(p):
         idtyp = funcTable[scope]['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
-            newQuad('=', rop, '', funcTable[scope]['varsTable'][x]['address'])
+            if len(parrays) != 0 :
+                dimpos = parrays.pop()
+                newQuad('=', rop, '', funcTable[scope]['varsTable'][x]['address']+dimpos-1)
+            else:
+                newQuad('=', rop, '', funcTable[scope]['varsTable'][x]['address'])
+            
     elif x in funcTable['global']['varsTable'].keys() : 
         idtyp = funcTable['global']['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
@@ -512,14 +562,8 @@ def p_assign(p):
         errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
         sys.exit(errorMsg)
 
-def p_assign1(p):
-    '''assign1 : LBRACKET express RBRACKET 
-               | empty'''
-
 def p_call(p):
-    'call : era LPAREN paramcall RPAREN'
-    if popers[-1] == '(' :
-        popers.pop()
+    'call : era LPAREN insertfloor paramcall RPAREN endfloor'
     global paramCall
     global calledFunc
     jump = funcTable[calledFunc]['start']
@@ -544,7 +588,6 @@ def p_call(p):
 
 def p_era(p):
     '''era : ID'''
-    popers.append('(')
     global iCalledParams
     global calledFunc
     calledFunc = p[1]
@@ -567,10 +610,11 @@ def p_paramcall(p):
     global iCalledParams
     global paramCall
     global iParams
-    param = pconsts.pop()
-    paramtype = ptypes.pop()
-    paramCall[iCalledParams] = {'type' : paramtype, 'val' : param}
-    iCalledParams = iCalledParams - 1
+    if len(p) > 2 :
+        param = pconsts.pop()
+        paramtype = ptypes.pop()
+        paramCall[iCalledParams] = {'type' : paramtype, 'val' : param}
+        iCalledParams = iCalledParams - 1
     
 
 def p_call1(p):
@@ -727,7 +771,7 @@ def p_type(p):
     tempType = p[1]
         
 def p_constant(p):
-    '''constant : ID
+    '''constant : ID array
                 | CTE_INT
                 | CTE_FLOAT
                 | CTE_CHAR
@@ -735,16 +779,23 @@ def p_constant(p):
     global pconsts
     global ptypes
     global dirMem
-
+    global tempID
     if p[1] in funcTable[scope]['varsTable'].keys() :
+        tempID = p[1]
+        if len(parrays) != 0 :
+            dimpos = parrays.pop()
+            pconsts.append(funcTable[scope]['varsTable'][p[1]]['address']+dimpos-1)
+        else :
+            pconsts.append(funcTable[scope]['varsTable'][p[1]]['address'])
         ptypes.append(funcTable[scope]['varsTable'][p[1]]['type'])
-        pconsts.append(funcTable[scope]['varsTable'][p[1]]['address'])
     elif p[1] in funcTable['global']['varsTable'].keys() :
+        tempID = p[1]
         ptypes.append(funcTable['global']['varsTable'][p[1]]['type'])
         pconsts.append(funcTable['global']['varsTable'][p[1]]['address'])
     elif p[1] == 'true' or p[1] == 'false' :
         address = dirMem['const']['bool']
         dirMem['const']['bool'] = address + 1
+        checkOverflow('const', 'bool')
         virMem['const']['bool'].append(p[1])
         pconsts.append(address)
         ptypes.append('bool')
@@ -752,6 +803,7 @@ def p_constant(p):
         if p[1] not in virMem['const']['char'] :
             address = dirMem['const']['char']
             dirMem['const']['char'] = address + 1
+            checkOverflow('const', 'char')
             virMem['const']['char'].append(p[1])
         else : 
             pos = virMem['const']['char'].index(p[1])
@@ -762,6 +814,7 @@ def p_constant(p):
         if p[1] not in virMem['const']['int'] :
             address = dirMem['const']['int']
             dirMem['const']['int'] = address + 1
+            checkOverflow('const', 'int')
             virMem['const']['int'].append(p[1])
         else : 
             pos = virMem['const']['int'].index(p[1])
@@ -772,6 +825,7 @@ def p_constant(p):
         if p[1] not in virMem['const']['float'] :
             address = dirMem['const']['float']
             dirMem['const']['float'] = address + 1
+            checkOverflow('const', 'float')
             virMem['const']['float'].append(p[1])
         else : 
             pos = virMem['const']['float'].index(p[1])
@@ -782,15 +836,26 @@ def p_constant(p):
         errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
         sys.exit(errorMsg)
 
-def p_express(p):
-    'express : express1 relational express2'
+def p_array(p):
+    '''array : LBRACKET insertfloor express RBRACKET endfloor
+             | empty'''
+    if p[1] == '[' :
+        dimsize = int(virMem['const']['int'][int(str(pconsts[-1])[2] + str(pconsts[-1])[3] + str(pconsts[-1])[4])-1])
+        print(dimsize)
+        if ptypes[-1] == 'int':
+            pconsts.pop() 
+            ptypes.pop()
+            parrays.append(dimsize)
+        else:
+            msg = ">> ERROR: position call of array must be of type INT"
+            sys.exit(msg)
     
-def p_express1(p):
-    '''express1 : NOTEQUALS
-                | empty'''
 
-def p_express2(p):
-    '''express2 : andor express
+def p_express(p):
+    'express : relational express1'
+
+def p_express1(p):
+    '''express1 : andor express
                 | empty'''
 
 def p_andor(p):
@@ -850,6 +915,8 @@ def p_exp(p):
         x = 'NULL'
 
     if x == '+' or x == '-' :
+        print(pconsts)
+        print(popers)
         rop = pconsts.pop()
         rtyp = ptypes.pop()
         lop = pconsts.pop()
@@ -858,7 +925,7 @@ def p_exp(p):
         restyp = typeCheck(ope, ltyp, rtyp)
         if restyp != False :
             temp = newAdd(restyp)
-            newQuad(ope, lop, rop, temp)
+            print(newQuad(ope, lop, rop, temp))
 
 def p_exp1(p):
     '''exp1 : plusminus exp 
@@ -897,16 +964,16 @@ def p_multidivi(p):
     popers.append(p[1])
 
 def p_factor(p): 
-    '''factor : insertfloor express endfloor
+    '''factor : LPAREN insertfloor express RPAREN endfloor
               | constant
               | call'''
     
 def p_insertfloor(p):
-    '''insertfloor : RPAREN'''
+    '''insertfloor : empty'''
     popers.append('(')
 
 def p_endfloor(p):
-    '''endfloor : LPAREN'''
+    '''endfloor : empty'''
     if popers[-1] == '(' :
         popers.pop()
     
@@ -1201,7 +1268,7 @@ def virtualMachine() :
         elif ope == 'PRINT' :
             rop = memRead(quads[qPos][1])
             msg = ">> " + str(rop)
-            display()
+            #display()
             print(msg)
             qPos = qPos + 1
         
@@ -1263,9 +1330,9 @@ if compileFlag == True:
         print(x)
     for x in quads :
         midcode.write(str(x) + "\n")
-        #print(x)
-    #print("opers", popers)
-    #print("consts", pconsts)
+        print(x)
+    print("opers", popers)
+    print("consts", pconsts)
     #print("tips", ptypes)
     #print("jumps", pjumps)
     #print (era)
@@ -1273,7 +1340,8 @@ if compileFlag == True:
 else:
     print(">> ERROR: Could not compile")
 midcode.close()
-#print(virMem)
+print(">> Global memory:", virMem['global'])
+print(">> Constant memory:", virMem['const'])
 print(">> Program Start")
 virtualMachine()
 print(">> .")

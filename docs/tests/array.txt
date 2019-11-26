@@ -1,0 +1,11 @@
+program
+
+main(){
+	vardef int a[3];
+	a[1] = 100;
+	a[2] = 3;
+	a[3] = (a[1] + a[2]);
+	cout(a[3]);
+
+}
+fin;
