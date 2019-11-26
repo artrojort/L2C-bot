@@ -13,7 +13,6 @@ import ast
 
 #from VMfunctions import forward, backward, turnLeft, turnRight, delay, servo, lights, display
 
-
 #operadores
 popers = []
 #variables
@@ -34,8 +33,6 @@ parrays = []
 tempindex = 0
 tempQuad = []
 tempID = ''
-
-
 
 compileFlag = True
 iQuads = 0
@@ -160,8 +157,8 @@ def memClear():
 
     iParams = 0
 
-    if scope != 'global':
-        funcTable[scope]['varsTable'] = {}
+    #if scope != 'global':
+    #    funcTable[scope]['varsTable'] = {}
 
     era =  {'int' : 0,
         'float' : 0,
@@ -297,6 +294,7 @@ reserved = {
     'stop'      : 'STOP',
     'while'     : 'WHILE',
     'return'    : 'RETURN',
+    'len'       : 'LEN',
     'fin'       : 'FIN',
     'int'       : 'INT',
     'float'     : 'FLOAT',
@@ -365,7 +363,6 @@ def p_gotomain(p):
 
 def p_main(p):
     'main : MAIN setmain LPAREN RPAREN LCURLY varsblock main1 block RCURLY'
-    funcTable['main']['varsTable'] = {}
 
 def p_main1(p):
     'main1 : empty'
@@ -442,7 +439,7 @@ def p_vars(p):
             if ptypes[-1] == 'int' and dimsize > 1:
                 pconsts.pop() 
                 ptypes.pop()
-                funcTable[scope]['varsTable'][p[3]]['dim'] == dimsize
+                funcTable[scope]['varsTable'][p[3]]['dim'] = dimsize
                 erasize = dimsize
                 print("HERE", funcTable[scope]['varsTable'])
             else:
@@ -760,6 +757,31 @@ def p_return(p):
         newQuad('RETURN', rop, '', address)
         newQuad('ENDPROC', '', '', '')
         
+def p_len(p): 
+    '''len : LEN LPAREN ID RPAREN'''
+    global dirMem
+    global virMem
+    x = p[3]
+    if x in funcTable['global']['varsTable'].keys():
+        length = funcTable['global']['varsTable'][x]['dim']
+    elif x in funcTable[scope]['varsTable'].keys():
+        length = funcTable[scope]['varsTable'][x]['dim']
+    else: 
+        msg = (">> ERROR: couldn't find called variable for len()")
+        sys.exit(msg)
+
+    if length not in virMem['const']['int'] :
+        address = dirMem['const']['int']
+        dirMem['const']['int'] = address + 1
+        checkOverflow('const', 'int')
+        virMem['const']['int'].append(length)
+    else : 
+        pos = virMem['const']['int'].index(length)
+        address = 41001 + pos
+
+    temp = newAdd('int')
+    newQuad('=', address, '', temp)
+
 
 def p_type(p):
     '''type : INT
@@ -841,7 +863,6 @@ def p_array(p):
              | empty'''
     if p[1] == '[' :
         dimsize = int(virMem['const']['int'][int(str(pconsts[-1])[2] + str(pconsts[-1])[3] + str(pconsts[-1])[4])-1])
-        print(dimsize)
         if ptypes[-1] == 'int':
             pconsts.pop() 
             ptypes.pop()
@@ -915,8 +936,6 @@ def p_exp(p):
         x = 'NULL'
 
     if x == '+' or x == '-' :
-        print(pconsts)
-        print(popers)
         rop = pconsts.pop()
         rtyp = ptypes.pop()
         lop = pconsts.pop()
@@ -925,7 +944,7 @@ def p_exp(p):
         restyp = typeCheck(ope, ltyp, rtyp)
         if restyp != False :
             temp = newAdd(restyp)
-            print(newQuad(ope, lop, rop, temp))
+            newQuad(ope, lop, rop, temp)
 
 def p_exp1(p):
     '''exp1 : plusminus exp 
@@ -966,7 +985,8 @@ def p_multidivi(p):
 def p_factor(p): 
     '''factor : LPAREN insertfloor express RPAREN endfloor
               | constant
-              | call'''
+              | call 
+              | len'''
     
 def p_insertfloor(p):
     '''insertfloor : empty'''
@@ -1164,7 +1184,7 @@ def virtualMachine() :
 
     
     while qPos < len(quads) :
-        print(quads[qPos])
+        #print(quads[qPos])
         ope = quads[qPos][0]
 
         if ope == 'GOTO':
@@ -1314,6 +1334,21 @@ def virtualMachine() :
             memWrite(rop, res)
             qPos = qPos + 1
 
+def debug():
+    for x in funcTable.items():
+        print(x)
+
+    for x in quads :
+        print(x)
+
+    print(">> Operand Stack: ", popers)
+    print(">> Constants Stack: ", pconsts)
+    print(">> Types Stack: ", ptypes)
+    print(">> Jumps Stack: ", pjumps)
+    print(">> ERA: ", era)
+    print(">> Global memory:", virMem['global'])
+    print(">> Constant memory:", virMem['const'])
+
 parser = yacc.yacc()
 fileinput = input(">> Enter Filename: ")
 filename = "docs/tests/" + fileinput  + ".txt"
@@ -1325,23 +1360,17 @@ parser.parse(nextline)
 
 midcode = open("midcode.l2c", "w")
 if compileFlag == True:
-    print(">> Compiled succesfull")
-    for x in funcTable.items():
-        print(x)
     for x in quads :
         midcode.write(str(x) + "\n")
-        print(x)
-    print("opers", popers)
-    print("consts", pconsts)
-    #print("tips", ptypes)
-    #print("jumps", pjumps)
-    #print (era)
-    #print(virMem)
+    midcode.write(str(virMem['global']) + "\n")
+    midcode.write(str(virMem['const']) + "\n")
+    print(">> Compiling succesfull")
 else:
-    print(">> ERROR: Could not compile")
+    msg = ">> ERROR: Could not compile file"
+    sys.exit(msg)
+
 midcode.close()
-print(">> Global memory:", virMem['global'])
-print(">> Constant memory:", virMem['const'])
+debug()
 print(">> Program Start")
 virtualMachine()
 print(">> .")

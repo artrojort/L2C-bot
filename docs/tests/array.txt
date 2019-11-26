@@ -1,11 +1,12 @@
 program
 
+funcdef void uno(){
+	vardef int z[5];
+}
 main(){
+	vardef int b;
 	vardef int a[3];
-	a[1] = 100;
-	a[2] = 3;
-	a[3] = (a[1] + a[2]);
-	cout(a[3]);
+	cout(len(a));
 
 }
 fin;
