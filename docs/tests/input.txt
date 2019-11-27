@@ -1,0 +1,10 @@
+program
+
+main(){
+	vardef int i;
+
+	cin(i);
+
+	cout (i);
+}
+fin;

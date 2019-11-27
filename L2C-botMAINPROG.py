@@ -13,7 +13,6 @@ import ast
 
 #Import de funciones arduino. 
 #Se requiere conectar el arduino para poder correr el compilador con el imports, o de otra forma se puede comentar la siguiente línea para ignorar el uso de arduino.
-
 #from VMfunctions import forward, backward, turnLeft, turnRight, delay, servo, lights, display
 
 
@@ -367,7 +366,7 @@ t_CTE_BOOL  = r'[true|false]'
 def t_error(t):
     global compileFlag
     compileFlag = False
-    print("Caracter ilegal '%s'" % t.value[0])
+    print(">> ERROR: Caracter ilegal '%s'" % t.value[0])
     t.lexer.skip(1)
 
 def t_ID(t):
@@ -491,13 +490,12 @@ def p_vars(p):
                 ptypes.pop()
                 funcTable[scope]['varsTable'][p[3]]['dim'] = dimsize
                 erasize = dimsize
-                print("HERE", funcTable[scope]['varsTable'])
             else:
                 msg = ">> ERROR: dimension of array must be of type INT and > 1"
                 sys.exit(msg)
         era[tempType] = era[tempType] + erasize
     else : 
-        errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
+        errorMsg = ">> ERROR: ID '" + x + "' already assigned to a parameter or variable"
         sys.exit(errorMsg)
 
 #PN: Si al declarar una variable se detecta un bracket, se avisa a la gramática de variables (p[0] = p[1]) para que le asigne también su tamaño   
@@ -536,7 +534,7 @@ def p_params(p):
             virMem['local'][tempType].append(x)
             iParams = iParams + 1
         else : 
-            errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
+            errorMsg = ">> ERROR: ID '" + x + "' already asigned to a parameter or variable"
             sys.exit(errorMsg)
 
 #Bloque de estatutos, itera sobre las posibles instrucciones de nuestro lenguaje. 
@@ -622,7 +620,7 @@ def p_assign(p):
         if restyp != False : 
             newQuad(op['='], rop, '', funcTable['global']['varsTable'][x]['address'])
     else: 
-        errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
+        errorMsg = str(p[1]) +  ">> ERROR : variable not declared or of not supported type."
         sys.exit(errorMsg)
     
 #Estatuto de llamada a función
@@ -632,14 +630,14 @@ def p_call(p):
     global calledFunc
     jump = funcTable[calledFunc]['start']
     if len(paramCall.keys()) != funcTable[calledFunc]['params'] : 
-        errorMsg = ("ERROR: Number of parameters don't match.")
+        errorMsg = (">> ERROR: Number of parameters don't match.")
         sys.exit(errorMsg)
     i = 1
     while i <= funcTable[calledFunc]['params'] :
         if paramCall[i]['type'] == funcTable[calledFunc]['paramsTable'][i]['type'] : 
             newQuad(op['PARAM'], paramCall[i]['val'], '', funcTable[calledFunc]['paramsTable'][i]['address'])
         else:
-            errorMsg = ("ERROR: Types of parameters don't match.")
+            errorMsg = (">> ERROR: Types of parameters don't match.")
             sys.exit(errorMsg)
         i = i + 1
     newQuad(op['GOSUB'], calledFunc, '', jump)
@@ -665,7 +663,7 @@ def p_era(p):
     if calledFunc in funcTable.keys() : 
         newQuad(op['ERA'], calledFunc, '', tera)
     else : 
-        errorMsg = "ERROR: function " + calledFunc + " hasn't been declared"
+        errorMsg = ">> ERROR: function " + calledFunc + " hasn't been declared"
         sys.exit(errorMsg)
 
 #Parámetros con los que se ha llamado la función. Se añaden a un diccionario temporal para después validar que concidan con los parámetros reales de la función. 
@@ -686,9 +684,13 @@ def p_paramcall(p):
 def p_paramcall1(p):
     '''paramcall1 : COMMA paramcall 
                   | empty'''
+
 #Estatuto de input
 def p_cin(p):
     'cin : CIN LPAREN express RPAREN'
+    rop = pconsts.pop()
+    rtyp = ptypes.pop()
+    newQuad(op['CIN'], '', '', rop)
 
 #Estatuto de output
 def p_cout(p):
@@ -717,7 +719,7 @@ def p_delay(p):
     if rtyp == 'int' :
         newQuad(op['DELAY'], rop, '', '')
     else : 
-        errorMsg = "ERROR: delay() was called with a " + rtyp + " but only works with int values."
+        errorMsg = ">> ERROR: delay() was called with a " + rtyp + " but only works with int values."
         sys.exit(errorMsg)
 
 #Estatuto forward
@@ -1458,6 +1460,13 @@ def virtualMachine() :
             #display()
             print(msg)
             qPos = qPos + 1
+
+        #INPUT
+        elif ope == 25 :
+            res = quads[qPos][3]
+            val = input("<< reading value: ")
+            memWrite(val, res)
+            qPos = qPos + 1     
         
         #LIGHTS
         elif ope == 17 :
