@@ -2,13 +2,26 @@ program
 
 
 main(){
+	vardef int a;
+	a = 5 + 10;
+
 	lights(2, 1);
-	forward(5);
-	backward(5);
-	turnleft(5);
-	turnright(5);
-	servo(30);
+	
+	forward(1);
+	delay(1);
+	backward(1);
+	delay(1);
+	turnleft(1);
+	delay(1);
+	turnright(1);
+	delay(1);
+	
+	servo(180);
+	if (a > 5) {
+		cout(1);
+	}else{
+		cout(0);
+	};
 	lights(2,2);
-	cout(4);
 	}
 fin;

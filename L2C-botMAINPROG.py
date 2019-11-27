@@ -11,55 +11,64 @@ import os
 import sys
 import ast
 
-from VMfunctions import forward, backward, turnLeft, turnRight, delay, servo, lights, display
+#Import de funciones arduino. 
+#Se requiere conectar el arduino para poder correr el compilador con el imports, o de otra forma se puede comentar la siguiente línea para ignorar el uso de arduino.
 
-thisID = ''
-#operadores
-popers = []
-#variables
-pconsts = []
-#tipo
-ptypes = []
-#saltos para GOTOS
-pjumps = []
-#pila para recursion de funciones
-pfuncs = ['main']
-pparams = []
-preturns = []
-#cuadruplos
+#from VMfunctions import forward, backward, turnLeft, turnRight, delay, servo, lights, display
+
+
+#Pilas para manejo de prioridad
+popers = [] #pila operadores
+pconsts = [] #pila de variables
+ptypes = [] #pila de tipos
+pjumps = [] #pila de saltos
+pfuncs = ['main'] #pila para cambios de contexto
+pparams = [] #pila para lectura de parámetros
+preturns = [] #pila para returns en cambios de contexto
+parrays = [] #pila para dimensiones de arreglos
+parraysid = [] #pila para ids de arreglos
+
+#Arreglo de cuádrplos donde se almacena el código intermedio
 quads = []
-parrays = []
-parraysid = []
 
-#temporales
-tempindex = 0
+#Almacena el cúadruplo en el que se quedó la máquina virtual antes de un cambio de contexto 
 tempQuad = []
-tempID = ''
 
+#Bandera de compilación 
 compileFlag = True
-iQuads = 0
-iParams = 0
-iCalledParams = 0
-scope = 'global'
-funcTable = {'global' : {'type' : 'void', 'era' : {'int': 0, 'float': 0, 'bool': 0, 'char': 0}, 'tempera' : {'int': 0, 'float': 0, 'bool': 0, 'char': 0}, 'params' : '', 'paramsTable' : {}, 'varsTable' : {}, 'start' : ''}}
-tempVars = {'varsTable' : {}} 
-tempParams = {'paramsTable' : {}}
-paramCall  = {}
-tempType = ''
-calledFunc = ''
-cont = 0
 
+#Contadores
+iQuads = 0 #Cuádruplo actual
+iParams = 0 #Parámetro actual
+iCalledParams = 0 #Número de parámetros llamados
+
+#Referencias globales
+scope = 'global' #Scope en el que se está trabajando durante compilación. Inicia como global.
+thisID = '' #ID más reciente detectado
+tempType = ''   #Tipo (int, bool, char) más reciente detectado
+paramCall  = {} #Parámetros que se han llamado
+calledFunc = '' #ID de función que se ha llamado
+
+#Tabla de funciones
+#Estructura de tabla funciones:
+#ID función | tipo | era | era temporal | parámetros | tabla de variables | cuádruplo inicial  
+#Estructura de tabla variables:
+#ID | tipo | dirección | tamaño 
+funcTable = {'global' : {'type' : 'void', 'era' : {'int': 0, 'float': 0, 'bool': 0, 'char': 0}, 'tempera' : {'int': 0, 'float': 0, 'bool': 0, 'char': 0}, 'params' : '', 'paramsTable' : {}, 'varsTable' : {}, 'start' : ''}}
+
+#Diccionario para ERA de cada función
 era =  {'int' : 0,
         'float' : 0,
         'char' : 0,
         'bool' : 0}
-    
+
+#Diccionario para ERA de temporales de cada función
 tempera =  {'int' : 0,
         'float' : 0,
         'char' : 0,
         'bool' : 0}
 
-
+#Indices iniciales de direcciones de memoria. Dividido en globales, locales, temporales y constantes. 
 dirMem = {'global' : {'int'   : 11001,
                     'float' : 12001,
                     'bool'  : 13001,
@@ -82,6 +91,7 @@ dirMem = {'global' : {'int'   : 11001,
                     }
         }
 
+#Indices de cuando alguna memoria ya se encuentra fuera de rango, usado como referencia. 
 overflows = {'global' : {'int'   : 12001,
                     'float' : 13001,
                     'bool'  : 14001,
@@ -104,6 +114,7 @@ overflows = {'global' : {'int'   : 12001,
                     }
         }
 
+#Memoria de la máquina virtual, en cada arreglo se van agregando las unidades necesarias para cada función. 
 virMem = {'global': {'int'  : [],
                     'float' : [],
                     'bool'  : [],
@@ -126,6 +137,7 @@ virMem = {'global': {'int'  : [],
                     }
         }
 
+#Valida si un valor es flotante
 def isfloat(value):
   try:
     float(value)
@@ -133,23 +145,25 @@ def isfloat(value):
   except ValueError:
     return False
 
+#Generación de un nuevo cúadruplo. Agrega el cuádruplo al stack e incrementa el contador.
 def newQuad(ope, a, b, res):
     global iQuads
     quads.append([ope, a, b, res])
     iQuads = iQuads + 1
 
+#Generación de nuevo temporal. Genera un temporal del tipo dado (varType) y lo agrega a la pila de operadores. 
 def newAdd(varType):
     global dirMem
     global tempera
-    address = dirMem['temp'][varType]
-    dirMem['temp'][varType] = address + 1
-    checkOverflow('temp', varType)
-    virMem['temp'][varType].append(address)
+    address = dirMem['temp'][varType] #Revisa en cual indice de dirección vamos y se lo asigna al temporal generado 
+    dirMem['temp'][varType] = address + 1 #Aumenta el índice de la dirección de temporales 
+    checkOverflow('temp', varType) #Revisa que la dirección generada no sea un overflow
     pconsts.append(address)
     ptypes.append(varType)
-    tempera[varType] = tempera[varType] + 1
+    tempera[varType] = tempera[varType] + 1 #Aumenta el ERA de temporales de la función. 
     return address
 
+#Función para limpiar todos los índices al empezar a leer una nueva función.
 def memClear():
     global dirMem
     global iParams
@@ -158,9 +172,6 @@ def memClear():
     global funcTable
 
     iParams = 0
-
-    #if scope != 'global':
-    #    funcTable[scope]['varsTable'] = {}
 
     era =  {'int' : 0,
         'float' : 0,
@@ -190,28 +201,45 @@ def memClear():
     virMem['temp']['bool'] = []
     virMem['temp']['char'] = []
 
+#Revisa si una dirección asignada se sale de su espacio. 
 def checkOverflow(scope, typ):
     if dirMem[scope][typ] >= overflows[scope][typ]:
         msg = ">> ERROR: Memory overflow. Too many " + typ + "s declared in " + scope  + " memory."
         sys.exit(msg)
     
-opeCode = {
-	'GOTO'      : 0,
+#Códigos de instrucciones
+op = {
+    'GOTO'      : 0,
     'GOTOF'     : 1,
     'GOSUB'     : 2,
     'PARAM'     : 3,
-    ''
-    '='         : 3,
-    '<'         : 4,
-    '>'         : 5,
-    '<>'        : 6,
-	'+'         : 7,
-	'-'         : 8,
-    '*'         : 9,
-    '/'         : 10,
-    'cout'      : 11
+    'ENDPROC'   : 4,
+    'VER'       : 5,
+    'K'         : 6,
+    'DIM'       : 7,
+    'ERA'       : 8,
+    '+'         : 9,
+    '-'         : 10,
+    '*'         : 11,
+    '/'         : 12,
+    '<'         : 13,
+    '>'         : 14,
+    '=='        : 15,
+    'PRINT'     : 16,
+    'LIGHTS'    : 17,
+    'FORWARD'   : 18,
+    'BACKWARD'  : 19,
+    'TURNLEFT'  : 20,
+    'TURNRIGHT' : 21,
+    'SERVO'     : 22,
+    'DELAY'     : 23,
+    'RETURN'    : 24,
+    'CIN'       : 25,
+    '='         : 26,
+    '!='        : 27
 }
 
+#Cubo Semántico
 semCube = {'int' : { 'int' : {  '+' : 'int',
                                 '-' : 'int',
                                 '/' : 'float',
@@ -268,16 +296,20 @@ semCube = {'int' : { 'int' : {  '+' : 'int',
                     }
         }
 
+#Validación en cubo semántico.
+#ope - Operación
+#a - Operador izquierdo
+#b - Operador derecho
 def typeCheck(ope, a, b):
     try:
         x = semCube[a][b][ope]
         return x
     except KeyError:
-        errormsg = "ERROR: " + a + ope +  b + " is not a valid operation."
-        print(errormsg)
+        errormsg = ">> ERROR: " + a + ope +  b + " is not a valid operation."
         sys.exit(errormsg)
         return False
 
+#Palabras reservadas
 reserved = {
     'program'   : 'PROGRAM',
     'main'      : 'MAIN',
@@ -294,8 +326,6 @@ reserved = {
     'turnright' : 'TURNRIGHT',
     'servo'     : 'SERVO',
     'lights'    : 'LIGHTS',
-    'distance'  : 'DISTANCE',
-    'stop'      : 'STOP',
     'while'     : 'WHILE',
     'return'    : 'RETURN',
     'len'       : 'LEN',
@@ -307,6 +337,7 @@ reserved = {
     'void'      : 'VOID'
 }
 
+#Tokens
 tokens = ['ASSIGN', 'PLUS', 'MINUS', 'MULTI', 'DIVI', 'LPAREN', 'RPAREN', 'LBRACKET', 'RBRACKET', 'LCURLY', 'RCURLY', 'EQUALS', 'LESSTHAN', 'GREATERTHAN', 'NOTEQUALS', 'SEMICOLON', 'COMMA', 'AND', 'OR', 'NOT', 'CTE_BOOL', 'CTE_INT', 'CTE_FLOAT', 'CTE_CHAR', 'ID']  + list(reserved.values())
 t_ASSIGN    = r'='
 t_PLUS      = r'\+'
@@ -359,24 +390,31 @@ def t_newline(t):
 
 lexer = lex.lex()
 
+#GRAMÁTICA DE COMPILACIÓN
+# PN = punto neurálgico
+
+#Inicio de código
 def p_program(p):
     'program : PROGRAM gotomain varsblock funcsblock main FIN SEMICOLON'
     memClear()
 
+#PN: inserta cuádruplo vacío de GOTO para irse al main cuando empieze la ejecución
 def p_gotomain(p):
     'gotomain : empty'
-    newQuad('GOTO', '', '', '')
+    newQuad(op['GOTO'], '', '', '')
 
+#Estructura de main
 def p_main(p):
     'main : MAIN setmain LPAREN RPAREN LCURLY varsblock main1 block RCURLY'
 
+#PN: Terminado de leer las variables, se puede asignar los ERA y parametros del main a la tabla de funciones.
 def p_main1(p):
     'main1 : empty'
     funcTable[scope]['era'] = era
     funcTable[scope]['tempera'] = tempera
     funcTable[scope]['params'] = iParams
-    
 
+#PN: Se cambia el scope a 'main' y se hace su tabla de funciones inicial.
 def p_setmain(p):
     'setmain : empty'
     global scope 
@@ -384,22 +422,27 @@ def p_setmain(p):
     funcTable[scope] = {'type' : 'void', 'era' : '', 'tempera' : '', 'params' : iParams, 'varsTable' : {}, 'start' : iQuads}
     quads[0][3] = iQuads
 
+#Bloque de funciones donde se leen de 0 a muchas funciones
 def p_funcsblock(p):
     '''funcsblock : funcs funcsblock 
                   | empty'''
 
+#Estructura de función
 def p_funcs(p):
     'funcs : FUNCDEF type setscope LPAREN paramsblock RPAREN LCURLY varsblock funcs1 block RCURLY'''
-    
-    newQuad('ENDPROC', '', '', '')
+    newQuad(op['ENDPROC'], '', '', '')
     memClear()    
 
+#PN: Terminado de leer las variables, se puede asignar los ERA y parametros del main a la tabla de funciones.
 def p_funcs1(p):
     '''funcs1 : empty'''
     funcTable[scope]['era'] = era
     funcTable[scope]['tempera'] = tempera
     funcTable[scope]['params'] = iParams
-    
+
+#PN: Se cambia el scope al ID leído y se hace su tabla de funciones inicial. 
+#    Si la función no es void, se genera una variable global con el ID del a función 
+#    donde se almacenará el valor del return. 
 def p_setscope(p):
     '''setscope : ID'''
     global scope
@@ -413,18 +456,20 @@ def p_setscope(p):
         virMem['global'][tempType].append(p[1])
         funcTable['global']['varsTable'][p[1]] = {'type' : tempType, 'address' : address, 'dim' : 1}
 
+#Bloque de variables donde se leen de 0 a muchas variables
 def p_varsblock(p):
     '''varsblock : vars varsblock 
                  | empty'''
-    
+
+#Estructura de declaración de variable
 def p_vars(p):
     'vars : VARDEF type ID dimvar SEMICOLON'
     global dirMem
     global virMem
-    global tempVars
     global era
     x = p[3]
     erasize = 1
+    #Se empieza a clasificar la variable detectada. 
     if scope == 'global' :
         address = dirMem['global'][tempType]
         dirMem['global'][tempType] = address + 1
@@ -435,7 +480,7 @@ def p_vars(p):
         dirMem['local'][tempType] = address + 1
         checkOverflow('local', tempType)
         virMem['local'][tempType].append(x)
-
+    #Si la variable no existe, se crea con la dirección calculada, de lo contrario se marca error. 
     if x not in funcTable[scope]['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
         funcTable[scope]['varsTable'][x] = {'type' : tempType, 'address' : address, 'dim' : 1}
         if p[4] == '[' :
@@ -454,22 +499,24 @@ def p_vars(p):
     else : 
         errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
         sys.exit(errorMsg)
-    
+
+#PN: Si al declarar una variable se detecta un bracket, se avisa a la gramática de variables (p[0] = p[1]) para que le asigne también su tamaño   
 def p_dimvar(p):
     '''dimvar : LBRACKET express RBRACKET 
               | empty'''
     p[0] = p[1]
 
+#Bloque de parámetros donde van 0 o muchos parámetros. 
 def p_paramsblock(p):
     '''paramsblock : params paramsblock
                    | COMMA params paramsblock
                    | empty'''
 
+#Estructura de parámetros
 def p_params(p):
     '''params : type ID
               | empty'''
     global tempType
-    global tempParams
     global iParams
     global dirMem
     global virMem
@@ -480,6 +527,8 @@ def p_params(p):
     dirMem['local'][tempType] = address + 1
     checkOverflow('local', tempType)
     if len(p) > 2 : 
+        #Los parámetros se consideran una declaración de variables, entonces se anexan a la tabla de variables de la función. 
+        #Tambien se anexan a la tabla de parámetros para poder identificarlos como tales. 
         if x not in funcTable[scope]['varsTable'].keys() and x not in funcTable['global']['varsTable'].keys() : 
             funcTable[scope]['varsTable'][x] = {'type' : tempType, 'address' : address}
             funcTable[scope]['paramsTable'][iParams+1] = {'ID' : x, 'type' : tempType, 'address' : address}
@@ -490,10 +539,12 @@ def p_params(p):
             errorMsg = "ERROR: ID '" + x + "' already asigned to a parameter or variable"
             sys.exit(errorMsg)
 
+#Bloque de estatutos, itera sobre las posibles instrucciones de nuestro lenguaje. 
 def p_block(p):
     '''block : statute SEMICOLON block
              | empty'''
 
+#Estatutos de L2C-bot
 def p_statute(p):
     '''statute : cond
                | assign
@@ -507,17 +558,17 @@ def p_statute(p):
                | turnright
                | servo
                | lights
-               | distance
-               | stop
                | while
                | return'''
 
+#Estructura de estatuto condicional
 def p_cond(p):
     'cond : IF LPAREN express RPAREN LCURLY gotoif block RCURLY else'
     global iQuads
     jump = pjumps.pop()
     quads[jump][3] = iQuads
 
+#PN: Cuádruplo de GOTOIF para condicional
 def p_gotoif(p):
     'gotoif : empty'
     global iQuads
@@ -525,21 +576,23 @@ def p_gotoif(p):
         x = pconsts.pop()
         ptypes.pop()
         pjumps.append(iQuads)
-        newQuad('GOTOF', x, '', '')
+        newQuad(op['GOTOF'], x, '', '')
 
+#Estructura de condicional else
 def p_else(p):
     '''else : ELSE LCURLY gotoelse block RCURLY else
             | empty'''
 
+#PN: Cuádruplo de GOTO para else
 def p_gotoelse(p):
     'gotoelse : empty'
     global iQuads
     jump = pjumps.pop()
     pjumps.append(iQuads)
-    newQuad('GOTO', '', '', '')
+    newQuad(op['GOTO'], '', '', '')
     quads[jump][3] = iQuads
 
-
+#Estatuto de asignación
 def p_assign(p):
     '''assign : ID punto array ASSIGN express'''
     x = p[1]
@@ -550,32 +603,29 @@ def p_assign(p):
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
             if len(parrays) != 0 :
-                #dimsize = parrays.pop()
+                dimsize = parrays.pop()
                 idsize = funcTable[scope]['varsTable'][p[1]]['dim']
                 basedir = funcTable[scope]['varsTable'][p[1]]['address']
-                print("ID", idsize)
-                newQuad('VER', dimsize, idsize, '')
+                newQuad(op['VER'], dimsize, idsize, '')
                 temp = newAdd('int')
-                newQuad('K', dimsize, -1, temp)
+                newQuad(op['K'], dimsize, -1, temp)
                 dimension = pconsts.pop() 
                 temp2 = newAdd('int')
-                newQuad('DIM', dimension, basedir, temp2)
-                newQuad('=', rop, '', ('*'+str(temp2)))
+                newQuad(op['DIM'], dimension, basedir, temp2)
+                newQuad(op['='], rop, '', ('*'+str(temp2)))
             else:
-                newQuad('=', rop, '', funcTable[scope]['varsTable'][x]['address'])
+                newQuad(op['='], rop, '', funcTable[scope]['varsTable'][x]['address'])
             
     elif x in funcTable['global']['varsTable'].keys() : 
         idtyp = funcTable['global']['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
-            newQuad('=', rop, '', funcTable['global']['varsTable'][x]['address'])
+            newQuad(op['='], rop, '', funcTable['global']['varsTable'][x]['address'])
     else: 
         errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
         sys.exit(errorMsg)
     
-        
-
-
+#Estatuto de llamada a función
 def p_call(p):
     'call : era LPAREN insertfloor paramcall RPAREN endfloor'
     global paramCall
@@ -587,19 +637,20 @@ def p_call(p):
     i = 1
     while i <= funcTable[calledFunc]['params'] :
         if paramCall[i]['type'] == funcTable[calledFunc]['paramsTable'][i]['type'] : 
-            newQuad('PARAM', paramCall[i]['val'], '', funcTable[calledFunc]['paramsTable'][i]['address'])
+            newQuad(op['PARAM'], paramCall[i]['val'], '', funcTable[calledFunc]['paramsTable'][i]['address'])
         else:
             errorMsg = ("ERROR: Types of parameters don't match.")
             sys.exit(errorMsg)
         i = i + 1
-    newQuad('GOSUB', calledFunc, '', jump)
+    newQuad(op['GOSUB'], calledFunc, '', jump)
     if funcTable[calledFunc]['type']  != 'void':
         temp = newAdd(funcTable[calledFunc]['type'])
         globaddress = funcTable['global']['varsTable'][calledFunc]['address']
-        newQuad('=', globaddress, '', temp)
+        newQuad(op['='], globaddress, '', temp)
     
     paramCall = {}
 
+#PN: Se lee el ERA de la función llamada, para generar su cuádruplo de ERA
 def p_era(p):
     '''era : ID'''
     global iCalledParams
@@ -612,11 +663,12 @@ def p_era(p):
     tera.append(funcTable[calledFunc]['era']['bool'])
     tera.append(funcTable[calledFunc]['era']['char'])
     if calledFunc in funcTable.keys() : 
-        newQuad('ERA', calledFunc, '', tera)
+        newQuad(op['ERA'], calledFunc, '', tera)
     else : 
         errorMsg = "ERROR: function " + calledFunc + " hasn't been declared"
         sys.exit(errorMsg)
 
+#Parámetros con los que se ha llamado la función. Se añaden a un diccionario temporal para después validar que concidan con los parámetros reales de la función. 
 def p_paramcall(p):
     '''paramcall : express paramcall1
                  | empty'''
@@ -630,73 +682,76 @@ def p_paramcall(p):
         paramCall[iCalledParams] = {'type' : paramtype, 'val' : param}
         iCalledParams = iCalledParams - 1
     
-
-def p_call1(p):
+#Más parametros
+def p_paramcall1(p):
     '''paramcall1 : COMMA paramcall 
                   | empty'''
-
+#Estatuto de input
 def p_cin(p):
-    'cin : CIN cin1 '
+    'cin : CIN LPAREN express RPAREN'
 
-def p_cin1(p):
-    '''cin1 : cin2 
-            | cin3'''
-
-def p_cin2(p):
-    'cin2 : LPAREN ID RPAREN'
-
-def p_cin3(p):
-    'cin3 : LBRACKET CTE_INT RBRACKET LPAREN cin4 RPAREN'
-
-def p_cin4(p):
-    '''cin4 : COMMA ID cin4 
-           | empty'''
-
+#Estatuto de output
 def p_cout(p):
     'cout : COUT LPAREN express cout1 RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
-    newQuad('PRINT', rop, '', '')
+    newQuad(op['PRINT'], rop, '', '')
 
+#Más expresiones de output
 def p_cout1(p):
     '''cout1 : COMMA express cout1
              | empty'''
     if len(p) > 2:
         rop = pconsts.pop()
         rtyp = ptypes.pop()
-        newQuad('PRINT', rop, '', '')
+        newQuad(op['PRINT'], rop, '', '')
 
+#Estatuto delay
+#FUNCION ARDUINO
+#Para generar un tiempo de espera entre instrucciones 
+#delay(seconds);
 def p_delay(p):
     'delay : DELAY LPAREN express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     if rtyp == 'int' :
-        newQuad('DELAY', rop, '', '')
+        newQuad(op['DELAY'], rop, '', '')
     else : 
         errorMsg = "ERROR: delay() was called with a " + rtyp + " but only works with int values."
         sys.exit(errorMsg)
- 
 
+#Estatuto forward
+#FUNCION ARDUINO
+#Para mover al carro en dirección frontal
+#forward(seconds);
 def p_forward(p):
     'forward : FORWARD LPAREN express RPAREN'
     lop = pconsts.pop()
     ltyp = ptypes.pop()
     if ltyp == 'int':
-        newQuad('FORWARD', lop, '', '')
+        newQuad(op['FORWARD'], lop, '', '')
     else : 
         errorMsg = "ERROR: expected int value, got " + ltyp + " instead."
         sys.exit(errorMsg)
-    
+
+#Estatuto backward
+#FUNCION ARDUINO
+#Para mover al carro en dirección trasera
+#backward(seconds);  
 def p_backward(p):
     'backward : BACKWARD LPAREN express RPAREN'
     lop = pconsts.pop()
     ltyp = ptypes.pop()
     if  ltyp == 'int':
-        newQuad('BACKWARD', lop, '', '')
+        newQuad(op['BACKWARD'], lop, '', '')
     else : 
         errorMsg = "ERROR: expected int and int value, got " + ltyp + " instead."
         sys.exit(errorMsg)
 
+#Estatuto turnleft
+#FUNCION ARDUINO
+#Para dar vuelta a la izquierda
+#turnleft(seconds);
 def p_turnleft(p):
     'turnleft : TURNLEFT LPAREN express RPAREN'
     lop = pconsts.pop()
@@ -707,26 +762,38 @@ def p_turnleft(p):
         errorMsg = "ERROR: expected int and int value, got " + ltyp + " instead."
         sys.exit(errorMsg)
 
+#Estatuto turnright
+#FUNCION ARDUINO
+#Para dar vuelta a la derecha
+#turnright(seconds);
 def p_turnright(p):
     'turnright : TURNRIGHT LPAREN express RPAREN'
     lop = pconsts.pop()
     ltyp = ptypes.pop()
     if ltyp == 'int':
-        newQuad('TURNRIGHT', lop, '', '')
+        newQuad(op['TURNRIGHT'], lop, '', '')
     else : 
         errorMsg = "ERROR: expected int and int value, got " + ltyp + " instead."
         sys.exit(errorMsg)
 
+#Estatuto servo
+#FUNCION ARDUINO
+#Para posicionar al servomotor en el grado especificado
+#servo(degrees);
 def p_servo(p):
     'servo : SERVO LPAREN express RPAREN'
     rop = pconsts.pop()
     rtyp = ptypes.pop()
     if rtyp == 'int':
-        newQuad('SERVO', rop, '', '')
+        newQuad(op['SERVO'], rop, '', '')
     else : 
         errorMsg = "ERROR: expected int, got " + rtyp + " instead."
         sys.exit(errorMsg)
 
+#Estatuto turnleft
+#FUNCION ARDUINO
+#Para seleccionar un led y aplicarle una acción (1: Prender, 2: apagar, 3: parpadear)
+#lights(led, action);
 def p_lights(p):
     'lights :  LIGHTS LPAREN express COMMA express RPAREN'
     rop = pconsts.pop()
@@ -734,27 +801,20 @@ def p_lights(p):
     lop = pconsts.pop()
     ltyp = ptypes.pop()
     if rtyp == 'int' and ltyp == 'int':
-        newQuad('LIGHTS', lop, rop, '')
+        newQuad(op['LIGHTS'], lop, rop, '')
     else : 
         errorMsg = "ERROR: expected int and int value, got " + rtyp + ", " + ltyp + " instead."
         sys.exit(errorMsg)
 
-
-def p_distance(p):
-    'distance : DISTANCE LPAREN RPAREN'
-    newQuad('DISTANCE', '', '', '')
-
-def p_stop(p):
-    'stop : STOP LPAREN RPAREN'
-    newQuad('STOP', '', '', '')
-
+#Estatuto de ciclos
 def p_while(p):
     '''while : WHILE LPAREN express RPAREN while1 LCURLY block RCURLY'''
     global iQuads 
     jump = pjumps.pop()
-    newQuad('GOTO', '', '', jump)
+    newQuad(op['GOTO'], '', '', jump)
     quads[jump+1][3] = iQuads
 
+#PN: Se agrega cuádruplo GOTOF con el cual se indica el fin del ciclo 
 def p_while1(p):
     '''while1 : empty'''
     global iQuads 
@@ -762,8 +822,10 @@ def p_while1(p):
     if xtype == 'bool' : 
         pjumps.append(iQuads-1)
         x = pconsts.pop()
-        newQuad('GOTOF', x, '', '')
+        newQuad(op['GOTOF'], x, '', '')
 
+#Estatuto return
+#Asigna el valor de la expresión a la variable global con el nombre de la función. 
 def p_return(p):
     'return : RETURN LPAREN express RPAREN'
     rop = pconsts.pop()
@@ -771,9 +833,10 @@ def p_return(p):
     retType = funcTable['global']['varsTable'][scope]['type']
     if rtyp == retType :
         address = funcTable['global']['varsTable'][scope]['address']
-        newQuad('RETURN', rop, '', address)
-        newQuad('ENDPROC', '', '', '')
+        newQuad(op['RETURN'], rop, '', address)
+        newQuad(op['ENDPROC'], '', '', '')
         
+#Estatuto para recibir el tamaño de una variable dimensionada. 
 def p_len(p): 
     '''len : LEN LPAREN ID RPAREN'''
     global dirMem
@@ -798,9 +861,10 @@ def p_len(p):
         address = 41001 + pos
 
     temp = newAdd('int')
-    newQuad('=', address, '', temp)
+    newQuad(op['='], address, '', temp)
 
 
+#tempType almacena el tipo seleccionado para después usarse en las asignaciones
 def p_type(p):
     '''type : INT
             | FLOAT
@@ -810,6 +874,7 @@ def p_type(p):
     global tempType
     tempType = p[1]
         
+#Lectura de variables 
 def p_constant(p):
     '''constant : ID punto array
                 | CTE_INT
@@ -819,24 +884,29 @@ def p_constant(p):
     global pconsts
     global ptypes
     global dirMem
+    #Se tiene que ir clasificando la variable para averiguar su tipo
+    #Primero se busca si ya está declarada como local
     if p[1] in funcTable[scope]['varsTable'].keys() :
         if len(parrays) != 0 :
             dimsize = parrays.pop()
             #idsize = parraysid.pop()
+            idsize = funcTable[scope]['varsTable'][p[1]]['dim']
             basedir = funcTable[scope]['varsTable'][p[1]]['address']
-            newQuad('VER', dimsize, idsize, '')
+            newQuad(op['VER'], dimsize, idsize, '')
             temp = newAdd('int')
-            newQuad('K', dimsize, -1, temp)
+            newQuad(op['K'], dimsize, -1, temp)
             dimension = pconsts.pop() 
             temp2 = newAdd('int')
-            newQuad('DIM', dimension, basedir, temp2)
+            newQuad(op['DIM'], dimension, basedir, temp2)
             pconsts.append('*'+str(temp2))
         else :
             pconsts.append(funcTable[scope]['varsTable'][p[1]]['address'])
         ptypes.append(funcTable[scope]['varsTable'][p[1]]['type'])
+    #Se busca si es declarada como global
     elif p[1] in funcTable['global']['varsTable'].keys() :
         ptypes.append(funcTable['global']['varsTable'][p[1]]['type'])
         pconsts.append(funcTable['global']['varsTable'][p[1]]['address'])
+    #Se busca si contiene un booleano
     elif p[1] == 'true' or p[1] == 'false' :
         address = dirMem['const']['bool']
         dirMem['const']['bool'] = address + 1
@@ -844,6 +914,7 @@ def p_constant(p):
         virMem['const']['bool'].append(p[1])
         pconsts.append(address)
         ptypes.append('bool')
+    #Se busca si es un caracter
     elif p[1].isalpha() and len(p[1]) == 1: 
         if p[1] not in virMem['const']['char'] :
             address = dirMem['const']['char']
@@ -855,6 +926,7 @@ def p_constant(p):
             address = 43001 + pos
         pconsts.append(address)
         ptypes.append('char')
+    #Si es numerico se considera como int
     elif p[1].isnumeric() :
         if p[1] not in virMem['const']['int'] :
             address = dirMem['const']['int']
@@ -866,6 +938,7 @@ def p_constant(p):
             address = 41001 + pos
         pconsts.append(address)
         ptypes.append('int')
+    #Si era un string con punto flotante, se valida si es un float
     elif isfloat(p[1]) :
         if p[1] not in virMem['const']['float'] :
             address = dirMem['const']['float']
@@ -877,10 +950,12 @@ def p_constant(p):
             address = 42001 + pos
         pconsts.append(address)
         ptypes.append('float')
+    #Si no se clasifico como ninguna, se declara error
     else : 
         errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
         sys.exit(errorMsg)
 
+#PN: al detectar un bracket se inserta un piso falso para evaluar la expresión 
 def p_array(p):
     '''array : LBRACKET insertfloor express RBRACKET endfloor
              | empty'''
@@ -925,7 +1000,7 @@ def p_andor(p):
         restyp = typeCheck(ope, ltyp, rtyp)
         if restyp != False :
             temp = newAdd(restyp)
-            newQuad(ope, lop, rop, temp)
+            newQuad(op[ope], lop, rop, temp)
 
 def p_relational(p):
     '''relational : exp relational1
@@ -938,7 +1013,7 @@ def p_relational1(p):
         x = popers[-1]
     else :
         x = 'NULL'
-
+    #Si el tope de operandos es un relacional, se resuelve y se genera su cuádruplo
     if x == '>' or x == '<' or x == '==' or x == '!=' :
         rop = pconsts.pop()
         rtyp = ptypes.pop()
@@ -948,7 +1023,7 @@ def p_relational1(p):
         restyp = typeCheck(ope, ltyp, rtyp)
         if restyp != False :
             temp = newAdd(restyp)
-            newQuad(ope, lop, rop, temp)
+            newQuad(op[ope], lop, rop, temp)
 
 def p_compare(p):
     '''compare  : LESSTHAN
@@ -963,7 +1038,7 @@ def p_exp(p):
         x = popers[-1]
     else :
         x = 'NULL'
-
+    #Si el tope de operandos es + o -, se resuelvle con su cuadruplo  
     if x == '+' or x == '-' :
         rop = pconsts.pop()
         rtyp = ptypes.pop()
@@ -973,7 +1048,7 @@ def p_exp(p):
         restyp = typeCheck(ope, ltyp, rtyp)
         if restyp != False :
             temp = newAdd(restyp)
-            newQuad(ope, lop, rop, temp)
+            newQuad(op[ope], lop, rop, temp)
 
 def p_exp1(p):
     '''exp1 : plusminus exp 
@@ -990,7 +1065,7 @@ def p_term(p):
         x = popers[-1]
     else :
         x = 'NULL'
-    
+    #Si el tope de operandos es * o /, se resuelvle con su cuadruplo  
     if x == '*' or x == '/' :
         rop = pconsts.pop()
         rtyp = ptypes.pop()
@@ -1000,7 +1075,7 @@ def p_term(p):
         restyp = typeCheck(ope, ltyp, rtyp)
         if restyp != False :
             temp = newAdd(restyp)
-            newQuad(ope, lop, rop, temp)
+            newQuad(op[ope], lop, rop, temp)
 
 def p_term1(p):
     '''term1 : multidivi term 
@@ -1011,16 +1086,19 @@ def p_multidivi(p):
                  | DIVI'''
     popers.append(p[1])
 
+#Se termina de resolver la expresión con una nueva expresión, una constante, una llamada o la funcion especial len para obtener el tamaño de una variable
 def p_factor(p): 
     '''factor : LPAREN insertfloor express RPAREN endfloor
               | constant
               | call 
               | len'''
-    
+
+#PN: Insert de piso falso en stack operaciones
 def p_insertfloor(p):
     '''insertfloor : empty'''
     popers.append('(')
 
+#PN: Pop de piso falso en stack de operaciones
 def p_endfloor(p):
     '''endfloor : empty'''
     if popers[-1] == '(' :
@@ -1035,6 +1113,8 @@ def p_error(p):
     global compileFlag 
     compileFlag = False
 
+#Lectura de memoria
+#Recibe como parámetro una direccion y regresa el valor almacenado en la dirección. 
 def memRead(dir):
     if type(dir) == str:
         value =int(dir.replace('*', ''))
@@ -1080,6 +1160,9 @@ def memRead(dir):
     else :
         sys.exit("ERROR: Tried to access unassigned memory space")
 
+#Escritura de memoria
+#Recibe como parámetro un valor y una dirección.
+#Almacena en la dirección el valor recibido. 
 def memWrite(val, dir):
     if type(dir) == str:
         value =int(dir.replace('*', ''))
@@ -1119,6 +1202,8 @@ def memWrite(val, dir):
     
     return val
 
+#Se realiza el ERA de la función en la que se estaba antes de un cambio de contexto. 
+#De esta forma se respetan los espacios de memoria de la función anterior y la nueva función inicia con sus propios espacios. 
 def newEra(esize):
     for _ in range(esize[0]):
         virMem['local']['int'].append('NON')
@@ -1144,6 +1229,7 @@ def newEra(esize):
     for _ in range(10):
         virMem['temp']['char'].append('NON')
 
+#Al regresarnos de un cambio de contexto, se libera la memoria utilizada por la función llamada. 
 def endEra(func):
     global era
     backToFunc = pfuncs[-1]
@@ -1177,6 +1263,7 @@ def endEra(func):
     for _ in range(funcTable[func]['tempera']['char']):
         virMem['temp']['char'].append('NON')
 
+#Se crea el piso de cambio de contexto
 def contextChange(func) :
     global era
     prevFunc = pfuncs[-2]
@@ -1192,8 +1279,12 @@ def contextChange(func) :
         val = pparams.pop()
         memWrite(val, address)
 
+#Función de máquina virtual 
 def virtualMachine() : 
+    #Iterador de cuádruplos
     qPos = 0
+
+    #Al iniciar la máquina, se tiene que la memoria vacía entonces se agregan los espacios del ERA de la función main
     for _ in range(funcTable['main']['era']['int']):
         virMem['local']['int'].append('NON')
     
@@ -1218,42 +1309,47 @@ def virtualMachine() :
     for _ in range(funcTable['main']['tempera']['char']):
         virMem['temp']['char'].append('NON')
 
-    
+    #SWITCH de ejecución de cuádruplos
     while qPos < len(quads) :
         #print("--", quads[qPos])
         #print(virMem)
         ope = quads[qPos][0]
 
-        if ope == 'GOTO':
+        #GOTO
+        if ope == 0:
             qPos = quads[qPos][3]
 
-        elif ope == 'GOTOF':
+        #GOTOF
+        elif ope == 1:
             lop = memRead(quads[qPos][1])
             if lop == False:
                 qPos = quads[qPos][3]  
             else :
                 qPos = qPos + 1
         
-        elif ope == 'GOSUB':
+        #GOSUB
+        elif ope == 2:
             global tempQuad
             contextChange(quads[qPos][1])
             tempQuad.append(qPos + 1)
             qPos = quads[qPos][3]
         
-        elif ope == 'PARAM':
+        #PARAM
+        elif ope == 3:
             rop = memRead(quads[qPos][1])
             res = quads[qPos][3]
             pparams.append(rop)
             pparams.append(res)
             qPos = qPos + 1
-            
-        elif ope == 'ENDPROC':
+
+        #ENDPROC    
+        elif ope == 4:
             global era
             qPos = tempQuad.pop()
             backToFunc = pfuncs.pop()
             endEra(backToFunc)
-
-        elif ope == 'VER':
+        #VER
+        elif ope == 5:
             lop = memRead(quads[qPos][1])
             rop = quads[qPos][2]
             if lop <= rop:
@@ -1261,29 +1357,32 @@ def virtualMachine() :
             else:
                 msg = ">> ERROR: index out of range"
                 sys.exit(msg)
-
-        elif ope == 'K':
+        #K
+        elif ope == 6:
             lop = memRead(quads[qPos][1])
             rop = quads[qPos][2]
             res = lop - 1
             memWrite(res, quads[qPos][3])
             qPos = qPos + 1
         
-        elif ope == 'DIM':
+        #DIM
+        elif ope == 7:
             lop = memRead(quads[qPos][1])
             rop = quads[qPos][2]
             res = lop + rop
             memWrite(res, quads[qPos][3])
             qPos = qPos + 1
 
-        elif ope == 'ERA':
+        #ERA
+        elif ope == 8:
             erafunc = []
             erafunc = quads[qPos][3]
             newEra(erafunc)
             pfuncs.append(quads[qPos][1]) 
             qPos = qPos + 1
-                  
-        elif ope == '+':
+
+        #+         
+        elif ope == 9:
             lop = memRead(quads[qPos][1])
             rop = memRead(quads[qPos][2])
             val = lop + rop
@@ -1291,7 +1390,8 @@ def virtualMachine() :
             memWrite(val, res)
             qPos = qPos + 1
         
-        elif ope == '-':
+        #-
+        elif ope == 10:
             lop = memRead(quads[qPos][1])
             rop = memRead(quads[qPos][2])
             val = lop - rop
@@ -1299,7 +1399,8 @@ def virtualMachine() :
             memWrite(val, res)
             qPos = qPos + 1
         
-        elif ope == '*':
+        #*
+        elif ope == 11:
             lop = memRead(quads[qPos][1])
             rop = memRead(quads[qPos][2])
             val = lop * rop
@@ -1307,7 +1408,8 @@ def virtualMachine() :
             memWrite(val, res)
             qPos = qPos + 1
 
-        elif ope == '/':
+        # /
+        elif ope == 12:
             lop = memRead(quads[qPos][1])
             rop = memRead(quads[qPos][2])
             val = lop / rop
@@ -1315,13 +1417,15 @@ def virtualMachine() :
             memWrite(val, res)
             qPos = qPos + 1
 
-        elif ope == '=':
+        #=
+        elif ope == 26:
             rop = memRead(quads[qPos][1])
             res = quads[qPos][3]
             memWrite(rop, res)
             qPos = qPos + 1
-        
-        elif ope == '<':
+
+       #< 
+        elif ope == 13:
             lop = memRead(quads[qPos][1])
             rop = memRead(quads[qPos][2])
             val = lop < rop
@@ -1329,7 +1433,8 @@ def virtualMachine() :
             memWrite(val, res)
             qPos = qPos + 1
 
-        elif ope == '>':
+        #>
+        elif ope == 14:
             lop = memRead(quads[qPos][1])
             rop = memRead(quads[qPos][2])
             val = lop > rop
@@ -1337,7 +1442,8 @@ def virtualMachine() :
             memWrite(val, res)
             qPos = qPos + 1
 
-        elif ope == '==':
+        #==
+        elif ope == 15:
             lop = memRead(quads[qPos][1])
             rop = memRead(quads[qPos][2])
             val = lop == rop
@@ -1345,55 +1451,67 @@ def virtualMachine() :
             memWrite(val, res)
             qPos = qPos + 1
         
-        elif ope == 'PRINT' :
+        #PRINT
+        elif ope == 16 :
             rop = memRead(quads[qPos][1])
             msg = ">> " + str(rop)
-            display()
+            #display()
             print(msg)
             qPos = qPos + 1
         
-        elif ope == 'LIGHTS' :
+        #LIGHTS
+        elif ope == 17 :
             lop = memRead(quads[qPos][1])
             rop = memRead(quads[qPos][2])
             lights(lop, rop)
             qPos = qPos + 1
         
-        elif ope == 'FORWARD' :
+        #FORWARD
+        elif ope == 18 :
             lop = memRead(quads[qPos][1])
             forward(lop)
             qPos = qPos + 1
         
-        elif ope == 'BACKWARD' :
+        #BACKWARD
+        elif ope == 19 :
             lop = memRead(quads[qPos][1])
             backward(lop)
             qPos = qPos + 1
 
-        elif ope == 'TURNLEFT' :
+        #TURNLEFT
+        elif ope == 20 :
             lop = memRead(quads[qPos][1])
             turnLeft(lop)
             qPos = qPos + 1
         
-        elif ope == 'TURNRIGHT' :
+        #TURNRIGHT
+        elif ope == 21 :
             lop = memRead(quads[qPos][1])
             turnRight(lop)
             qPos = qPos + 1
         
-        elif ope == 'SERVO' :
+        #SERVO
+        elif ope == 22 :
             lop = memRead(quads[qPos][1])
             servo(lop)
             qPos = qPos + 1
         
-        elif ope == 'DELAY' :
+        #DELAY
+        elif ope == 23 :
             lop = memRead(quads[qPos][1])
             delay(lop)
             qPos = qPos + 1
         
-        elif ope == 'RETURN' : 
+        #RETURN
+        elif ope == 24 : 
             rop = memRead(quads[qPos][1])
             res = quads[qPos][3]
             memWrite(rop, res)
             qPos = qPos + 1
-
+        
+        elif ope == 25 :
+            print("hola")
+#Activa prints de elementos de compilacion y máquina virtual durante ejecución para debugs. 
 def debug():
     for x in funcTable.items():
         print(x)
@@ -1418,6 +1536,7 @@ fp.close()
 lexer.input(nextline)
 parser.parse(nextline)
 midfile = fileinput + ".l2c"
+#Se inicia escritura de código intermedio
 midcode = open(midfile, "w")
 if compileFlag == True:
     for x in quads :
@@ -1428,10 +1547,14 @@ if compileFlag == True:
 else:
     msg = ">> ERROR: Could not compile file"
     sys.exit(msg)
-
 midcode.close()
+#Fin de código intermedio
+
+#Comentar la siguiente línea para deshabilitar el modo debug
 #debug()
+
 print(">> Program Start")
+#Corre máquina virtual
 virtualMachine()
 print(">> .")
 
