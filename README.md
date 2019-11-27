@@ -1,22 +1,57 @@
 # L2C-bot
----
 ## Proyecto de diseño de compiladores
-Este documento compone el Manual de Usuario del proyecto L2C-Bot.
+Este documento compone el Manual de Usuario del proyecto L2C-Bot.  
 Autores:
   * Arturo Rojas Ortiz
   * Diego Jimenez Torres 
 
-## Carro
-El carro debe de estar conectado en un puero USB de la computadora que se encargará de realizar la programacion.
+## Como utilizar L2C-Bot
+1. Elaborar un archivo de texto siguiendo la sintaxis 
+
+### Funciones Propias del Carro
+
+#### cin()
+> Lee una o más entradas desde consola
+
+#### cout()
+> Imprime un tipo de dato int/float/boo/char
+
+#### delay(segundos)
+> Genera una interrupción medida en segundos durante la ejecución de las tareas del carro.
+
+#### forward(segundos)
+> Mueve hacia adelante al carro durante cierto tiempo en segundos.
+
+#### backward(segundos)
+> Mueve hacia atrás al carro durante cierto tiempo en segundos.
+
+#### turnleft(segundos)
+> El carro gira sobre su eje hacia la izquierda durante cierto tiempo en segundos.
+
+#### turnright(segundos)
+> El carro gira sobre su eje hacia la derecha durante cierto tiempo en segundos.
+
+#### servo(grados)
+> Mueve al servomotor del carro que controla una pala a una posicion entre 0 y 180 grados.
+
+#### lights(int,int)
+> Se le indica el numero de led y un estatus.  
+> El numero de led toma un valor entre 1, 2 y 3, donde se elige (1 : para led rojo, 2 : para led amarillo, 3 : para led verde)  
+> El estatus también se elige de una constante entre 1, 2 y 3, donde se elige (1 : prendido, 2 : apagado, 3 : parpadeando)
+
+
+## Advertencias
+### Carro
+El carro debe de estar conectado en un puero USB al momento de ejecutar el codigo.  
 El switch del vehiculo debe estar en la posicion de encendido.
 
-## Lenguaje
-El archivo del codigo tiene que estar dentro de la carpeta `docs > tests`.
+### Lenguaje
+El archivo del codigo tiene que estar dentro de la carpeta `docs > tests`.  
 El archivo del codigo tiene que tener una terminacion `.txt`.
 
 ## Posibles Errores 
 ### Puerto (Socket)
-De los errores más comunes, se encuentran la asignación del puerto USB de la conexión al microcontrolador de Arduino. Ës sumamente importante colocarle a la máquina virtual el valor del socket correcto, de lo contrario el programa no ejecuta. Donde tiene que especificarse el puerto correcto, dependiendo del sistema operativo. En el caso de Windows se utiliza comúnmente el puerto **‘COM3’** y en el caso de linux en su distro de Ubuntu utiliza comúnmente el puerto **‘/dev/ttyACM0’**. 
+De los errores más comunes, se encuentran la asignación del puerto USB de la conexión al microcontrolador de Arduino. Es sumamente importante colocarle a la máquina virtual el valor del socket correcto, de lo contrario el programa no ejecuta. Donde tiene que especificarse el puerto correcto, dependiendo del sistema operativo. En el caso de Windows se utiliza comúnmente el puerto **‘COM3’** y en el caso de linux en su distro de Ubuntu utiliza comúnmente el puerto **‘/dev/ttyACM0’**. 
 
 Para revisar el puerto que el sistema operativo le asignó al microcontrolador es necesario abrir el Arduino IDE y revisar dentro de la sección de Tools > Port, el puerto que aparece a seleccionar.
 
