@@ -11,8 +11,9 @@ import os
 import sys
 import ast
 
-#from VMfunctions import forward, backward, turnLeft, turnRight, delay, servo, lights, display
+from VMfunctions import forward, backward, turnLeft, turnRight, delay, servo, lights, display
 
+thisID = ''
 #operadores
 popers = []
 #variables
@@ -28,6 +29,7 @@ preturns = []
 #cuadruplos
 quads = []
 parrays = []
+parraysid = []
 
 #temporales
 tempindex = 0
@@ -196,7 +198,9 @@ def checkOverflow(scope, typ):
 opeCode = {
 	'GOTO'      : 0,
     'GOTOF'     : 1,
-    'GOTOV'     : 2,
+    'GOSUB'     : 2,
+    'PARAM'     : 3,
+    ''
     '='         : 3,
     '<'         : 4,
     '>'         : 5,
@@ -337,7 +341,9 @@ def t_error(t):
 
 def t_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
+    global thisID
     t.type = reserved.get(t.value,'ID')
+    thisID = t.value
     return t
 
 t_ignore = " \t"
@@ -418,7 +424,6 @@ def p_vars(p):
     global tempVars
     global era
     x = p[3]
-    print(p[4])
     erasize = 1
     if scope == 'global' :
         address = dirMem['global'][tempType]
@@ -536,7 +541,7 @@ def p_gotoelse(p):
 
 
 def p_assign(p):
-    '''assign :  ID array ASSIGN express'''
+    '''assign : ID punto array ASSIGN express'''
     x = p[1]
     rop = pconsts.pop()
     rtyp = ptypes.pop()
@@ -545,8 +550,17 @@ def p_assign(p):
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
             if len(parrays) != 0 :
-                dimpos = parrays.pop()
-                newQuad('=', rop, '', funcTable[scope]['varsTable'][x]['address']+dimpos-1)
+                #dimsize = parrays.pop()
+                idsize = funcTable[scope]['varsTable'][p[1]]['dim']
+                basedir = funcTable[scope]['varsTable'][p[1]]['address']
+                print("ID", idsize)
+                newQuad('VER', dimsize, idsize, '')
+                temp = newAdd('int')
+                newQuad('K', dimsize, -1, temp)
+                dimension = pconsts.pop() 
+                temp2 = newAdd('int')
+                newQuad('DIM', dimension, basedir, temp2)
+                newQuad('=', rop, '', ('*'+str(temp2)))
             else:
                 newQuad('=', rop, '', funcTable[scope]['varsTable'][x]['address'])
             
@@ -558,6 +572,9 @@ def p_assign(p):
     else: 
         errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
         sys.exit(errorMsg)
+    
+        
+
 
 def p_call(p):
     'call : era LPAREN insertfloor paramcall RPAREN endfloor'
@@ -770,6 +787,7 @@ def p_len(p):
         msg = (">> ERROR: couldn't find called variable for len()")
         sys.exit(msg)
 
+    length = str(length)
     if length not in virMem['const']['int'] :
         address = dirMem['const']['int']
         dirMem['const']['int'] = address + 1
@@ -793,7 +811,7 @@ def p_type(p):
     tempType = p[1]
         
 def p_constant(p):
-    '''constant : ID array
+    '''constant : ID punto array
                 | CTE_INT
                 | CTE_FLOAT
                 | CTE_CHAR
@@ -801,17 +819,22 @@ def p_constant(p):
     global pconsts
     global ptypes
     global dirMem
-    global tempID
     if p[1] in funcTable[scope]['varsTable'].keys() :
-        tempID = p[1]
         if len(parrays) != 0 :
-            dimpos = parrays.pop()
-            pconsts.append(funcTable[scope]['varsTable'][p[1]]['address']+dimpos-1)
+            dimsize = parrays.pop()
+            #idsize = parraysid.pop()
+            basedir = funcTable[scope]['varsTable'][p[1]]['address']
+            newQuad('VER', dimsize, idsize, '')
+            temp = newAdd('int')
+            newQuad('K', dimsize, -1, temp)
+            dimension = pconsts.pop() 
+            temp2 = newAdd('int')
+            newQuad('DIM', dimension, basedir, temp2)
+            pconsts.append('*'+str(temp2))
         else :
             pconsts.append(funcTable[scope]['varsTable'][p[1]]['address'])
         ptypes.append(funcTable[scope]['varsTable'][p[1]]['type'])
     elif p[1] in funcTable['global']['varsTable'].keys() :
-        tempID = p[1]
         ptypes.append(funcTable['global']['varsTable'][p[1]]['type'])
         pconsts.append(funcTable['global']['varsTable'][p[1]]['address'])
     elif p[1] == 'true' or p[1] == 'false' :
@@ -862,14 +885,20 @@ def p_array(p):
     '''array : LBRACKET insertfloor express RBRACKET endfloor
              | empty'''
     if p[1] == '[' :
-        dimsize = int(virMem['const']['int'][int(str(pconsts[-1])[2] + str(pconsts[-1])[3] + str(pconsts[-1])[4])-1])
         if ptypes[-1] == 'int':
-            pconsts.pop() 
+            dimsize = pconsts.pop() 
             ptypes.pop()
             parrays.append(dimsize)
+            
         else:
             msg = ">> ERROR: position call of array must be of type INT"
             sys.exit(msg)
+
+def p_punto(p):
+    '''punto : empty'''
+    #global thisID
+    #dim = funcTable[scope]['varsTable'][thisID]['dim']
+    #parraysid.append(dim)
     
 
 def p_express(p):
@@ -1007,6 +1036,10 @@ def p_error(p):
     compileFlag = False
 
 def memRead(dir):
+    if type(dir) == str:
+        value =int(dir.replace('*', ''))
+        dir = memRead(value)
+
     scopeFloor = 0
     dir = str(dir)
     pos = int(dir[2] + dir[3] + dir[4])-1
@@ -1048,6 +1081,9 @@ def memRead(dir):
         sys.exit("ERROR: Tried to access unassigned memory space")
 
 def memWrite(val, dir):
+    if type(dir) == str:
+        value =int(dir.replace('*', ''))
+        dir = memRead(value)
     scopeFloor = 0
     dir = str(dir)
     pos = int(dir[2] + dir[3] + dir[4])-1
@@ -1184,7 +1220,8 @@ def virtualMachine() :
 
     
     while qPos < len(quads) :
-        #print(quads[qPos])
+        #print("--", quads[qPos])
+        #print(virMem)
         ope = quads[qPos][0]
 
         if ope == 'GOTO':
@@ -1215,6 +1252,29 @@ def virtualMachine() :
             qPos = tempQuad.pop()
             backToFunc = pfuncs.pop()
             endEra(backToFunc)
+
+        elif ope == 'VER':
+            lop = memRead(quads[qPos][1])
+            rop = quads[qPos][2]
+            if lop <= rop:
+                qPos  = qPos + 1
+            else:
+                msg = ">> ERROR: index out of range"
+                sys.exit(msg)
+
+        elif ope == 'K':
+            lop = memRead(quads[qPos][1])
+            rop = quads[qPos][2]
+            res = lop - 1
+            memWrite(res, quads[qPos][3])
+            qPos = qPos + 1
+        
+        elif ope == 'DIM':
+            lop = memRead(quads[qPos][1])
+            rop = quads[qPos][2]
+            res = lop + rop
+            memWrite(res, quads[qPos][3])
+            qPos = qPos + 1
 
         elif ope == 'ERA':
             erafunc = []
@@ -1288,7 +1348,7 @@ def virtualMachine() :
         elif ope == 'PRINT' :
             rop = memRead(quads[qPos][1])
             msg = ">> " + str(rop)
-            #display()
+            display()
             print(msg)
             qPos = qPos + 1
         
@@ -1357,8 +1417,8 @@ nextline = fp.read()
 fp.close()
 lexer.input(nextline)
 parser.parse(nextline)
-
-midcode = open("midcode.l2c", "w")
+midfile = fileinput + ".l2c"
+midcode = open(midfile, "w")
 if compileFlag == True:
     for x in quads :
         midcode.write(str(x) + "\n")
@@ -1370,7 +1430,7 @@ else:
     sys.exit(msg)
 
 midcode.close()
-debug()
+#debug()
 print(">> Program Start")
 virtualMachine()
 print(">> .")
