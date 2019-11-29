@@ -8,13 +8,43 @@ Autores:
 ## Como utilizar L2C-Bot
 1. Elaborar un archivo de texto siguiendo la sintaxis 
 
+ #Todos los programas en L2C-bot inician con la palabar reservada 'program'
+ program
+
+ #Aquí se declaran las variables globales. 
+ vardef int GLOBALS;
+ vardef float GLOBALS1;
+
+ #Despúes se declaran todas las funciones 
+ funcdef int FUNCIONEJEMPLO(int PARAMETRO1, float PARAMETRO2){
+  #Declaración de variables locales
+  vardef char local1;
+  vardef int local2;
+
+  #Después del bloque de variables se hacen los estatutos
+  local1 = a;
+  local2 = 10 + 5 * 2;
+  moveforward(local2);
+ }
+
+ #Siempre se debe declarar main como la última función que será la función
+ #principal que ejecute el resto de las funciones.
+
+ main(){
+  cout(FUNCIONEJEMPLO(5, 3.15);
+  }
+
+ #Para terminar un programa, escribimos 'fin;'
+ fin;
+
+
 ### Funciones Propias del Carro
 
-#### cin()
-> Lee una o más entradas desde consola
+#### cin(x)
+> Lee una o más (x) entradas desde consola
 
-#### cout()
-> Imprime un tipo de dato int/float/boo/char
+#### cout(x)
+> Imprime un tipo de dato int/float/boo/char (x)
 
 #### delay(segundos)
 > Genera una interrupción medida en segundos durante la ejecución de las tareas del carro.
@@ -38,7 +68,6 @@ Autores:
 > Se le indica el numero de led y un estatus.  
 > El numero de led toma un valor entre 1, 2 y 3, donde se elige (1 : para led rojo, 2 : para led amarillo, 3 : para led verde)  
 > El estatus también se elige de una constante entre 1, 2 y 3, donde se elige (1 : prendido, 2 : apagado, 3 : parpadeando)
-
 
 ## Advertencias
 ### Carro
