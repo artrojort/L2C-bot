@@ -23,7 +23,7 @@ ptypes = [] #pila de tipos
 pjumps = [] #pila de saltos
 pfuncs = ['main'] #pila para cambios de contexto
 pparams = [] #pila para lectura de parámetros
-preturns = [] #pila para returns en cambios de contexto
+#DELETED# preturns = [] #pila para returns en cambios de contexto
 parrays = [] #pila para dimensiones de arreglos
 parraysid = [] #pila para ids de arreglos
 
@@ -578,7 +578,7 @@ def p_gotoif(p):
 
 #Estructura de condicional else
 def p_else(p):
-    '''else : ELSE LCURLY gotoelse block RCURLY else
+    '''else : ELSE LCURLY gotoelse block RCURLY
             | empty'''
 
 #PN: Cuádruplo de GOTO para else
@@ -1254,26 +1254,33 @@ def endEra(func):
         virMem['local']['char'].pop()
     
     for _ in range(funcTable[func]['tempera']['int']):
-        virMem['temp']['int'].append('NON')
+        virMem['temp']['int'].pop()
     
     for _ in range(funcTable[func]['tempera']['float']):
-        virMem['temp']['float'].append('NON')
+        virMem['temp']['float'].pop()
     
     for _ in range(funcTable[func]['tempera']['bool']):
-        virMem['temp']['bool'].append('NON')
+        virMem['temp']['bool'].pop()
 
     for _ in range(funcTable[func]['tempera']['char']):
-        virMem['temp']['char'].append('NON')
+        virMem['temp']['char'].pop()
 
 #Se crea el piso de cambio de contexto
 def contextChange(func) :
     global era
     prevFunc = pfuncs[-2]
     eraFloor = funcTable[prevFunc]['era']
+    temperaFloor = funcTable[prevFunc]['tempera']
+
     era['int'] = era['int'] + eraFloor['int']
     era['float'] = era['float'] + eraFloor['float']
     era['bool'] = era['bool'] + eraFloor['bool']
     era['char'] = era['char'] + eraFloor['char']
+    
+    tempera['int'] = tempera['int'] + temperaFloor['int']
+    tempera['float'] = tempera['float'] + temperaFloor['float']
+    tempera['bool'] = tempera['bool'] + temperaFloor['bool']
+    tempera['char'] = tempera['char'] + temperaFloor['char']
 
     numParams = funcTable[func]['params']
     for _ in range(numParams) : 
@@ -1518,8 +1525,9 @@ def virtualMachine() :
             memWrite(rop, res)
             qPos = qPos + 1
         
-        elif ope == 25 :
-            print("hola")
+#DELETED#        elif ope == 25 :
+#DELETED#            print("hola")
+
 #Activa prints de elementos de compilacion y máquina virtual durante ejecución para debugs. 
 def debug():
     for x in funcTable.items():

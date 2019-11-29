@@ -41,7 +41,7 @@ Rule 35    statute -> while
 Rule 36    statute -> return
 Rule 37    cond -> IF LPAREN express RPAREN LCURLY gotoif block RCURLY else
 Rule 38    gotoif -> empty
-Rule 39    else -> ELSE LCURLY gotoelse block RCURLY else
+Rule 39    else -> ELSE LCURLY gotoelse block RCURLY
 Rule 40    else -> empty
 Rule 41    gotoelse -> empty
 Rule 42    assign -> ID punto array ASSIGN express
@@ -179,7 +179,7 @@ cout                 : 27
 cout1                : 50 51
 delay                : 28
 dimvar               : 13
-else                 : 37 39
+else                 : 37
 empty                : 2 4 5 7 9 12 15 18 20 22 38 40 41 46 48 52 61 75 76 79 85 92 97 104 105
 endfloor             : 43 74 100
 era                  : 43
@@ -3882,7 +3882,7 @@ state 219
 state 220
 
     (37) cond -> IF LPAREN express RPAREN LCURLY gotoif block RCURLY . else
-    (39) else -> . ELSE LCURLY gotoelse block RCURLY else
+    (39) else -> . ELSE LCURLY gotoelse block RCURLY
     (40) else -> . empty
     (106) empty -> .
 
@@ -3908,7 +3908,7 @@ state 222
 
 state 223
 
-    (39) else -> ELSE . LCURLY gotoelse block RCURLY else
+    (39) else -> ELSE . LCURLY gotoelse block RCURLY
 
     LCURLY          shift and go to state 225
 
@@ -3922,7 +3922,7 @@ state 224
 
 state 225
 
-    (39) else -> ELSE LCURLY . gotoelse block RCURLY else
+    (39) else -> ELSE LCURLY . gotoelse block RCURLY
     (41) gotoelse -> . empty
     (106) empty -> .
 
@@ -3946,7 +3946,7 @@ state 225
 
 state 226
 
-    (39) else -> ELSE LCURLY gotoelse . block RCURLY else
+    (39) else -> ELSE LCURLY gotoelse . block RCURLY
     (21) block -> . statute SEMICOLON block
     (22) block -> . empty
     (23) statute -> . cond
@@ -4036,29 +4036,16 @@ state 227
 
 state 228
 
-    (39) else -> ELSE LCURLY gotoelse block . RCURLY else
+    (39) else -> ELSE LCURLY gotoelse block . RCURLY
 
     RCURLY          shift and go to state 229
 
 
 state 229
 
-    (39) else -> ELSE LCURLY gotoelse block RCURLY . else
-    (39) else -> . ELSE LCURLY gotoelse block RCURLY else
-    (40) else -> . empty
-    (106) empty -> .
+    (39) else -> ELSE LCURLY gotoelse block RCURLY .
 
-    ELSE            shift and go to state 223
-    SEMICOLON       reduce using rule 106 (empty -> .)
-
-    else                           shift and go to state 230
-    empty                          shift and go to state 224
-
-state 230
-
-    (39) else -> ELSE LCURLY gotoelse block RCURLY else .
-
-    SEMICOLON       reduce using rule 39 (else -> ELSE LCURLY gotoelse block RCURLY else .)
+    SEMICOLON       reduce using rule 39 (else -> ELSE LCURLY gotoelse block RCURLY .)
 
 WARNING: 
 WARNING: Conflicts:
