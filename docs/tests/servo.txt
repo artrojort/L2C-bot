@@ -1,0 +1,10 @@
+program
+
+
+main(){
+	vardef int a;
+	a = 80;
+
+	servo(a);
+}
+fin;

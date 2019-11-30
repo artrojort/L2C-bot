@@ -1,0 +1,12 @@
+program
+
+main(){
+	vardef bool flag;
+	flag = false;
+	if (flag == true){
+		cout(1);
+	}else{
+		cout(2);
+	};
+}
+fin;

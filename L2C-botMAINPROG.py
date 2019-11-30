@@ -484,16 +484,16 @@ def p_vars(p):
         funcTable[scope]['varsTable'][x] = {'type' : tempType, 'address' : address, 'dim' : 1}
         if p[4] == '[' :
             dimsize = int(virMem['const']['int'][int(str(pconsts[-1])[2] + str(pconsts[-1])[3] + str(pconsts[-1])[4])-1])
-            print(dimsize)
             if ptypes[-1] == 'int' and dimsize > 1:
                 pconsts.pop() 
                 ptypes.pop()
                 funcTable[scope]['varsTable'][p[3]]['dim'] = dimsize
                 erasize = dimsize
+                dirMem['local'][tempType] = dirMem['local'][tempType] + dimsize -1
             else:
                 msg = ">> ERROR: dimension of array must be of type INT and > 1"
                 sys.exit(msg)
-        era[tempType] = era[tempType] + erasize
+        era[tempType] = era[tempType] + funcTable[scope]['varsTable'][p[3]]['dim']
     else : 
         errorMsg = ">> ERROR: ID '" + x + "' already assigned to a parameter or variable"
         sys.exit(errorMsg)
@@ -600,23 +600,19 @@ def p_assign(p):
         idtyp = funcTable[scope]['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
-            if len(parrays) != 0 :
-                dimsize = parrays.pop()
-                idsize = funcTable[scope]['varsTable'][p[1]]['dim']
-                basedir = funcTable[scope]['varsTable'][p[1]]['address']
-                newQuad(op['VER'], dimsize, idsize, '')
-                temp = newAdd('int')
-                newQuad(op['K'], dimsize, -1, temp)
-                dimension = pconsts.pop() 
-                temp2 = newAdd('int')
-                newQuad(op['DIM'], dimension, basedir, temp2)
-                newQuad(op['='], rop, '', ('*'+str(temp2)))
-            else:
-                newQuad(op['='], rop, '', funcTable[scope]['varsTable'][x]['address'])
+            print("PARRFINAL", parrays, p[3])
+            if p[3] != '[' :
+                res = funcTable[scope]['varsTable'][x]['address']
+            else: 
+                print("should have dir in assign", pconsts)
+                res = parrays.pop()
+            newQuad(op['='], rop, '', res)
             
     elif x in funcTable['global']['varsTable'].keys() : 
         idtyp = funcTable['global']['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
+        rop = pconsts.pop()
+        rtyp = ptypes.pop()
         if restyp != False : 
             newQuad(op['='], rop, '', funcTable['global']['varsTable'][x]['address'])
     else: 
@@ -886,24 +882,16 @@ def p_constant(p):
     global pconsts
     global ptypes
     global dirMem
+    
     #Se tiene que ir clasificando la variable para averiguar su tipo
     #Primero se busca si ya está declarada como local
     if p[1] in funcTable[scope]['varsTable'].keys() :
-        if len(parrays) != 0 :
-            dimsize = parrays.pop()
-            #idsize = parraysid.pop()
-            idsize = funcTable[scope]['varsTable'][p[1]]['dim']
-            basedir = funcTable[scope]['varsTable'][p[1]]['address']
-            newQuad(op['VER'], dimsize, idsize, '')
-            temp = newAdd('int')
-            newQuad(op['K'], dimsize, -1, temp)
-            dimension = pconsts.pop() 
-            temp2 = newAdd('int')
-            newQuad(op['DIM'], dimension, basedir, temp2)
-            pconsts.append('*'+str(temp2))
-        else :
+        if p[3] != '[' :
             pconsts.append(funcTable[scope]['varsTable'][p[1]]['address'])
-        ptypes.append(funcTable[scope]['varsTable'][p[1]]['type'])
+            ptypes.append(funcTable[scope]['varsTable'][p[1]]['type'])
+        else :
+            pconsts.append(parrays.pop())
+            ptypes.append('int')
     #Se busca si es declarada como global
     elif p[1] in funcTable['global']['varsTable'].keys() :
         ptypes.append(funcTable['global']['varsTable'][p[1]]['type'])
@@ -957,25 +945,39 @@ def p_constant(p):
         errorMsg = str(p[1]) +  " : variable not declared or of not supported type."
         sys.exit(errorMsg)
 
+
 #PN: al detectar un bracket se inserta un piso falso para evaluar la expresión 
 def p_array(p):
     '''array : LBRACKET insertfloor express RBRACKET endfloor
              | empty'''
+    p[0] = p[1]
     if p[1] == '[' :
         if ptypes[-1] == 'int':
-            dimsize = pconsts.pop() 
+            dimsize = pconsts.pop()
+            dimtype = ptypes.pop()
+            arrayID = parraysid.pop()
+            basedim = funcTable[scope]['varsTable'][arrayID]['dim']
+            basedir = funcTable[scope]['varsTable'][arrayID]['address']
+            newQuad(op['VER'], dimsize, basedim, '')
+            temp = newAdd('int')
+            newQuad(op['K'], dimsize, -1, temp)
+            dimension = pconsts.pop() 
             ptypes.pop()
-            parrays.append(dimsize)
-            
+            temp2 = newAdd('int')
+            newQuad(op['DIM'], dimension, basedir, temp2)
+            specialtemp = '*'+str(pconsts.pop())
+            ptypes.pop()
+            parrays.append(specialtemp)
         else:
             msg = ">> ERROR: position call of array must be of type INT"
             sys.exit(msg)
+    else: 
+        parraysid.pop()
 
 def p_punto(p):
     '''punto : empty'''
-    #global thisID
-    #dim = funcTable[scope]['varsTable'][thisID]['dim']
-    #parraysid.append(dim)
+    global thisID
+    parraysid.append(thisID)
     
 
 def p_express(p):
@@ -1253,16 +1255,16 @@ def endEra(func):
     for _ in range(funcTable[func]['era']['char']):
         virMem['local']['char'].pop()
     
-    for _ in range(funcTable[func]['tempera']['int']):
+    for _ in range(10):
         virMem['temp']['int'].pop()
     
-    for _ in range(funcTable[func]['tempera']['float']):
+    for _ in range(10):
         virMem['temp']['float'].pop()
     
-    for _ in range(funcTable[func]['tempera']['bool']):
+    for _ in range(10):
         virMem['temp']['bool'].pop()
 
-    for _ in range(funcTable[func]['tempera']['char']):
+    for _ in range(10):
         virMem['temp']['char'].pop()
 
 #Se crea el piso de cambio de contexto
@@ -1320,8 +1322,7 @@ def virtualMachine() :
 
     #SWITCH de ejecución de cuádruplos
     while qPos < len(quads) :
-        #print("--", quads[qPos])
-        #print(virMem)
+        #debugvirmachine(quads[qPos])
         ope = quads[qPos][0]
 
         #GOTO
@@ -1529,7 +1530,7 @@ def virtualMachine() :
 #DELETED#            print("hola")
 
 #Activa prints de elementos de compilacion y máquina virtual durante ejecución para debugs. 
-def debug():
+def debugcompile():
     for x in funcTable.items():
         print(x)
 
@@ -1543,6 +1544,10 @@ def debug():
     print(">> ERA: ", era)
     print(">> Global memory:", virMem['global'])
     print(">> Constant memory:", virMem['const'])
+
+def debugvirmachine(quad):
+    print("--", quad)
+    print(virMem)
 
 parser = yacc.yacc()
 fileinput = input(">> Enter Filename: ")
@@ -1568,7 +1573,7 @@ midcode.close()
 #Fin de código intermedio
 
 #Comentar la siguiente línea para deshabilitar el modo debug
-#debug()
+debugcompile()
 
 print(">> Program Start")
 #Corre máquina virtual
