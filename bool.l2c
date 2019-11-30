@@ -6,4 +6,4 @@
 [0, '', '', 7]
 [16, 41002, '', '']
 {'int': [], 'float': [], 'bool': [], 'char': []}
-{'int': ['1', '2'], 'float': [], 'bool': [False, True], 'char': []}
+{'int': ['1', '2'], 'float': [], 'bool': ['false', 'true'], 'char': []}

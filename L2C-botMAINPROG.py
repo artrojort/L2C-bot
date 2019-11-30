@@ -1154,7 +1154,12 @@ def memRead(dir):
         if scope == 'local' : 
             scopeFloor = era[typ]
         val = virMem[scope][typ][pos + scopeFloor]
-        return bool(val)
+        if val == 'true':
+            return True
+        elif val == 'false' :
+            return False
+        else:
+            return val
     elif dir[1] == '4':
         typ = 'char'
         if scope == 'local' : 
