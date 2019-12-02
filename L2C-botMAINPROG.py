@@ -492,7 +492,7 @@ def p_vars(p):
                 if scope == 'global' :
                     for _ in range (dimsize -1) :
                         virMem['global'][tempType].append(x)
-                        dirMem['global'][tempType] = dirMem['global'][tempType] + dimsize -1
+                    dirMem['global'][tempType] = dirMem['global'][tempType] + dimsize -1
                 else :
                     dirMem['local'][tempType] = dirMem['local'][tempType] + dimsize -1
             else:

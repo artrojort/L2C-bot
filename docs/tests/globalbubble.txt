@@ -37,12 +37,14 @@ main(){
    vardef int n;
    vardef int i;
 
-   arr[1] = 10;
-   arr[2] = 5;
-   arr[3] = 8;
-   arr[4] = 1;
-   arr[5] = 3;
+   arr[1] = 67;
+   arr[2] = 32;
+   arr[3] = 2;
+   arr[4] = 14;
+   arr[5] = 89;
 
+   bubble();
+   
    n = len(arr);
    i = 1;
    while (i < n+1){

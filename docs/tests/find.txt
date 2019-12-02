@@ -1,0 +1,33 @@
+program
+   vardef int arr[5];
+
+funcdef int find(int val){
+   vardef int n;
+   vardef int i;
+
+   n = len(arr);
+   i = 1;
+
+   while(i < n + 1){
+      if (arr[i] == val){
+         return(i);
+      };
+      i = i + 1;
+   };
+   return(0);
+}
+
+main(){
+   arr[1] = 67;
+   arr[2] = 32;
+   arr[3] = 2;
+   arr[4] = 14;
+   arr[5] = 89;
+
+   cout(find(14), s, o, p);
+
+
+   
+}
+fin;
+
