@@ -1,26 +1,18 @@
 program
-
-main(){
    vardef int arr[5];
+
+funcdef void bubble(){
    vardef int n;
    vardef int i;
    vardef int j;
    vardef int temp;
    vardef bool swapped;
 
-
-   arr[1] = 10;
-   arr[2] = 5;
-   arr[3] = 8;
-   arr[4] = 1;
-   arr[5] = 3;
-   
    n = len(arr);
    i = 1;
    j = 1;
 
    while(i < n + 1){
-
       swapped = false;
       j = 1;
       while(j < n ){
@@ -28,8 +20,7 @@ main(){
             temp = arr[j];
             arr[j] = arr[j+1];
             arr[j+1] = temp;
-            swapped = true;
-            
+            swapped = true;     
          };
          j = j + 1;
       };
@@ -39,6 +30,18 @@ main(){
          i = i + 1; 
       };
    };
+
+   
+}
+main(){
+   vardef int n;
+   vardef int i;
+
+   arr[1] = 10;
+   arr[2] = 5;
+   arr[3] = 8;
+   arr[4] = 1;
+   arr[5] = 3;
 
    n = len(arr);
    i = 1;

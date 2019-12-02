@@ -489,7 +489,12 @@ def p_vars(p):
                 ptypes.pop()
                 funcTable[scope]['varsTable'][p[3]]['dim'] = dimsize
                 erasize = dimsize
-                dirMem['local'][tempType] = dirMem['local'][tempType] + dimsize -1
+                if scope == 'global' :
+                    for _ in range (dimsize -1) :
+                        virMem['global'][tempType].append(x)
+                        dirMem['global'][tempType] = dirMem['global'][tempType] + dimsize -1
+                else :
+                    dirMem['local'][tempType] = dirMem['local'][tempType] + dimsize -1
             else:
                 msg = ">> ERROR: dimension of array must be of type INT and > 1"
                 sys.exit(msg)
@@ -600,21 +605,22 @@ def p_assign(p):
         idtyp = funcTable[scope]['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
         if restyp != False : 
-            print("PARRFINAL", parrays, p[3])
             if p[3] != '[' :
                 res = funcTable[scope]['varsTable'][x]['address']
             else: 
-                print("should have dir in assign", pconsts)
                 res = parrays.pop()
             newQuad(op['='], rop, '', res)
             
     elif x in funcTable['global']['varsTable'].keys() : 
         idtyp = funcTable['global']['varsTable'][x]['type']
         restyp = typeCheck('=', idtyp, rtyp)
-        rop = pconsts.pop()
-        rtyp = ptypes.pop()
         if restyp != False : 
-            newQuad(op['='], rop, '', funcTable['global']['varsTable'][x]['address'])
+            if p[3] != '[' :
+                res = funcTable['global']['varsTable'][x]['address']
+            else: 
+                res = parrays.pop()
+            newQuad(op['='], rop, '', res)
+            
     else: 
         errorMsg = str(p[1]) +  ">> ERROR : variable not declared or of not supported type."
         sys.exit(errorMsg)
@@ -656,6 +662,12 @@ def p_era(p):
     tera.append(funcTable[calledFunc]['era']['float'])
     tera.append(funcTable[calledFunc]['era']['bool'])
     tera.append(funcTable[calledFunc]['era']['char'])
+    
+    tempera = []
+    tempera.append(funcTable[calledFunc]['tempera']['int'])
+    tempera.append(funcTable[calledFunc]['tempera']['float'])
+    tempera.append(funcTable[calledFunc]['tempera']['bool'])
+    tempera.append(funcTable[calledFunc]['tempera']['char'])
     if calledFunc in funcTable.keys() : 
         newQuad(op['ERA'], calledFunc, '', tera)
     else : 
@@ -894,8 +906,12 @@ def p_constant(p):
             ptypes.append('int')
     #Se busca si es declarada como global
     elif p[1] in funcTable['global']['varsTable'].keys() :
-        ptypes.append(funcTable['global']['varsTable'][p[1]]['type'])
-        pconsts.append(funcTable['global']['varsTable'][p[1]]['address'])
+        if p[3] != '[' :
+            pconsts.append(funcTable['global']['varsTable'][p[1]]['address'])
+            ptypes.append(funcTable['global']['varsTable'][p[1]]['type'])
+        else :
+            pconsts.append(parrays.pop())
+            ptypes.append('int')
     #Se busca si contiene un booleano
     elif p[1] == 'true' or p[1] == 'false' :
         address = dirMem['const']['bool']
@@ -956,8 +972,12 @@ def p_array(p):
             dimsize = pconsts.pop()
             dimtype = ptypes.pop()
             arrayID = parraysid.pop()
-            basedim = funcTable[scope]['varsTable'][arrayID]['dim']
-            basedir = funcTable[scope]['varsTable'][arrayID]['address']
+            if arrayID in funcTable['global']['varsTable'].keys() :
+                basedim = funcTable['global']['varsTable'][arrayID]['dim']
+                basedir = funcTable['global']['varsTable'][arrayID]['address']
+            elif arrayID in funcTable[scope]['varsTable'].keys() :
+                basedim = funcTable[scope]['varsTable'][arrayID]['dim']
+                basedir = funcTable[scope]['varsTable'][arrayID]['address']
             newQuad(op['VER'], dimsize, basedim, '')
             temp = newAdd('int')
             newQuad(op['K'], dimsize, -1, temp)
@@ -1578,7 +1598,7 @@ midcode.close()
 #Fin de código intermedio
 
 #Comentar la siguiente línea para deshabilitar el modo debug
-debugcompile()
+#debugcompile()
 
 print(">> Program Start")
 #Corre máquina virtual
