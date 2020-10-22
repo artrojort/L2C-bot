@@ -1,0 +1,14 @@
+program
+
+main(){
+	vardef int i[5];
+	vardef int a;
+
+	a = 1;
+	while(a < 3){
+		i[a] = a;
+		a = a + 1;
+	};
+	cout(i[3]);
+}
+fin;

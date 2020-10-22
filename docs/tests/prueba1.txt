@@ -1,37 +1,61 @@
 program
 
-vardef bool globalA;
-vardef bool globalB;
+vardef bool ga;
+vardef bool gb;
 
-funcdef int funcA(){
-    vardef int tempA;
-    vardef int tempA1;
+funcdef int funcA(int prueba1, float prueba2, bool prueba3){
+    vardef float a1;
+    vardef int b1;
+    vardef int c1
+    c1 = 1+c1;
+    return(1);
 }
 
-funcdef float funcB() { 
-    vardef float tempB;
-    vardef float tempB2;
-    tempA = 2;
-    tempB = 4;
-	tempA = 0;
-    if (tempA + 1 < 2 - tempB){
-        tempA = 1;
+funcdef float funcB(float a, bool b) { 
+    vardef int a2;
+    vardef int b2;
+    vardef int c2;
+    b2 = 2;
+    c2 = 4.2;
+    funcA(1, 4.35, true);
+    if (c2 + 1 < 2 - b2){
+        a2 = 1;
+        forward(1+2, 10-b2);
+    }
+    else { 
+        a2 = 3;
+        c2 = 4;
     };
-    forward(1, 10);
+    return(2);
 }
 
-funcdef float funcC() { 
-    vardef float tempC;
-    vardef float tempC2;
-    a = 1;
+funcdef float funcC(char x, int z, int roar, int boom) { 
+    vardef int e;
+    vardef int f;
+    vardef int iterator1;
+    vardef int iterator2;
+    e = 1.02;
+    funcA (4, 1.25 ,true);
     forward(1, 10);
+
+    while (2 < 2) {
+        e = e + 1;
+        f = f + 1;
+        iterator1 = iterator1 + 1;
+        while (444 < 333) {
+            e = e + 1000;
+            iterator2 = iterator2 + 1;
+        };
+    };
+    return(3);
 }
 
 
 main(){
 	vardef int hola;
-	vardef char jol;
-	vardef string  kek;
+	vardef int jol;
+	vardef int  kek;
+    hola = 1-1;
     distance();
 }
 

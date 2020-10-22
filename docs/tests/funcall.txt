@@ -1,0 +1,18 @@
+program
+
+vardef int i;
+
+
+funcdef int fibo(int n){
+	if (n < 2) {
+		return(n);
+	}else{
+		cout(n);
+		return(fibo(n-1) + fibo(n-2));
+	};
+}
+
+main(){
+	cout(fibo(5));
+	}
+fin;

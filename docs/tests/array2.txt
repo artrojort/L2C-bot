@@ -1,0 +1,25 @@
+program
+
+main(){
+	vardef int i[3];
+	vardef int a;
+	vardef int b;
+
+	vardef int j[3];
+
+	j[1] = 2;
+	j[2] = 200;
+	j[3] = 300;
+	a = 1;
+	b = a;
+	while(a < 4){
+		i[a] = a + j[a];
+		cout(i[a]);
+		a = a + 1;
+	};
+
+	cout(i[1]);
+	cout(i[j[1]]);
+	cout(i[3]);
+}
+fin;

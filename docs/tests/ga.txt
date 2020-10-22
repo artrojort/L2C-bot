@@ -1,0 +1,14 @@
+program
+
+vardef int i[5];
+
+
+funcdef void uno(){
+	i[1] = 5000;
+}
+
+main(){
+	uno();
+	cout(i[1]);
+}
+fin;

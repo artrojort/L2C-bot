@@ -1,0 +1,4 @@
+Se pasaron pruebas de recursion, ciclos, funciones de arduino
+
+Queda pendiente el manejo de arreglos y resolver unos bugs de recursion.
+y terminar la documentación final. 

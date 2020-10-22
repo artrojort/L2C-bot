@@ -1,0 +1,13 @@
+program
+
+main(){
+	vardef int a;
+	vardef int b;
+	vardef int c;
+	a = 10;
+	b = 30;
+	c = a + b;
+	cout(c);
+
+}
+fin;

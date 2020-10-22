@@ -1,0 +1,7 @@
+Generación de código funcional con excepción de arreglos
+
+Se empezó a trabajar con la maquina virtual y los comandos que se realizarán 
+en el dispositivo arduino para poder traducir cuádruplos a funciones en los pines.
+
+Diseño de manejo de memoria y direcciones para la máquina virtual pero no se ha empezado
+a implementar la funcionalidad de almacenar direcciones en vez de temporales. 

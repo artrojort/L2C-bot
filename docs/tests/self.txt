@@ -1,0 +1,15 @@
+program
+
+funcdef void uno(int a){
+	while (a > 0 ){
+		cout(a);
+	};
+	uno(a);
+}
+
+main(){
+	vardef int z;
+	z = 4;
+	uno(z);
+}
+fin;

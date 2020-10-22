@@ -1,0 +1,18 @@
+program
+
+vardef int i;
+
+funcdef int uno(int a){
+	if (a == 1 ) {
+		return(a);
+	}else{
+		return(uno(a-1)*a);
+	};
+}
+
+main(){
+	vardef int z;
+	z = 8;
+	cout(uno(z));
+	}
+fin;

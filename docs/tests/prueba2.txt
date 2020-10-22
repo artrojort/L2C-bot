@@ -1,0 +1,45 @@
+program
+
+vardef int i;
+vardef int j;
+vardef int k;
+vardef float f;
+vardef float fl;
+vardef bool globflag;
+
+funcdef void uno(int a, int b){
+	if ( a > 0){
+		 i = a + b * j + i;
+		 cout(i + j);
+	}
+	else{
+		cout(a + b);
+	};
+}
+
+funcdef int dos(int a, float g){
+	vardef int c;
+	vardef float FL;
+	c = 1;
+	i = a;
+	while (a > 0){
+		a = a - k * j;
+		uno(a * 2, a + k);
+		g = g * j - k;
+	};
+	return(i + k * j);
+}
+
+main(){
+	vardef bool flag;
+	vardef char letter;
+	letter = c;
+	i = 2;
+	k = i + 1;
+	f = 3.14;
+	while ( i > 0){
+		cout(i);
+		i = i - k;
+	};
+}
+fin;

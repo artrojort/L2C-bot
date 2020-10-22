@@ -1,0 +1,28 @@
+program
+
+funcdef int fibo(int n){
+	vardef int a;
+	vardef int b;
+	vardef int c;
+	vardef int i;
+
+	if( n < 3){
+		return(1);
+	};
+
+	a = 1;
+	b = 1;
+	i = 2;
+	while(i < n){
+		c = a + b;
+		a = b;
+		b = c;
+		i = i + 1;
+	};
+	return(c);
+}
+
+main(){
+	cout(fibo(10));
+	}
+fin;

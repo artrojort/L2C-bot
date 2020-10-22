@@ -1,0 +1,5 @@
+Generación de cuádruplos para asignaciones y operaciones
+
+Testing para cuádruplos de estatutos return y movimientos del carro
+
+Se implementó el manejo de los tipos de variables que no se había considerado en la entrega anterior. 
